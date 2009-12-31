@@ -1,0 +1,53 @@
+#toolbar{
+  background-color:#efefef;
+  font-size:0.7em;
+  padding-bottom:10px;
+  height:20px;
+ }
+ #toolbar ul{
+   list-style:none;
+ }
+ #toolbar ul li{
+   float:left;
+ }
+ li.button{
+   display:block;
+   color:#555555;
+   background-color:white;
+   font-weight:bold;
+   height:30px;
+   line-height:29px;
+   text-decoration:none;
+   width:60px;
+}
+li:hover.button {
+  color:#0066CC;
+}
+.add{
+  background:url(../images/add.png) no-repeat 10px 8px;
+  text-indent:30px;
+  display:block;
+  float:right;
+  padding-right:5px;
+}
+li.button input{
+  float:left;
+  width:150px;
+  margin:5px 8px 5px 5px;
+  border:1px solid #ccc;
+
+}
+ .ui-layout-pane { /* all 'panes' */ 
+   background: #FFF; 
+   overflow: auto;
+ } 
+
+ .ui-layout-resizer { /* all 'resizer-bars' */ 
+   background: #DDD; 
+ } 
+
+ .ui-layout-toggler { /* all 'toggler-buttons' */ 
+   background: #AAA; 
+ } 
+
+
