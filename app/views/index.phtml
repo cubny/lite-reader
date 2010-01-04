@@ -29,7 +29,7 @@
     <div class="ui-layout-west" id="feeds">
       <ul>
       <?php foreach($feeds as $feed): ?>
-        <li id="<?php echo $feed->id?>"><?php echo $feed->title; ?></li>
+      <li id="<?php echo $feed->id?>"><?php echo $feed->title?>(<span><?php echo $feed->unread; ?></span>)</li>
       <?php endforeach; ?>
      </ul>
     </div>

@@ -20,7 +20,7 @@
      $('#addfeed > *').click(showAddFeed);
 
      var currentFeed=null;
-     $('#feeds li').click(function(){
+     $('#feeds li').live("click",function(){
        getItems($(this).attr('id'));
        if(currentFeed)
          currentFeed.removeClass('selected');
@@ -50,6 +50,12 @@
       }else{
         $("#south").html(data.desc);
       }
+      var item=$("#items li[id='"+id+"']");
+      if(item.hasClass("new")){
+        var count=$("#feeds li.selected span");
+        count.text(parseInt(count.text())-1);
+        item.removeClass("new");
+      }
     });
    }
 
@@ -57,7 +63,11 @@
     $.getJSON('?index/getitems/'+id,function(data){
        $("#items").html("");
        $.each(data, function(i,item){
-          $('<li/>').attr("id",item.id).html(item.title).appendTo("#items");
+          var li=$('<li/>').attr("id",item.id).html(item.title);
+          if(item.is_new=="1"){
+           li.addClass("new"); 
+          }
+          li.appendTo("#items");
       })
        initItemsBehavior();
     })
@@ -66,17 +76,25 @@
      s = encodeURIComponent(s);
      return s.replace(/~/g,'%7E').replace(/%20/g,'+');
    }
-
-   function addFeed(url){
-    $.getJSON('?index/add/'+urlencode(url),function(data){
-       var container=$(".ul-layout-west ul");
-       container.html("");
-       $.each(data, function(i,feed){
-          $('<li/>').html($('<a href="javascript:getItems('+feed.id+')" />').html(feed.title)).appendTo(container);
-      })
-    })
-   }
- 
+    function addFeed(url){
+      var aInput=$("#urlToAdd");
+      var af=$('#addfeed .add');
+      var currImg=af.css('background-image');
+      af.css('background-image','url(public/images/loading.gif)');
+      $.getJSON('?index/add/'+urlencode(url),function(data){
+          var container=$(".ui-layout-west ul");
+          $.each(data, function(i,feed){
+            var li=$('<li/>').attr("id",feed.id).addClass("new").html(feed.title);
+            li.append("(<span>"+feed.unread+"</span>)");
+            li.appendTo(container);
+            });
+          $("#feeds li.new").animate({backgroundColor:"white"},2000)
+          af.css('background-image',currImg);
+          aInput.val("");
+          hideAddFeed();
+          })
+    }
+     
    function showAddFeed(e){
      e.stopPropagation();
      var aButton=$("#addfeed a");
