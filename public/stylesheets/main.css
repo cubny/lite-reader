@@ -1,3 +1,6 @@
+a{
+  text-decoration:none;
+}
 #toolbar{
   background-color:#efefef;
   font-size:0.7em;
@@ -50,4 +53,23 @@ li.button input{
    background: #AAA; 
  } 
 
+#items,#feeds ul{
+  list-style:none;
+  font-size:0.8em;
+  padding:0;
+  margin:0;
+}
+
+#items li,#feeds ul li{
+  cursor:pointer;
+  color:black;
+  padding:2px;
+  border-bottom:1px solid #ccc;
+}
+#items li:hover, #feeds ul li:hover {
+  background-color:#eee;
+}
+#items .selected,#feeds .selected{
+  background-color:#ddd;
+}
 
