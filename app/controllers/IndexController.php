@@ -37,7 +37,12 @@ class IndexController extends Controller
   }
   public function add($url){
     $rss=new Rss();
-    $data=$rss->add($url)->getLastFeed();
+    if($rss->add($url)!==false){
+      $data=$rss->getLastFeed();
+    }else{
+      $feed=$rss->getByUrl($url);
+      $data=array("error"=>"already Exists","feed"=>$feed->id);
+    }
     echo $this->_jsonify($data);
   }
   public function feeds(){
@@ -48,6 +53,18 @@ class IndexController extends Controller
     $rss=new Rss();
     $rss->id=$id;
     return $rss->delete();
+  }
+  public function update($id){
+    $rss=new Rss();
+    $rss->id=$id;
+    $rss->updateItems();
+    return $this->getItems($id);
+  }
+  public function fetch(){
+    $url='http://feeds.simonwillison.net/swn-everything';
+    $rss=new Rss();
+    $data=$rss->fetch($url);
+    var_dump($data);
   }
 
 }

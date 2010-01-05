@@ -11,34 +11,55 @@ class Rss extends Model
   public $lang;
   public $updated_at;
 
-  public function add($url){
-    $url=urldecode($url);
-    if($this->urlExists($url)>0)return;
+  public function fetchFeed($url){
     $ray=new RayFeedReader(array(
       'url'=>$url,
       'httpClient'=>'SimpleXML',
-      ));
+    ));
     $data=$ray->parse()->getData();
+    $data['items']=array_reverse($data['items']);
+    return $data;
+  }
+  public function updateItems(){
+   $feed=self::findByIdFrom(get_class($this),$this->id);
+   $url=$feed->url;
+   $data=$this->fetchFeed($url);
+   $items=$data['items'];
+   foreach($items as $item){
+     $itemModel=new Item();
+     if(!$itemModel->exists($item['link'])){
+      $this->_addItem($item,$itemModel);
+     }
+     unset($itemModel);
+   }
+  }
+  private function _addItem($item,$itemModel){
+    $itemModel->title=$item['title'];
+    $itemModel->link=$item['link'];
+    $itemModel->rss_id=$this->id;
+    $itemModel->is_new=1;
+    if(empty($item['description'])){
+      $itemModel->desc=$item['title'];
+    }else{
+      $itemModel->desc=$item['description'];
+    }
+    $itemModel->save();
+  }
+  public function add($url){
+    $url=urldecode($url);
+    if($this->urlExists($url)>0)return false;
+    $ray=$this->fetchFeed();
     $this->url=$url;
     $this->title=$data['title'];
     $this->desc=$data['description'];
     $this->link=$data['link'];
     $this->lang=isset($data['language'])?$data['language']:'en';
-    $thiis->updated_at=date("Y-m-d H:i");
+    $thiis->updated_at=(string) date("Y-m-d H:i");
     $this->save();
     $items=$data['items'];
     foreach($items as $item){
       $itemModel=new Item();
-      $itemModel->title=$item['title'];
-      $itemModel->link=$item['link'];
-      $itemModel->rss_id=$this->id;
-      $itemModel->is_new=1;
-      if(empty($item['description'])){
-        $itemModel->desc=$item['title'];
-      }else{
-        $itemModel->desc=$item['description'];
-      }
-      $itemModel->save();
+      $this->_addItem($item,$itemModel);
       unset($itemModel);
     }
     return $this;
@@ -51,6 +72,10 @@ class Rss extends Model
   }
   public function urlExists($url){
     return self::countFrom(get_class($this),"url = ?",array($url));
+  }
+  public function getByUrl($url){
+    $url=urldecode($url);
+    return self::findOneFrom(get_class($this),"url = ?",array($url));
   }
 
   public function beforeDelete(){

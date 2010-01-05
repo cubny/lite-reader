@@ -9,7 +9,7 @@ class Item extends Model
   public $is_new;
 
   public function getAllByRssId($id){
-    return $this->query("SELECT * from ".self::TABLE_NAME." where rss_id=$id")->fetchAll(self::FETCH_OBJ);
+    return $this->query("SELECT * from ".self::TABLE_NAME." where rss_id=$id ORDER BY ID DESC")->fetchAll(self::FETCH_OBJ);
   }
   public function getDesc($id){
     $this->id=$id;
@@ -18,6 +18,9 @@ class Item extends Model
   }
   public function deleteByRssId($rss_id){
     return self::deleteWhere(get_class($this),"rss_id = ?",array($rss_id));
+  }
+  public function exists($link){
+    return self::countFrom(get_class($this),"link = ?",array($link));
   }
 
 }

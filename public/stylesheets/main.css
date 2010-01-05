@@ -1,3 +1,7 @@
+body{
+  font-family:Sans-Serif;
+  font-size:0.9em;
+}
 a{
   text-decoration:none;
 }
@@ -44,9 +48,9 @@ li.button input{
   border:1px solid #ccc;
 
 }
- .ui-layout-pane { /* all 'panes' */ 
-   background: #FFF; 
-   overflow: auto;
+.ui-layout-pane { /* all 'panes' */ 
+  background: #FFF; 
+  overflow: auto;
  } 
 
  .ui-layout-resizer { /* all 'resizer-bars' */ 
@@ -56,7 +60,6 @@ li.button input{
  .ui-layout-toggler { /* all 'toggler-buttons' */ 
    background: #AAA; 
  } 
-
 #items,#feeds ul{
   list-style:none;
   font-size:0.8em;
@@ -70,6 +73,7 @@ li.button input{
   padding:2px;
   border-bottom:1px solid #ccc;
 }
+
 #feeds li{
   padding-right:10px;
   overflow:auto;
@@ -84,6 +88,55 @@ li.button input{
 
 #items .new{
   font-weight:bold;
+}
+
+#feedbar{
+  position:relative;
+  top:0;
+  height:20px;
+  width:100%;
+  background-color:#ddd;
+  border-bottom:1px solid #ccc;
+  padding-top:5px;
+}
+#feedbar #title{
+  float:left;
+  font-size:0.8em;
+  font-weight:bold;
+  padding:2px;
+}
+#feedbar .update{
+  float:left;
+  overflow:hidden;
+  background-color:#aaa;
+  font-size:0.7em;
+  padding:1px;
+  margin-right:2px;
+  text-align:center;
+  color:white;
+  border:1px solid #999;
+  cursor:pointer;
+  display:none;
+}
+#feedbar .update:hover {
+  background-color:#bbb;
+}
+
+.feedtitle{
+  float:left; 
+  max-width:85%;
+  padding-right:2px;
+  overflow:hidden;
+  display:inline;
+  white-space:nowrap;
+}
+
+#feeds {
+  height:20px;
+}
+#feeds .count {
+  float:left;
+  margin-left:2px;
 }
 #feeds .new{
   background-color:red;

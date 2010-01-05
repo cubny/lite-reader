@@ -29,12 +29,18 @@
     <div class="ui-layout-west" id="feeds">
       <ul>
       <?php foreach($feeds as $feed): ?>
-      <li id="<?php echo $feed->id?>"><?php echo $feed->title?>(<span><?php echo $feed->unread; ?></span>)</li>
+      <li id="<?php echo $feed->id?>"><div class="feedtitle"><?php echo $feed->title?></div><div class="count">(<span><?php echo $feed->unread; ?></span>)</div></li>
       <?php endforeach; ?>
      </ul>
     </div>
     <div id="content" class="ui-layout-center">
       <div class="ui-layout-center">
+          <div id="feedbar">
+              <div id="actions">
+                  <div class="update">update</div>
+              </div>
+              <div id="title"></div>
+          </div>
           <ul id="items">
           </ul>
       </div>
