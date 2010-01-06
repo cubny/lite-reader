@@ -5,6 +5,9 @@ body{
 a{
   text-decoration:none;
 }
+#content .ui-layout-north {
+  z-index:4 !important;
+}
 #toolbar{
   background-color:#efefef;
   font-size:0.7em;
@@ -51,15 +54,17 @@ li.button input{
 .ui-layout-pane { /* all 'panes' */ 
   background: #FFF; 
   overflow: auto;
- } 
+} 
 
- .ui-layout-resizer { /* all 'resizer-bars' */ 
-   background: #DDD; 
- } 
+.ui-layout-resizer { /* all 'resizer-bars' */ 
+ background: #DDD; 
+} 
 
- .ui-layout-toggler { /* all 'toggler-buttons' */ 
-   background: #AAA; 
- } 
+.ui-layout-toggler { /* all 'toggler-buttons' */ 
+ background: #AAA; 
+} 
+
+
 #items,#feeds ul{
   list-style:none;
   font-size:0.8em;
@@ -91,8 +96,6 @@ li.button input{
 }
 
 #feedbar{
-  position:relative;
-  top:0;
   height:20px;
   width:100%;
   background-color:#ddd;
@@ -122,6 +125,22 @@ li.button input{
   background-color:#bbb;
 }
 
+#feedbar .remove{
+  float:right;
+  overflow:hidden;
+  background-color:#ab1111;
+  font-size:0.7em;
+  padding:1px;
+  margin-right:5px;
+  text-align:center;
+  color:white;
+  border:1px solid #700B0B;
+  cursor:pointer;
+  display:none;
+}
+#feedbar .remove:hover {
+  background-color:#FF0000;
+}
 .feedtitle{
   float:left; 
   max-width:85%;
@@ -141,4 +160,17 @@ li.button input{
 #feeds .new{
   background-color:red;
   
+}
+
+#msg{
+  background:#6C8A46 url(../images/loading1.gif) no-repeat 100% 80%;
+  position:absolute;
+  float:left;
+  z-index:3;
+  top:-20px;
+  right:50%;
+  padding:15px 15px 5px 5px;
+  color:white;
+  font-weight:bold;
+  font-size:0.7em;
 }

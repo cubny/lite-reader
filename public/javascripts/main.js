@@ -12,6 +12,12 @@ $(document).ready(function () {
       }
     });
     $('body > .ui-layout-center').layout({
+      north:{
+        resizable:false,
+        closable:false,
+        size:"auto",
+        spacing_open:0
+      },
       south:{
         size:250,
       }
@@ -21,21 +27,30 @@ $(document).ready(function () {
     $('.update').click(function(){
       var id=$(this).attr('id');
       updateFeed(id);
-      })
-
+      });
+    $('.remove').click(function(){
+      var id=$(this).attr('id');
+      removeFeed(id);
+      });
     var currentItem=null;
     var currentFeed=null;
     $('#feeds li').live("click",function(){
         var id=$(this).attr('id');
-       getItems(id);
-       if(currentFeed)
-         currentFeed.removeClass('selected');
-       $(this).addClass('selected');
-       $("#title").html($(this).find(".feedtitle").html());
-       $(".update").show();
-       $(".update").attr('id',id);
-       currentFeed=$(this);
+        $.cookie("feed",id);
+        getItems(id);
+        if(currentFeed)
+          currentFeed.removeClass('selected');
+        $(this).addClass('selected');
+        $("#title").html($(this).find(".feedtitle").html());
+        $(".remove").show();
+        $(".remove").attr('id',id);
+        $(".update").show();
+        $(".update").attr('id',id);
+        currentFeed=$(this);
       });
+    if(lastFeed=$.cookie("feed")){
+      $("#feeds li#"+lastFeed).click();
+    }
 });
    function initItemsBehavior(){
      currentItem=null;
@@ -83,12 +98,23 @@ function getItems(id){
       })
 }
 function updateFeed(id){
+  $("#msg").animate({top:"15px"},500);
   $.getJSON('?index/update/'+id,function(data){
       unread=renderItems(data);
       var count=$("#feeds li[id='"+id+"'] .count span");
       count.text(unread);
+      $("#msg").animate({top:"-20px"},500);
   });
+}
+function removeFeed(id){
+  $.get('?index/del/'+id,function(){
+      $("#feeds li[id='"+id+"']").remove()
 
+      $("#items").html("");
+      $("#feedbar .remove").hide();
+      $("#feedbar .update").hide();
+      $("#feedbar #title").html("");
+  });
 }
 function urlencode(s) {
   s = encodeURIComponent(s);

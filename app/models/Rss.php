@@ -48,7 +48,7 @@ class Rss extends Model
   public function add($url){
     $url=urldecode($url);
     if($this->urlExists($url)>0)return false;
-    $ray=$this->fetchFeed();
+    $data=$this->fetchFeed($url);
     $this->url=$url;
     $this->title=$data['title'];
     $this->desc=$data['description'];
