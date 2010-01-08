@@ -1,6 +1,6 @@
 <?php
 
-class IndexController extends Controller
+class AggController extends Controller
 {
   public function __construct(){
     use_model('Rss','Item');
@@ -23,6 +23,10 @@ class IndexController extends Controller
     //var_dump($rss->loadRss());
     $this->display("index",array('feeds'=>$data));
   }
+  public function getFav($id){
+    $rss=new Rss();
+    $link=$rss->load($id)->link;
+  }
   public function getItems($id){
     $item=new Item();
     $items=$item->getAllByRssId($id);
@@ -35,7 +39,11 @@ class IndexController extends Controller
     echo $this->_jsonify($desc);
 
   }
-  public function add($url){
+  public function add(){
+    if(isset($_POST['url'])){
+      $url=$_POST['url'];
+    }
+
     $rss=new Rss();
     if($rss->add($url)!==false){
       $data=$rss->getLastFeed();
@@ -65,6 +73,10 @@ class IndexController extends Controller
     $rss=new Rss();
     $data=$rss->fetch($url);
     var_dump($data);
+  }
+  public function test(){
+    var_dump($_SERVER['HTTP_ACCEPT_ENCODING']);
+    exit();
   }
 
 }

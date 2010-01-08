@@ -61,7 +61,6 @@ final class SE
 			$requested_url = substr($requested_url, 0, $pos_to_cut);
 
 		self::$url = $url;
-
 		if (empty($url))
 		{
 		    return self::executeAction(self::getController(), self::getAction(), self::getParams());

@@ -3,15 +3,7 @@
 <head>
 
 	<title>LiteReader</title>
-
-	<script type="text/javascript" src="public/javascripts/jquery.js"></script>
-	<script type="text/javascript" src="public/javascripts/jquery.ui.all.js"></script>
-	<script type="text/javascript" src="public/javascripts/jquery.layout.js"></script>
-	<script type="text/javascript" src="public/javascripts/jquery.cookie.js"></script>
-	<script type="text/javascript" src="public/javascripts/main.js"></script>
-   <link href="public/stylesheets/main.css" media="screen" rel="stylesheet" type="text/css" />
-   <link href="public/stylesheets/jquery-ui.css" media="screen" rel="stylesheet" type="text/css" />
-
+  <link href="css/main.css,jquery-ui.css" media="screen" rel="stylesheet" type="text/css" />
 	<script type="text/javascript">
 	</script>
 </head>
@@ -30,7 +22,11 @@
     <div class="ui-layout-west" id="feeds">
       <ul>
       <?php foreach($feeds as $feed): ?>
-      <li id="<?php echo $feed->id?>"><div class="feedtitle"><?php echo $feed->title?></div><div class="count">(<span><?php echo $feed->unread; ?></span>)</div></li>
+        <li id="<?php echo $feed->id?>">
+          <img src="http://cdn.netvibes.com/proxy/favIcon.php?url=<?php echo urlencode($feed->link); ?>">
+          <div class="feedtitle"><?php echo $feed->title?></div>
+          <div class="count">(<span><?php echo $feed->unread; ?></span>)</div>
+        </li>
       <?php endforeach; ?>
      </ul>
     </div>
@@ -54,4 +50,5 @@
     </div>
 
 </body>
+	<script type="text/javascript" src="javascript/jquery.js,jquery.ui.all.js,jquery.layout.js,jquery.cookie.js,feeds.js,items.js,stage.js,utils.js,main.js"></script>
 </html>

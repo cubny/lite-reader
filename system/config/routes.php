@@ -4,4 +4,4 @@
  * wildcards (:any or :num) and/or regex like '/blog/:num' or '/page/:any'.
  */
 
-$route['_default'] = 'index';
+$route['_default'] = 'agg';

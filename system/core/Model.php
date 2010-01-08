@@ -324,6 +324,16 @@ class Model
         $stmt = self::$__CONN__->prepare($sql);
         return $stmt->execute($values);
     }
+    public function load($id=0){
+      if($id>0){
+        $this->id=$id;
+        $cols=self::findByIdFrom(get_class($this),$this->id);
+        foreach($cols as $col => $val){
+          $this->$col=$val;
+        }
+        return $this;
+      }
+    }
     
     //
     // lazy finder or getter methode. Pratical when you need something really 

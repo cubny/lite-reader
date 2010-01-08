@@ -85,14 +85,29 @@ li.button input{
 }
 
 #items li:hover, #feeds ul li:hover {
-  background-color:#eee;
+  background-color:#eee !important;
 }
 #items .selected,#feeds .selected{
-  background-color:#ddd;
+  background-color:#ddd !important; 
 }
 
 #items .new{
   font-weight:bold;
+}
+
+#feeds li img{
+  float:left;
+  width:16px;
+  padding:0 3px;
+}
+
+#feeds .feedtitle{
+  float:left; 
+  max-width:75%;
+  padding-right:2px;
+  overflow:hidden;
+  display:inline;
+  white-space:nowrap;
 }
 
 #feedbar{
@@ -141,14 +156,6 @@ li.button input{
 #feedbar .remove:hover {
   background-color:#FF0000;
 }
-.feedtitle{
-  float:left; 
-  max-width:85%;
-  padding-right:2px;
-  overflow:hidden;
-  display:inline;
-  white-space:nowrap;
-}
 
 #feeds {
   height:20px;
@@ -158,7 +165,7 @@ li.button input{
   margin-left:2px;
 }
 #feeds .new{
-  background-color:red;
+  background-color:#6C8A46;
   
 }
 
