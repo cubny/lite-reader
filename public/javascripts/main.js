@@ -17,12 +17,14 @@ function addFeed(url){
   var af=$('#addfeed .add');
   var currImg='url(public/images/add.png)';
   af.css('background-image','url(public/images/loading.gif)');
+  af.text('Adding Feed...');
   $.ajax({
       url:'agg/add',
       type:"POST",
       data:"url="+url,
       dataType:"json",
       success:function(data){
+          af.text('Feed');
         if(!data.error){
           $.each(data, function(i,feed){
             feeds.add(feed);
@@ -42,7 +44,7 @@ function showAddFeed(e){
   var aButton=$("#addfeed a");
   var aInput=$("#urlToAdd");
   aInput.removeClass('ui-state-error');
-  aButton.parent().animate({width:"230px"},500,null,function(e){
+  //aButton.parent().animate({width:"230px"},500,null,function(e){
       aInput.show();
       aButton.unbind('click');
       aButton.click(function(e){
@@ -58,16 +60,17 @@ function showAddFeed(e){
           hideAddFeed();
         }
       });
-  });
+  //});
 }
 
 function hideAddFeed(){
   var aButton=$("#addfeed a");
   var aInput=$("#urlToAdd");
   aInput.hide();
-  aButton.parent().animate({width:"60px"},300,null,function(){
-      $('#addfeed > *').click(showAddFeed);
-  });
+  $('#addfeed > *').click(showAddFeed);
+  //aButton.parent().animate({width:"60px"},300,null,function(){
+      //$('#addfeed > *').click(showAddFeed);
+  //});
 }
 
 

@@ -28,7 +28,7 @@ a{
    height:30px;
    line-height:29px;
    text-decoration:none;
-   width:60px;
+   /*width:60px;*/
 }
 li:hover.button {
   color:#0066CC;
