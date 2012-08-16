@@ -30,6 +30,7 @@ function addFeed(url){
             feeds.add(feed);
           });
         }else{
+            console.log(data.feed);
             feeds.blink(data.feed);
         }
         af.css('background-image',currImg);

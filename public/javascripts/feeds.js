@@ -37,7 +37,7 @@ var feeds={
        var opts = $.extend(defaults, options);
        var $item=$("<li/>").addClass("new").attr("id",opts.id)
                            .html(
-                                $("<img/>").attr("src","http://cdn.netvibes.com/proxy/favIcon.php?url="+urlencode(opts.url))
+                                $("<img/>").attr("src","http://www.google.com/s2/favicons?domain="+get_hostname(opts.url))
                                )
                            .append(
                                $("<div/>").addClass("feedtitle").html(opts.title)
@@ -71,5 +71,6 @@ var feeds={
     },
     blink:function(id){
         feeds.container.find("li[id='"+id+"']").effect("pulsate",{times:3},200)
+        feeds.container.find("li[id='"+id+"']").click();
     },
 };

@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<title>LiteReader</title>
   <link href="css/main.css,jquery-ui.css" media="screen" rel="stylesheet" type="text/css" />
 	<script type="text/javascript">
@@ -23,7 +24,8 @@
       <ul>
       <?php foreach($feeds as $feed): ?>
         <li id="<?php echo $feed->id?>">
-          <img src="http://cdn.netvibes.com/proxy/favIcon.php?url=<?php echo urlencode($feed->link); ?>">
+            <?php $parsed = parse_url($feed->link); ?>
+          <img src="http://www.google.com/s2/favicons?domain=<?php echo $parsed['host']; ?>">
           <div class="feedtitle"><?php echo $feed->title?></div>
           <div class="count">(<span><?php echo $feed->unread; ?></span>)</div>
         </li>

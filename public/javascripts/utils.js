@@ -20,6 +20,12 @@ function urlencode(s) {
   s = encodeURIComponent(s);
   return s.replace(/~/g,'%7E').replace(/%20/g,'+');
 }
+
+function get_hostname(url) {
+        var m = ((url||'')+'').match(/^http:\/\/([^/]+)/);
+        return m ? m[1] : null;
+}
+
 var loadr = {
   elem:$("#msg"),
   show:function(){
