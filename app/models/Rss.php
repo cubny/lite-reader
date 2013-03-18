@@ -54,7 +54,7 @@ class Rss extends Model
     $this->desc=$data['description'];
     $this->link=$data['link'];
     $this->lang=isset($data['language'])?$data['language']:'en';
-    $thiis->updated_at=(string) date("Y-m-d H:i");
+    $this->updated_at=(string) date("Y-m-d H:i");
     $this->save();
     $items=$data['items'];
     foreach($items as $item){

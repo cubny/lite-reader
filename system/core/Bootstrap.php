@@ -60,6 +60,7 @@ try{
   require SYSPATH.'/libraries/DoLite'.EXT;
   $__CONN__=new DoLite("sqlite:".APPPATH."/db/agg.db");
 }
+
 Model::connection($__CONN__);
 Model::getConnection()->exec("SET NAMES 'utf8'");
 // Dispatch Simplengine
