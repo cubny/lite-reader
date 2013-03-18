@@ -209,10 +209,12 @@ Class RayFeedReader{
      * @access public
      */
     function &setOptions($options) {
-        if (!empty($options['url'])) {
-            $this->_url = $options['url'];
-        } elseif (is_null($options['url'])) {
-          $this->_url = null;
+        if(isset($options['url'])){
+            if (!empty($options['url'])) {
+                $this->_url = $options['url'];
+            } elseif (is_null($options['url'])) {
+                $this->_url = null;
+            }
         }
         
         if (!empty($options['xml'])) {

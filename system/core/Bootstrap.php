@@ -11,14 +11,13 @@ require SYSPATH.'/helpers/Folder'.EXT;
 $config_dir = 'config/';
 $files = Folder::getFiles(SYSPATH.$config_dir);
 
-foreach($files as $file):
-    if(file_exists(APPPATH.$config_dir.$file)):
-		include APPPATH.$config_dir.$file;
-    ; else :
-		include SYSPATH.$config_dir.$file;
-    endif;
-endforeach;
-
+foreach($files as $file){
+    if(file_exists(APPPATH.$config_dir.$file)){
+        include APPPATH.$config_dir.$file;
+    }else{
+        include SYSPATH.$config_dir.$file;
+    }
+}
 // Set default controller and action
 define('DEFAULT_CONTROLLER', $route['_default']);
 define('DEFAULT_ACTION', 'index');
@@ -50,7 +49,7 @@ define('TABLE_PREFIX', $config['table_prefix']);
  */
 if(isset($route)):
     foreach($route as $key => $value):
-		SE::addRoute($key, $value);
+    SE::addRoute($key, $value);
     endforeach;
 endif;
 try{

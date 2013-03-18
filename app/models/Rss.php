@@ -14,9 +14,12 @@ class Rss extends Model
   public function fetchFeed($url){
     $ray=new RayFeedReader(array(
       'url'=>$url,
-      'httpClient'=>'SimpleXML',
+      'httpClient'=>'php',
     ));
     $data=$ray->parse()->getData();
+    if(!isset($data['items'])){
+        $data['items'] = array();
+    }
     $data['items']=array_reverse($data['items']);
     return $data;
   }
