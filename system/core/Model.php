@@ -201,6 +201,9 @@ class Model
                  . implode(', ', array_keys($value_of)).') VALUES ('.implode(', ', array_values($value_of)).')';
                  
             $return = self::$__CONN__->exec($sql) !== false;
+            if($return === false){
+                die(var_dump(self::$__CONN__->errorInfo()));
+            }
             $this->id = self::lastInsertId(); 
              
             if ( ! $this->afterInsert()) return false;

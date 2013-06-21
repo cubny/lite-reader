@@ -1,5 +1,3 @@
-NOTE: still in development
-
 GOAL
 ----
 The whole plan is building a RIA feed aggregator,
@@ -8,7 +6,7 @@ What did I use?
 ---------------
 pdo and LiteDO,
 a modified version of Green framework,
-jQuery, and i used object-literal concept to organize js codes
+jQuery, and I used object-literal concept to organize js codes
 
 
 INSTALL
@@ -16,7 +14,7 @@ INSTALL
 1. clone/download the whole project
 2. make app/db/agg.db writable for webserver
 3. create a folder in "public" folder, name it cache, and make it writable for webserver
-4. that's it, enjoy a very lite and minimal feed fggregator: the lite-reader
+4. that's it, enjoy a very lite and minimal feed aggregator: the lite-reader
 
 
 Want to Contribute?

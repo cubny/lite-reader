@@ -60,7 +60,8 @@ class AggController extends Controller
   public function del($id){
     $rss=new Rss();
     $rss->id=$id;
-    return $rss->delete();
+    $result = $rss->delete();
+    die(var_dump($result));
   }
   public function update($id){
     $rss=new Rss();

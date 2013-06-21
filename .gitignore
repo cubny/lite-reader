@@ -1,2 +1,2 @@
-public/cache
 app/db/agg.db
+public/cache/*
