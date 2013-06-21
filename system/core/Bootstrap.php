@@ -13,9 +13,9 @@ $files = Folder::getFiles(SYSPATH.$config_dir);
 
 foreach($files as $file):
     if(file_exists(APPPATH.$config_dir.$file)):
-		include APPPATH.$config_dir.$file;
+    include APPPATH.$config_dir.$file;
     ; else :
-		include SYSPATH.$config_dir.$file;
+    include SYSPATH.$config_dir.$file;
     endif;
 endforeach;
 
@@ -50,9 +50,14 @@ define('TABLE_PREFIX', $config['table_prefix']);
  */
 if(isset($route)):
     foreach($route as $key => $value):
-		SE::addRoute($key, $value);
+    SE::addRoute($key, $value);
     endforeach;
 endif;
+$db_file = APPPATH."/db/agg.db";
+if(!is_file($db_file)){
+  echo "<b>Database Not Found!</b><br/>";
+  die("rename app/db/agg.db.sample to app/db/agg.db and change its permissions, so it can be writable for the webserver");
+}
 try{
   //$__CONN__=new PDO("mysql:host=localhost;dbname=aggregator","root","ugdvqh");
   $__CONN__=new PDO("sqlite:".APPPATH."/db/agg.db");
