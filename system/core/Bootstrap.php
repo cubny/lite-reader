@@ -11,16 +11,6 @@ require SYSPATH.'/helpers/Folder'.EXT;
 $config_dir = 'config/';
 $files = Folder::getFiles(SYSPATH.$config_dir);
 
-<<<<<<< HEAD
-foreach($files as $file):
-    if(file_exists(APPPATH.$config_dir.$file)):
-    include APPPATH.$config_dir.$file;
-    ; else :
-    include SYSPATH.$config_dir.$file;
-    endif;
-endforeach;
-
-=======
 foreach($files as $file){
     if(file_exists(APPPATH.$config_dir.$file)){
         include APPPATH.$config_dir.$file;
@@ -28,7 +18,6 @@ foreach($files as $file){
         include SYSPATH.$config_dir.$file;
     }
 }
->>>>>>> 3aca5c6db37abca0384f0d3019187f17b6176093
 // Set default controller and action
 define('DEFAULT_CONTROLLER', $route['_default']);
 define('DEFAULT_ACTION', 'index');
