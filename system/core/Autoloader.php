@@ -12,68 +12,68 @@
 */
 class AutoLoader
 {
-	protected static $files = array();
-	protected static $folders = array();
+  protected static $files = array();
+  protected static $folders = array();
 
-	/*
-	   Method: addFile
-	   Add directly the file need for a specific class
-	*/
-	public static function addFile($class_name, $file=null)
-	{
-		if ($file == null)
-			self::$files = array_merge(self::$files, $class_name);
-		else
-			self::$files[$class_name] = $file;
-	}
+  /*
+     Method: addFile
+     Add directly the file need for a specific class
+  */
+  public static function addFile($class_name, $file=null)
+  {
+    if ($file == null)
+      self::$files = array_merge(self::$files, $class_name);
+    else
+      self::$files[$class_name] = $file;
+  }
 
-	/*
-	   Method: addFolder
-	   Add a folder to soearch for the class
-	*/
-	public static function addFolder($folder)
-	{
-		if (!is_array($folder))
-			$folder = array($folder);
+  /*
+     Method: addFolder
+     Add a folder to soearch for the class
+  */
+  public static function addFolder($folder)
+  {
+    if (!is_array($folder))
+      $folder = array($folder);
 
-		self::$folders = array_merge(self::$folders, $folder);
-	}
+    self::$folders = array_merge(self::$folders, $folder);
+  }
 
-	/**
-	 *  Method: load
-	 *  Will be called by PHP (trying to load the class)
-	 */
-	public static function load($class_name)
-	{
-		if (isset(self::$files[$class_name]))
-		{
-			require self::$files[$class_name];
-			return;
-		}
-		else
-		{
-			foreach (self::$folders as $folder)
-			{
-				$file = $folder.$class_name.'.php';
-				if (file_exists($file))
-				{
-					require $file;
-					return;
-				}
-			}
-		}
-		throw new Exception("Class '{$class_name}' not found!");
-	}
+  /**
+   *  Method: load
+   *  Will be called by PHP (trying to load the class)
+   */
+  public static function load($class_name)
+  {
+    if (isset(self::$files[$class_name]))
+    {
+      require self::$files[$class_name];
+      return;
+    }
+    else
+    {
+      foreach (self::$folders as $folder)
+      {
+        $file = $folder.$class_name.'.php';
+        if (file_exists($file))
+        {
+          require $file;
+          return;
+        }
+      }
+    }
+    //throw new Exception("Class '{$class_name}' not found!");
+  }
 
 } // end AutoLoader class
 
 if ( ! function_exists('__autoload')) {
-	AutoLoader::addFolder(array(APPPATH.'/models/', APPPATH.'/controllers/'));
+  AutoLoader::addFolder(array(APPPATH.'/models/', APPPATH.'/controllers/'));
 
-	function __autoload($class_name)
-	{
-		AutoLoader::load($class_name);
-	}
+  function __autoload($class_name)
+  {
+    AutoLoader::load($class_name);
+  }
 }
 
 /*
@@ -85,20 +85,20 @@ if ( ! function_exists('__autoload')) {
 */
 function use_helper()
 {
-	static $helpers = array();
+  static $helpers = array();
 
-	foreach (func_get_args() as $helper)
-	{
-		if (in_array($helper, $helpers)) continue;
+  foreach (func_get_args() as $helper)
+  {
+    if (in_array($helper, $helpers)) continue;
 
-		$helper_file = SYSPATH.'/helpers/'.DIRECTORY_SEPARATOR.$helper.EXT;
+    $helper_file = SYSPATH.'/helpers/'.DIRECTORY_SEPARATOR.$helper.EXT;
 
-		if (!file_exists($helper_file))
-			throw new Exception("Helper file '{$helper}' not found!");
+    if (!file_exists($helper_file))
+      throw new Exception("Helper file '{$helper}' not found!");
 
-		include $helper_file;
-		$helpers[] = $helper;
-	}
+    include $helper_file;
+    $helpers[] = $helper;
+  }
 }
 
 /*
@@ -110,18 +110,18 @@ function use_helper()
 */
 function use_model()
 {
-	static $models = array();
+  static $models = array();
 
-	foreach (func_get_args() as $model)
-	{
-		if (in_array($model, $models)) continue;
+  foreach (func_get_args() as $model)
+  {
+    if (in_array($model, $models)) continue;
 
-		$model_file = APPPATH.'/models/'.$model.EXT;
+    $model_file = APPPATH.'/models/'.$model.EXT;
 
-		if (!file_exists($model_file))
-			throw new Exception("Model file '{$model}' not found!");
+    if (!file_exists($model_file))
+      throw new Exception("Model file '{$model}' not found!");
 
-		include $model_file;
-		$models[] = $model;
-	}
+    include $model_file;
+    $models[] = $model;
+  }
 }

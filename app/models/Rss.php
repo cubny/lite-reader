@@ -1,5 +1,6 @@
 <?php
-include SYSPATH."/libraries/rayfeedreader.php";
+//include SYSPATH."/libraries/rayfeedreader.php";
+require SYSPATH."/libraries/SimplePie.compiled.php";
 class Rss extends Model
 {
   const TABLE_NAME='rss';
@@ -12,58 +13,56 @@ class Rss extends Model
   public $updated_at;
 
   public function fetchFeed($url){
-    $ray=new RayFeedReader(array(
-      'url'=>$url,
-      'httpClient'=>'php',
-    ));
-    $data=$ray->parse()->getData();
-    if(!isset($data['items'])){
-        $data['items'] = array();
-    }
-    $data['items']=array_reverse($data['items']);
-    return $data;
+    $feed = new SimplePie();
+    $feed->set_feed_url($url);
+    $feed->init();
+    $feed->handle_content_type();
+
+    return $feed;
   }
   public function updateItems(){
    $feed=self::findByIdFrom(get_class($this),$this->id);
    $url=$feed->url;
    $data=$this->fetchFeed($url);
-   $items=$data['items'];
+   $items=$data->get_items();
+
    foreach($items as $item){
      $itemModel=new Item();
-     if(!$itemModel->exists($item['link'])){
+     if(!$itemModel->exists($item->get_link())){
       $this->_addItem($item,$itemModel);
      }
      unset($itemModel);
    }
   }
   private function _addItem($item,$itemModel){
-    $itemModel->title=$item['title'];
-    $itemModel->link=$item['link'];
+    $itemModel->title=$item->get_title();
+    $itemModel->link=$item->get_link();
     $itemModel->rss_id=$this->id;
     $itemModel->is_new=1;
-    if(empty($item['description'])){
-      if(empty($item['content'])){
-        $itemModel->desc=$item['title'];
-      }else{
-        $itemModel->desc = $item['content'];
-      }
-    }else{
-      $itemModel->desc=$item['description'];
-    }
+    $itemModel->desc = $item->get_content();
     $itemModel->save();
+
+    /*$descs = array('content:encoded','content','description','title');
+    foreach($descs as $key){
+      if(!empty($item[$key])){
+        $itemModel->desc = $item[$key];
+        $itemModel->save();
+        return;
+      }
+    }*/
   }
   public function add($url){
     //$url=urldecode($url);
     if($this->urlExists($url)>0)return false;
     $data=$this->fetchFeed($url);
     $this->url=$url;
-    $this->title=$data['title'];
-    $this->desc=$data['description'];
-    $this->link=$data['link'];
-    $this->lang=isset($data['language'])?$data['language']:'en';
+    $this->title=$data->get_title();
+    $this->desc=$data->get_description();
+    $this->link=$data->get_link();
+    $this->lang=is_null($data->get_language())?$data->get_language():'en';
     $this->updated_at=(string) date("Y-m-d H:i");
     $this->save();
-    $items=$data['items'];
+    $items=$data->get_items();
     foreach($items as $item){
       $itemModel=new Item();
       $this->_addItem($item,$itemModel);
