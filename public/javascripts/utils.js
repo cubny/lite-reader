@@ -35,3 +35,10 @@ var loadr = {
          loadr.elem.animate({top:"-20px"},500);
    },
 }
+
+String.prototype.format = function() {
+    var args = arguments;
+    return this.replace(/{(\d+)}/g, function(match, number) {
+      return typeof args[number] != 'undefined'? args[number]: match;
+    });
+};

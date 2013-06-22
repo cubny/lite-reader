@@ -7,7 +7,8 @@ var items = {
       items.$elem.find('li').click(function(){
           var id=this.id;
           var $this=$(this);
-          items.load(id);
+          $this.find('.desc').toggle();
+          items.read(id);
           if(items.current)
             items.current.removeClass('selected');
           $this.addClass('selected');
@@ -19,32 +20,24 @@ var items = {
        items.$elem.html("");
        var unread=0;
        $.each(data, function(i,item){
-           var $li=$('<li/>').attr("id",item.id).html(item.title);
-           if(item.is_new=="1"){
-             $li.addClass("new"); 
-             unread++;
-           }
-           $li.appendTo(items.$elem);
+         var item_template = $("#item-template").html();
+         var $li = $(item_template.format(item.id,item.title,item.desc))
+         $li.find('.desc').hide();
+         if(item.is_new=="1"){
+           $li.addClass("new");
+           unread++;
+         }
+         items.$elem.append($li)
        })
        items.init();
        return unread;
     },
-    load:function(id){
-       $.getJSON('agg/getdesc/'+id,function(data){
-           if(data.desc==null){
-             $("#south").html($('<a href="'+data.link+'"/>').html(data.title));
-           }else{
-             $("#south").html(data.desc);
-           }
-           items.read(id);
-       });
-    },
     read:function(id){
-           var $item=items.$elem.find("li[id='"+id+"']");
-           if($item.hasClass("new")){
-             var count=feeds.getCurrentCount();
-             count.text(parseInt(count.text())-1);
-             $item.removeClass("new");
-           }
+      var $item=items.$elem.find("li[id='"+id+"']");
+      if($item.hasClass("new")){
+        var count=feeds.getCurrentCount();
+        count.text(parseInt(count.text())-1);
+        $item.removeClass("new");
+      }
     },
 }

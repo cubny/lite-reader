@@ -42,7 +42,11 @@ class Rss extends Model
     $itemModel->rss_id=$this->id;
     $itemModel->is_new=1;
     if(empty($item['description'])){
-      $itemModel->desc=$item['title'];
+      if(empty($item['content'])){
+        $itemModel->desc=$item['title'];
+      }else{
+        $itemModel->desc = $item['content'];
+      }
     }else{
       $itemModel->desc=$item['description'];
     }

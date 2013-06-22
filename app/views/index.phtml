@@ -25,7 +25,7 @@
       <?php foreach($feeds as $feed): ?>
         <li id="<?php echo $feed->id?>">
             <?php $parsed = parse_url($feed->link); ?>
-          <img src="http://www.google.com/s2/favicons?domain=<?php echo $parsed['host']; ?>">
+          <img src="http://geticon.org/of/<?php echo $parsed['host']; ?>">
           <div class="feedtitle"><?php echo $feed->title?></div>
           <div class="count">(<span><?php echo $feed->unread; ?></span>)</div>
         </li>
@@ -47,10 +47,14 @@
           <ul id="items">
           </ul>
       </div>
-      <div id="south" class="ui-layout-south">
-      </div>
     </div>
 
+<script type="text/template" id="item-template">
+<li id={0}>
+    <div class="title">{1}</div>
+    <div class="desc">{2}</div>
+</li>
+</script>
 </body>
-	<script type="text/javascript" src="javascript/jquery.js,jquery.ui.all.js,jquery.layout.js,jquery.cookie.js,feeds.js,items.js,stage.js,utils.js,main.js"></script>
+<script type="text/javascript" src="javascript/jquery.js,jquery.ui.all.js,jquery.layout.js,jquery.cookie.js,utils.js,feeds.js,items.js,stage.js,main.js"></script>
 </html>

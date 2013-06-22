@@ -78,6 +78,11 @@ li.button input{
   padding:2px;
   border-bottom:1px solid #ccc;
 }
+#items li {
+  margin:10px;
+  padding:10px;
+  border:1px solid #ccc;
+}
 
 #feeds li{
   padding-right:10px;
@@ -90,8 +95,16 @@ li.button input{
 #items .selected,#feeds .selected{
   background-color:#ddd !important; 
 }
-
-#items .new{
+#items li .title {
+  font-size:14px;
+}
+#items li .desc {
+  margin-top:5px;
+  padding:5px 0;
+  border-top:1px solid #ccc;
+}
+  
+#items .new > .title {
   font-weight:bold;
 }
 
