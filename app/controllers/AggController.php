@@ -31,8 +31,14 @@ class AggController extends Controller
     $item=new Item();
     $items=$item->getAllByRssId($id);
     echo $this->_jsonify($items);
-    
   }
+
+  public function make_read($id){
+    $item=new Item();
+    $result=$item->make_read($id);
+    echo $result;
+  }
+
   public function getDesc($id){
     $item=new Item();
     $desc=$item->getDesc($id);

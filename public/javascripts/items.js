@@ -44,9 +44,13 @@ var items = {
     read:function(id){
       var $item=items.$elem.find("li[id='"+id+"']");
       if($item.hasClass("new")){
-        var count=feeds.getCurrentCount();
-        count.text(parseInt(count.text())-1);
-        $item.removeClass("new");
+        $.getJSON('agg/make_read/'+id,function(data){
+          if(data){
+            var count=feeds.getCurrentCount();
+            count.text(parseInt(count.text())-1);
+            $item.removeClass("new");
+          }
+        })
       }
     },
 }

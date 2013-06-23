@@ -11,6 +11,10 @@ class Item extends Model
   public function getAllByRssId($id){
     return $this->query("SELECT * from ".self::TABLE_NAME." where rss_id=$id ORDER BY ID DESC")->fetchAll(self::FETCH_OBJ);
   }
+  public function make_read($id){
+    $this->id=$id;
+    return self::update(self::TABLE_NAME,array("is_new"=>"0"),"id=?",array($id));
+  }
   public function getDesc($id){
     $this->id=$id;
     self::update(self::TABLE_NAME,array("is_new"=>"0"),"id=?",array($id));
