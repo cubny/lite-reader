@@ -1,82 +1,95 @@
-body{
-  font-family:Sans-Serif;
-  font-size:0.9em;
+body {
+  font-family: Raleway, sans-serif;
+  font-size: 22px;
 }
-a{
-  text-decoration:none;
+
+a {
+  text-decoration: none;
 }
+
 #content .ui-layout-north {
-  z-index:4 !important;
+  z-index: 4 !important;
 }
-#toolbar{
-  background-color:#efefef;
-  font-size:0.7em;
-  padding-bottom:10px;
-  height:20px;
- }
- #toolbar ul{
-   list-style:none;
- }
- #toolbar ul li{
-   float:left;
- }
- li.button{
-   display:block;
-   color:#555555;
-   background-color:white;
-   font-weight:bold;
-   height:30px;
-   line-height:29px;
-   text-decoration:none;
-   /*width:60px;*/
+
+#toolbar {
+  background-color: #efefef;
+  font-size: .7em;
+  padding-bottom: 10px;
+  height: 20px;
 }
+
+#toolbar ul {
+  list-style: none;
+}
+
+#toolbar ul li {
+  float: left;
+}
+
+li.button {
+  display: block;
+  color: #555;
+  background-color: #FFF;
+  font-weight: 700;
+  height: 30px;
+  line-height: 29px;
+  text-decoration: none;
+  transition: all .2s ease-in-out;
+/*width:60px;*/
+}
+
 li:hover.button {
-  color:#0066CC;
-}
-.add{
-  background-image:url(../images/add.png);
-  background-position:10px 8px;
-  background-repeat:no-repeat;
-
-  text-indent:30px;
-  display:block;
-  float:right;
-  padding-right:5px;
+  color: #06C;
 }
 
-li.button input{
-  float:left;
-  width:150px;
-  margin:5px 8px 5px 5px;
-  border:1px solid #ccc;
-
+.add {
+  background-image: url(../images/add.png);
+  background-position: 10px 8px;
+  background-repeat: no-repeat;
+  text-indent: 30px;
+  display: block;
+  float: right;
+  padding-right: 5px;
 }
-.ui-layout-pane { /* all 'panes' */ 
-  background: #FFF; 
+
+li.button input {
+  float: left;
+  width: 150px;
+  margin: 5px 8px 5px 5px;
+  border: 1px solid #ccc;
+}
+
+.ui-layout-pane {
+/* all 'panes' */
+  background: #FFF;
   overflow: auto;
-} 
-
-.ui-layout-resizer { /* all 'resizer-bars' */ 
- background: #DDD; 
-} 
-
-.ui-layout-toggler { /* all 'toggler-buttons' */ 
- background: #AAA; 
-} 
-
-
-#items,#feeds ul{
-  list-style:none;
-  font-size:0.8em;
-  padding:0;
-  margin:0;
 }
 
-#items li,#feeds ul li{
-  cursor:pointer;
-  color:black;
-  padding:2px;
-  border-bottom:1px solid #ccc;
+.ui-layout-resizer {
+/* all 'resizer-bars' */
+  background: #DDD;
+}
+
+.ui-layout-toggler {
+/* all 'toggler-buttons' */
+  background: #AAA;
+}
+
+#items,#feeds ul {
+  list-style: none;
+  font-size: .8em;
+  padding: 0;
+  margin: 0;
+}
+
+#items li,#feeds ul li {
+  cursor: pointer;
+  color: #888;
+  font-weight: 100;
+  padding: 12px;
+  border-bottom: 1px solid #e6e6e6;
+  transition: all .2s ease-in-out;
+  border-top: 1px solid #fafafa;
 }
 #items li {
   margin:10px;
@@ -84,17 +97,26 @@ li.button input{
   border:1px solid #ccc;
 }
 
-#feeds li{
-  padding-right:10px;
-  overflow:auto;
+#feeds li {
+  padding-right: 10px;
+  overflow: auto;
+  transition: all .2s ease-in-out;
 }
 
-#items li:hover, #feeds ul li:hover {
-  background-color:#eee !important;
+#items li:hover,#feeds ul li:hover {
+  background-color: #f3f3f3 !important;
 }
-#items .selected,#feeds .selected{
-  background-color:#ddd !important; 
+
+#items .selected,#feeds .selected {
+  background-color: #f7f7f7 !important;
+  padding-left: 20px;
 }
+<<<<<<< HEAD
+
+#items .new {
+  color: #000;
+  font-weight: 300;
+=======
 #items li .title {
   font-size:14px;
 }
@@ -108,89 +130,104 @@ li.button input{
   font-weight:bold;
 }
 
-#feeds li img{
-  float:left;
-  width:16px;
-  padding:0 3px;
+#feeds li img {
+  float: left;
+  width: 16px;
+  padding: 0 3px;
 }
 
-#feeds .feedtitle{
-  float:left; 
-  max-width:75%;
-  padding-right:2px;
-  overflow:hidden;
-  display:inline;
-  white-space:nowrap;
+#feeds .feedtitle {
+  float: left;
+  max-width: 75%;
+  padding-right: 2px;
+  overflow: hidden;
+  display: inline;
+  white-space: nowrap;
 }
 
-#feedbar{
-  height:20px;
-  width:100%;
-  background-color:#ddd;
-  border-bottom:1px solid #ccc;
-  padding-top:5px;
+#feedbar {
+  height: 60px;
+  width: 100%;
+  border-bottom: 1px solid #ccc;
+  padding: 10px;
+  font-size: 54px;
+  font-weight: 200;
 }
-#feedbar #title{
-  float:left;
-  font-size:0.8em;
-  font-weight:bold;
-  padding:2px;
+
+#feedbar #title {
+  color: #222;
+  float: left;
+  padding: 2px;
+  letter-spacing: -3px;
 }
-#feedbar .update{
-  float:left;
-  overflow:hidden;
-  background-color:#aaa;
-  font-size:0.7em;
-  padding:1px;
-  margin-right:2px;
-  text-align:center;
-  color:white;
-  border:1px solid #999;
-  cursor:pointer;
-  display:none;
+
+#feedbar .update {
+  float: left;
+  overflow: hidden;
+  background-color: #aaa;
+  font-size: 12px;
+  padding: 1px;
+  margin-right: 2px;
+  text-align: center;
+  color: #FFF;
+  border: 1px solid #999;
+  cursor: pointer;
+  display: none;
+  transition: all .2s ease-in-out;
 }
+
 #feedbar .update:hover {
-  background-color:#bbb;
+  background-color: #bbb;
 }
 
-#feedbar .remove{
-  float:right;
-  overflow:hidden;
-  background-color:#ab1111;
-  font-size:0.7em;
-  padding:1px;
-  margin-right:5px;
-  text-align:center;
-  color:white;
-  border:1px solid #700B0B;
-  cursor:pointer;
-  display:none;
+#feedbar .remove {
+  float: right;
+  overflow: hidden;
+  background-color: #ab1111;
+  font-size: 12px;
+  padding: 1px;
+  margin-right: 5px;
+  text-align: center;
+  color: #FFF;
+  border: 1px solid #700B0B;
+  cursor: pointer;
+  display: none;
 }
+
 #feedbar .remove:hover {
-  background-color:#FF0000;
+  background-color: red;
 }
 
 #feeds {
-  height:20px;
-}
-#feeds .count {
-  float:left;
-  margin-left:2px;
-}
-#feeds .new{
-  background-color:#6C8A46;
-  
+  height: 20px;
 }
 
-#msg{
-  background:#6C8A46 url(../images/loading1.gif) no-repeat 100% 80%;
-  position:absolute;
-  float:left;
-  z-index:3;
-  top:-20px;
-  right:50%;
-  padding:15px 15px 5px 5px;
-  color:white;
-  font-weight:bold;
-  font-size:0.7em;
+#feeds .count {
+  float: left;
+  background: #c00;
+  border-radius: 40px;
+  color: #fff;
+  padding: 4px;
+  font-size: 12px;
+}
+
+#feeds .new {
+  background-color: #6C8A46;
+}
+
+#msg {
+  background: #6C8A46 url(../images/loading1.gif) no-repeat 100% 80%;
+  position: absolute;
+  float: left;
+  z-index: 3;
+  top: -20px;
+  right: 50%;
+  padding: 15px 15px 5px 5px;
+  color: #FFF;
+  font-weight: 700;
+  font-size: .7em;
+}
+
+#south.ui-layout-south {
+  font-size: 20px;
 }
