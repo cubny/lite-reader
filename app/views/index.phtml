@@ -11,24 +11,24 @@
 </head>
 
 <body>
-   <div id="toolbar" class="ui-layout-north">
+
+    <div class="ui-layout-west" id="feeds">
       <ul>
-        <li id="addfeed" class="button">
+   <div id="toolbar" class="ui-layout-north">
+        <div id="addfeed" class="button">
             <input type="text" id="urlToAdd" style="display:none">
             <a href="#">
               <span class="add">Feed</span>
             </a>
-        </li>
-      </ul>
+        </div>
     </div>
-    <div class="ui-layout-west" id="feeds">
-      <ul>
+
       <?php foreach($feeds as $feed): ?>
         <li id="<?php echo $feed->id?>">
             <?php $parsed = parse_url($feed->link); ?>
+          <div class="count"><span><?php echo $feed->unread; ?></span></div>            
           <img src="http://geticon.org/of/<?php echo $parsed['host']; ?>">
           <div class="feedtitle"><?php echo $feed->title?></div>
-          <div class="count"><span><?php echo $feed->unread; ?></span></div>
         </li>
       <?php endforeach; ?>
      </ul>
