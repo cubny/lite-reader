@@ -1,2 +1,3 @@
 app/db/agg.db
 public/cache/*
+.DS_Store
