@@ -29,10 +29,10 @@ function get_hostname(url) {
 var loadr = {
   elem:$("#msg"),
   show:function(){
-         loadr.elem.animate({top:"15px"},500);
+         loadr.elem.animate({top:"60px"},500);
    },
   hide:function(){
-         loadr.elem.animate({top:"-20px"},500);
+         loadr.elem.animate({top:"0px"},500);
    },
 }
 
