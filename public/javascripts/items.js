@@ -2,17 +2,26 @@ var items = {
     
     $elem:$("#items"),
     current:null,
+    current_id:null,
     init:function(){
       items.current=null;
-      items.$elem.find('li').click(function(){
-          var id=this.id;
-          var $this=$(this);
-          $this.find('.desc').toggle();
+      items.$elem.find('li .title').click(function(){
+
+          var $this=$(this).parent();
+          var id=$this.attr('id');
+
           items.read(id);
-          if(items.current)
-            items.current.removeClass('selected');
-          $this.addClass('selected');
+
+          $this.find('.desc').toggle();
+          $this.toggleClass('selected');
+          if(items.current && items.current_id && items.current_id != id){
+            items.current.find('.desc').hide();
+            items.current.removeClass('selected')
+
+          }
           items.current=$this;
+          items.current_id=id;
+
       });
 
     },

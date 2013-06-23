@@ -1,6 +1,6 @@
 body {
-  font-family: Raleway, sans-serif;
-  font-size: 22px;
+  font-family: Tahoma, sans-serif;
+  font-size: 14px;
 }
 
 a {
@@ -12,7 +12,7 @@ a {
 }
 
 #toolbar {
-  font-size: .7em;
+  /*font-size: .7em;*/
   padding: 10px;
   height: 30px;
   clear: both;
@@ -85,7 +85,7 @@ li.button input {
 
 #items, #feeds ul {
   list-style: none;
-  font-size: 15px;
+  font-size: 13px;
   padding: 0;
   margin: 0;
 }
@@ -95,7 +95,6 @@ li.button input {
 }
 
 #items li {
-  cursor: pointer;
   color: #888;
   font-weight: 100;
   padding: 12px;
@@ -103,11 +102,14 @@ li.button input {
   transition: all .2s ease-in-out;
   background: #f9f9f9;
 }
+#items li .title {
+  cursor: pointer;
+}
 
 #feeds ul li {
   cursor: pointer;
-  color: #888;
-  font-weight: 100;
+  /*color: #888;*/
+  /*font-weight: 100;*/
   border-bottom: 1px solid #ddd;
   transition: all .2s ease-in-out;
   padding: 10px;
@@ -259,11 +261,13 @@ li.button input {
 
 #feeds .count {
   float: left;
-  background: #c00;
+  position: absolute;
+  right: 2px;
+  background: #666;
   border-radius: 5px;
   color: #fff;
-  padding: 4px;
-  font-size: 12px;
+  padding: 3px;
+  font-size: 10px;
   margin: 0 5px;
 }
 
