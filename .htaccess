@@ -1,7 +1,7 @@
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  RewriteBase /~cubny/lite-reader/
+  RewriteBase /lite-reader/
   
   RewriteRule ^css/(.*\.css) public/combine.php?type=css&files=$1 [L]
   RewriteRule ^javascript/(.*\.js) public/combine.php?type=javascript&files=$1 [L]
