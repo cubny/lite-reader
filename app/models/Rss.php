@@ -71,7 +71,6 @@ class Rss extends Model
       $itemModel=new Item();
       $this->_addItem($item,$itemModel);
       unset($itemModel);
-    return $this;
     }
     return $this;
   }
