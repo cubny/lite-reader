@@ -308,3 +308,7 @@ li.button input {
   padding: 3px 5px;
   border-radius: 2px;
 }
+.rtl {
+  direction : rtl;
+  text-align: right;
+}

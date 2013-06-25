@@ -34,9 +34,7 @@ var items = {
 
          var $li = $(item_template.format(item.id,item.title,item.desc,item.link))
          if(r.test(item.title)){
-            $li.css({
-              "direction":"rtl"
-            })
+            $li.addClass("rtl");
          }
          $li.find('.desc').hide();
          if(item.is_new=="1"){
