@@ -297,4 +297,14 @@ li.button input {
   overflow: hidden;
   background: #eee;
 }
-
+#items li .title a {
+  font-size:10px;
+  font-weight:bold;
+  display:inline-block;
+  margin:0 5px;
+  background-color: #659165;
+  color: #FFF;
+  cursor: pointer;
+  padding: 3px 5px;
+  border-radius: 2px;
+}

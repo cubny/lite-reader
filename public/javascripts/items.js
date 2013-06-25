@@ -32,7 +32,7 @@ var items = {
        $.each(data, function(i,item){
          var item_template = $("#item-template").html();
 
-         var $li = $(item_template.format(item.id,item.title,item.desc))
+         var $li = $(item_template.format(item.id,item.title,item.desc,item.link))
          if(r.test(item.title)){
             $li.css({
               "direction":"rtl"
