@@ -18,6 +18,7 @@ INSTALL
 1. clone/download the whole project
 2. rename app/db/agg.db.sample to app/db/agg.db and make it writable for the webserver
 3. make public/cache writable for the webserver
+4. modify RewriteBase in .htaccess 
 
 that's it, enjoy a very lite and minimal feed aggregator: the lite-reader
 
