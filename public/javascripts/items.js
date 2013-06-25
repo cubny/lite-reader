@@ -28,9 +28,16 @@ var items = {
     render:function(data){
        items.$elem.html("");
        var unread=0;
+       r = new RegExp(/[\u0600-\u06FF]/);
        $.each(data, function(i,item){
          var item_template = $("#item-template").html();
+
          var $li = $(item_template.format(item.id,item.title,item.desc))
+         if(r.test(item.title)){
+            $li.css({
+              "direction":"rtl"
+            })
+         }
          $li.find('.desc').hide();
          if(item.is_new=="1"){
            $li.addClass("new");

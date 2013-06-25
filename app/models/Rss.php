@@ -12,6 +12,9 @@ class Rss extends Model
   public $lang;
   public $updated_at;
 
+  public function __construct(){
+    use_helper('I18n');
+  }
   public function fetchFeed($url){
     $feed = new SimplePie();
     $feed->set_feed_url($url);
@@ -40,6 +43,7 @@ class Rss extends Model
     $itemModel->rss_id=$this->id;
     $itemModel->is_new=1;
     $itemModel->desc = $item->get_content();
+    $itemModel->dir = $itemModel->desc;
     $itemModel->save();
 
     /*$descs = array('content:encoded','content','description','title');
@@ -67,6 +71,7 @@ class Rss extends Model
       $itemModel=new Item();
       $this->_addItem($item,$itemModel);
       unset($itemModel);
+    return $this;
     }
     return $this;
   }
