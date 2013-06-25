@@ -51,9 +51,13 @@ function showAddFeed(e){
       aButton.click(function(e){
         aButton.unbind('click');
         e.stopPropagation();
+        if(aInput.val()==""){
+          hideAddFeed();
+          return;
+        }
         var bValid = true;
         aInput.removeClass('ui-state-error');
-        bValid = bValid && checkLength(aInput,"password",10,255);
+        bValid = bValid && checkLength(aInput,"Url",10,255);
         bValid = bValid && checkRegexp(aInput,/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/i,"Please Enter a Valid Url.");
         if(bValid){
           addFeed(aInput.val());

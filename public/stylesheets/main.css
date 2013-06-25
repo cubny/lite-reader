@@ -44,7 +44,8 @@ a {
   border: 1px solid #ccc;
   padding: 6px;
   color: #666;
-  font-size: 14px;
+  font-size: 11px;
+  width:120px;
 }
 
 .add {
