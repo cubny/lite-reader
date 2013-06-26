@@ -190,6 +190,7 @@ background-color: #F5ECDE !important;
   margin: auto;
   display: block;
   padding: 4px;
+  max-width: 100%;
 }
 
 #feeds li img {
@@ -209,26 +210,33 @@ background-color: #F5ECDE !important;
   line-height: 20px;
 }
 
-#feedbar {
-  height: 50px;
-  width: 100%;
-  padding: 10px;
-  font-size: 37px;
+.ui-layout-north {
   overflow: hidden;
+  background: #fafafa;
+  border-bottom: 3px solid #eee;
+}
+
+#feedbar {
+  height: 65px;
+  width: 100%;
+  font-size: 30px;
+  overflow: hidden;
+  font-family: arial;
 }
 
 #feedbar #title {
   color: #000;
   float: left;
-  padding: 2px;
-  padding-left: 10px;
+  line-height: 60px;
+  letter-spacing: -2px;
+  padding: 5px 10px 0 30px;
 }
 
 #feedbar .update {
   float: left;
   overflow: hidden;
   font-size: 12px;
-  margin: 15px 10px;
+  margin: 25px 10px;
   text-align: center;
   color: #FFF;
   cursor: pointer;
@@ -248,7 +256,7 @@ background-color: #F5ECDE !important;
   overflow: hidden;
   background-color: #ab1111;
   font-size: 12px;
-  margin: 15px 30px;
+  margin: 25px 30px;
   text-align: center;
   color: #FFF;
   cursor: pointer;
@@ -297,12 +305,6 @@ background-color: #F5ECDE !important;
 
 #south.ui-layout-south {
   font-size: 20px;
-}
-
-.ui-layout-north {
-  overflow: hidden;
-  background: #fff;
-  border-bottom: 2px solid #555;
 }
 
 #items li .title a {
