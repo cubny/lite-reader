@@ -7,6 +7,14 @@ a {
   text-decoration: none;
 }
 
+::selection {
+  background: rgba(0,0,0,0.05);
+}
+
+::-moz-selection {
+  background: rgba(0,0,0,0.05);
+}
+
 #content .ui-layout-north {
   z-index: 4 !important;
 }
@@ -28,7 +36,6 @@ a {
 #toolbar .button {
   display: block;
   color: #555;
-  font-weight: 700;
   height: 30px;
   line-height: 29px;
   text-decoration: none;
@@ -74,9 +81,7 @@ li.button input {
 .ui-layout-resizer {
 /* all 'resizer-bars' */
   background: #eee;
-  border-left: 1px solid #bbb;
   width: 4px !important;
-  border-right: 1px solid #ddd;  
 }
 
 .ui-layout-toggler {
@@ -89,45 +94,45 @@ li.button input {
   font-size: 13px;
   padding: 0;
   margin: 0;
+  transition: all .2s ease-in-out; 
 }
 
-#items li {
-  border-top: 4px solid #f9f9f9;
-}
-
-#items li {
+#items > li {
   color: #888;
-  font-weight: 100;
-  padding: 12px;
-  border-bottom: 1px solid #ddd;
+  border: 1px solid #e5e5e5;
   transition: all .2s ease-in-out;
-  background: #f9f9f9;
-}
-#items li .title {
-  cursor: pointer;
+  background: #f4f4f4;
+  margin: 10px;
+  border-radius: 5px;
 }
 
 #feeds ul li {
   cursor: pointer;
   /*color: #888;*/
-  /*font-weight: 100;*/
   border-bottom: 1px solid #ddd;
   transition: all .2s ease-in-out;
   padding: 10px;
   overflow: auto;
-  transition: all .2s ease-in-out;  
+  transition: all .2s ease-in-out; 
 }
 
-#items li:hover {
-  background-color: #f3f3f3 !important;
-  border-top: 4px solid #f3f3f3;
+#items li .title:hover {
+  background-color: #eee !important;
+}
+
+#items li.new .title:hover {
+  background-color: #F5ECDE !important;
+  color: #6F5B3D;
+}
+
+#items li.selected .title:hover {
+background-color: #F5ECDE !important;
 }
 
 #items .selected {
-  background-color: #f9f9f9 !important;
-  padding-left: 20px;
-  border-top: 4px solid #eee;
-  border-bottom: 1px solid #ccc;
+  background-color: #FFFCF7 !important;
+  border-bottom: 2px solid rgba(0,0,0,0.1);
+  border: 1px solid #DBD4C8;
 }
 
 #feeds li.selected {
@@ -140,42 +145,51 @@ li.button input {
 }
 
 #items .new {
-  border-top: 4px solid #fff;
   color: #000;
-  font-weight: 300;
+  font-weight: bold;
   background: #fff;
 }
 
 #items li .title {
-  font-size: 18px;
+  padding: 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all .1s ease-in-out; 
 }
 
 #items li .desc {
   margin-top: 5px;
   padding: 5px 0;
-  border-top: 1px solid #ccc;
+  text-align: justify;
 }
 
 #items li.selected .title {
   color: #000;
-  font-size: 22px;
-  border-bottom: 1px dotted #aaa;
-  padding-bottom: 10px;
-  font-weight: 500;
+  font-size: 14px;
+  border-bottom: 2px solid rgba(0,0,0,0.1);
+  padding: 20px 20px;
+  background: #F5ECDE;
+  border-radius: 5px 5px 0 0;
 }
 
 #items li.selected .desc {
-  color: #666;
+  color: rgba(0,0,0,0.65);
   margin-top: 0px;
   padding: 20px 30px;
-  border-top: 1px dotted #fff;
-  line-height: 28px;
-  font-size: 18px;
+  line-height: 24px;
+  font-size: 14px;
   text-shadow: 0 1px #fff;
+  width: 70%;
+  margin: auto;
 }
 
-#items .new > .title {
-  font-weight: 400;
+#items li.selected .desc img {
+  clear: both;
+  text-align: center;
+  border: 1px solid #ccc;
+  margin: auto;
+  display: block;
+  padding: 4px;
 }
 
 #feeds li img {
@@ -198,23 +212,15 @@ li.button input {
 #feedbar {
   height: 50px;
   width: 100%;
-  border-bottom: 1px solid #ccc;
   padding: 10px;
   font-size: 37px;
-  font-weight: 200;
   overflow: hidden;
-  background-image: -moz-linear-gradient(bottom, #eee 30%, #fff 90%);
-  background-image: -webkit-linear-gradient(bottom, #eee 30%, #fff 90%);
-  background-image: -ms-linear-gradient(bottom, #eee 30%, #fff 90%);
 }
 
 #feedbar #title {
-  color: #666;
+  color: #000;
   float: left;
   padding: 2px;
-  letter-spacing: -2px;
-  text-shadow: 0px 1px #fff;
-  font-weight: 400;
   padding-left: 10px;
 }
 
@@ -283,7 +289,6 @@ li.button input {
   top: -20px;
   right: 50%;
   color: #FFF;
-  font-weight: 200;
   font-size: 16px;
   border-radius: 10px;
   padding: 20px 20px 10px 15px;
@@ -296,8 +301,10 @@ li.button input {
 
 .ui-layout-north {
   overflow: hidden;
-  background: #eee;
+  background: #fff;
+  border-bottom: 2px solid #555;
 }
+
 #items li .title a {
   font-size:10px;
   font-weight:bold;
@@ -309,6 +316,7 @@ li.button input {
   padding: 3px 5px;
   border-radius: 2px;
 }
+
 .rtl {
   direction : rtl;
   text-align: right;
