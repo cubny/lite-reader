@@ -2,3 +2,4 @@
 app/db/agg.db
 public/cache/*
 .htaccess
+.htaccess.sample
