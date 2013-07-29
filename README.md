@@ -27,4 +27,5 @@ Want to Contribute?
 -------------------
 - report bugs (https://github.com/cubny/lite-reader/issues/new)
 - share your ideas (https://github.com/cubny/lite-reader/issues/new)
+- view our roadmap (https://trello.com/b/ekJbxyCL/lite-reader)
 - fork and make changes
