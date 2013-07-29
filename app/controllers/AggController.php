@@ -33,6 +33,18 @@ class AggController extends Controller
     echo $this->_jsonify($items);
   }
 
+  public function mark_read_all($rss_id){
+    $item=new Item();
+    $result=$item->make_read_all($rss_id);
+    echo $result;
+  }
+
+  public function mark_unread_all($rss_id){
+    $item=new Item();
+    $result=$item->make_unread_all($rss_id);
+    echo $result;
+  }
+
   public function make_read($id){
     $item=new Item();
     $result=$item->make_read($id);

@@ -5,11 +5,16 @@ $(document).ready(function () {
     $('.update').click(function(){
       feeds.update(this.id);
       });
+    $('#mark-read-all').click(function(){
+      feeds.markread(this.id);
+      });
+    $('#mark-unread-all').click(function(){
+      feeds.markunread(this.id);
+      });
     $('.remove').click(function(){
       feeds.del(this.id);
       });
     feeds.init();
-    
 });
 
 function addFeed(url){
@@ -37,7 +42,7 @@ function addFeed(url){
         aInput.val("");
         hideAddFeed();
       }   
-  })
+  });
 }
 
 function showAddFeed(e){
@@ -51,7 +56,7 @@ function showAddFeed(e){
       aButton.click(function(e){
         aButton.unbind('click');
         e.stopPropagation();
-        if(aInput.val()==""){
+        if(aInput.val() === ""){
           hideAddFeed();
           return;
         }

@@ -9,7 +9,13 @@ class Item extends Model
   public $is_new;
 
   public function getAllByRssId($id){
-    return $this->query("SELECT * from ".self::TABLE_NAME." where rss_id=$id ORDER BY ID DESC")->fetchAll(self::FETCH_OBJ);
+    return $this->query("SELECT * from ".self::TABLE_NAME." where rss_id=$id ORDER BY ID")->fetchAll(self::FETCH_OBJ);
+  }
+  public function make_unread_all($rss_id){
+    return self::update(self::TABLE_NAME,array("is_new"=>"1"),"rss_id=?",array($rss_id));
+  }
+  public function make_read_all($rss_id){
+    return self::update(self::TABLE_NAME,array("is_new"=>"0"),"rss_id=?",array($rss_id));
   }
   public function make_read($id){
     $this->id=$id;

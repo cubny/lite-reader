@@ -26,7 +26,7 @@
       <?php foreach($feeds as $feed): ?>
         <li id="<?php echo $feed->id?>">
             <?php $parsed = parse_url($feed->link); ?>
-          <div class="count"><span><?php echo $feed->unread; ?></span></div>            
+          <div class="count"><?php echo $feed->unread>0?"<span>".$feed->unread."</span>":""; ?></div>            
           <img src="http://geticon.org/of/<?php echo $parsed['host']; ?>">
           <div class="feedtitle"><?php echo $feed->title?></div>
         </li>
@@ -38,8 +38,10 @@
           <div id="feedbar">
               <div id="title"></div>
               <div id="actions">
-                  <div class="update">update</div>
-                  <div class="remove">remove</div>
+                  <div class="action update">update</div>
+                  <div id="mark-read-all" class="action markread">Read All</div>
+                  <div id="mark-unread-all" class="action markread">Unread All</div>
+                  <div class="action remove">remove</div>
               </div>
           </div>
       </div>
@@ -52,7 +54,7 @@
 
 <script type="text/template" id="item-template">
 <li id={0}>
-<div class="title">{1}<a href="{3}" target="blank">link</a></div>
+<div class="title"><span>{1}</span><a href="{3}" target="blank" class="item-link">link</a></div>
     <div class="desc">{2}</div>
 </li>
 </script>

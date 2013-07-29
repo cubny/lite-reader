@@ -232,7 +232,9 @@ background-color: #F5ECDE !important;
   padding: 5px 10px 0 30px;
 }
 
-#feedbar .update {
+#feedbar .markread,
+#feedbar .update
+{
   float: left;
   overflow: hidden;
   font-size: 12px;
@@ -246,7 +248,10 @@ background-color: #F5ECDE !important;
   background-color: rgba(0,0,0,0.3);
   transition: all .2s ease-in-out;
 }
-
+#feedbar .markread{
+  margin-left:0px;
+}
+#feedbar .markread:hover,
 #feedbar .update:hover {
   background-color: #000;
 }
@@ -274,7 +279,7 @@ background-color: #F5ECDE !important;
   height: 20px;
 }
 
-#feeds .count {
+#feeds .count span{
   float: left;
   position: absolute;
   right: 2px;
@@ -307,7 +312,7 @@ background-color: #F5ECDE !important;
   font-size: 20px;
 }
 
-#items li .title a {
+#items li .title a.item-link {
   font-size:10px;
   font-weight:bold;
   display:inline-block;
@@ -317,6 +322,7 @@ background-color: #F5ECDE !important;
   cursor: pointer;
   padding: 3px 5px;
   border-radius: 2px;
+  display:none;
 }
 
 .rtl {

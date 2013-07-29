@@ -4,15 +4,13 @@ var stage={
         north:{
           resizable:false,
           closable:false,
-          size:"auto",
+          size:"100%",
           spacing_open:0
         },
-        center:{
-          size:250,
-          spacing_closed:0,
-        },
         west:{
+          //resizable:false,
           size:250,
+          closable:false,
         }
 
       });
@@ -20,12 +18,9 @@ var stage={
         north:{
           resizable:false,
           closable:false,
-          size:"auto",
+          size:"100%",
           spacing_open:0
         },
-        south:{
-          size:250,
-        }
         });
   }
 }
