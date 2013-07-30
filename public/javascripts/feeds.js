@@ -2,13 +2,16 @@ var feeds={
     container:$("#feeds ul"),
     current:null,
     init:function(){
-      feeds.container.find("li").live('click',function(){
+      feeds.container.find("li.feed").live('click',function(){
         $('.ui-layout-center').scrollTop(0);
         var $this=$(this);
         var id=this.id;
+        $(this).removeClass('new');
         $.cookie("feed",id);
         feeds.load(id);
-        if(feeds.currentFeed)feeds.currentFeed.removeClass('selected');
+        if(feeds.currentFeed) { 
+            feeds.currentFeed.removeClass('selected');
+        }
         $this.addClass('selected');
         $("#title").html($this.find(".feedtitle").html());
         $("#actions .action").attr('id',id).show();
@@ -34,12 +37,13 @@ var feeds={
             unread:20,
        };
        var opts = $.extend(defaults, options);
-       var $item=$("<li/>").addClass("new").attr("id",opts.id)
+       var $item=$("<li/>").addClass("new").addClass("feed").attr("id",opts.id)
          .html($("<img/>").attr("src","http://geticon.org/of/"+get_hostname(opts.url)))
          .append($("<div/>").addClass("feedtitle").html(opts.title))
-         .append($("<div/>").addClass("count").html("(<span>"+opts.unread+"</span>)"));
+         .append($("<div/>").addClass("count").html("<span>"+opts.unread+"</span>"));
        feeds.container.append($item);
-       $item.animate({backgroundColor:"white"},2000);
+       feeds.blink(opts);
+       // $item.animate({backgroundColor:"white"},2000);
     },
     del:function(id){
         $.get('agg/del/'+id,function(){
@@ -73,6 +77,28 @@ var feeds={
             loadr.hide();
       });
     },
+    update_all:function(){
+        loadr.show();
+        $.getJSON('agg/update_all',function(data){
+            $.each(data,function(id,feed_items){
+                var unreads = 0;
+                $.each(feed_items,function(item_id,item){
+                    if(item.is_new == 1){
+                        unreads++;
+                    }
+                });
+                if(unreads>0){
+                    feeds.container.find("li[id='"+id+"' .count").html("<span>"+unreads+"</span>")
+                }else{
+                    feeds.container.find("li[id='"+id+"' .count").html("")
+                }
+                if(id == feeds.currentFeed.attr('id')){
+                    items.render(feed_items);
+                }
+            });
+            loadr.hide();
+        });    
+    },
     getCurrentCount:function(){
           return feeds.container.find("li.selected span");
     },
@@ -83,8 +109,8 @@ var feeds={
         feeds.container.find("li.selected .count").html("");
       }
     },
-    blink:function(id){
-        feeds.container.find("li[id='"+id+"']").effect("pulsate",{times:3},200);
-        feeds.container.find("li[id='"+id+"']").click();
+    blink:function(feed){
+        feeds.container.find("li[id='"+feed.id+"']").effect("pulsate",{times:3},200);
+        feeds.container.find("li[id='"+feed.id+"']").click();
     },
 };

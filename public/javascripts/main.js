@@ -15,6 +15,10 @@ $(document).ready(function () {
       feeds.del(this.id);
       });
     feeds.init();
+
+    $('#update-all').click(function(){
+      feeds.update_all();
+    });
 });
 
 function addFeed(url){

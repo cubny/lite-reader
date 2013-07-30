@@ -81,6 +81,19 @@ class AggController extends Controller
     $result = $rss->delete();
     die(var_dump($result));
   }
+  public function update_all(){
+    $rss = new Rss();
+    $data = array();
+    $feeds=$rss->getAllFeeds();
+    foreach($feeds as $feed){
+      $rss->id = $feed->id;
+      $rss->updateItems();
+      $item=new Item();
+      $items=$item->getAllByRssId($feed->id);
+      $data[$feed->id] = $items;
+    }
+    echo $this->_jsonify($data);
+  }
   public function update($id){
     $rss=new Rss();
     $rss->id=$id;
