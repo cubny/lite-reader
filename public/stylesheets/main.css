@@ -201,7 +201,7 @@ background-color: #F5ECDE !important;
   text-align: center;
   border: 1px solid #ccc;
   margin: auto;
-  display: block;
+  /*display: block;*/
   padding: 4px;
   max-width: 100%;
 }

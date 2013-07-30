@@ -1,6 +1,7 @@
 <?php
 //include SYSPATH."/libraries/rayfeedreader.php";
 require SYSPATH."/libraries/SimplePie.compiled.php";
+//require SYSPATH."/libraries/Readability.inc.php";
 class Rss extends Model
 {
   const TABLE_NAME='rss';
@@ -42,6 +43,9 @@ class Rss extends Model
     $itemModel->link=$item->get_link();
     $itemModel->rss_id=$this->id;
     $itemModel->is_new=1;
+    //$readability = new Readability($item->get_content());
+    //$content = $readability->getContent();
+    //$itemModel->desc = $content['content'];
     $itemModel->desc = $item->get_content();
     $itemModel->dir = $itemModel->desc;
     $itemModel->save();
