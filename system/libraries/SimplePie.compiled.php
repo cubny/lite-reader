@@ -509,7 +509,7 @@ class SimplePie
 	 * @see SimplePie::set_cache_location()
 	 * @access private
 	 */
-	public $cache_location = './cache';
+	public $cache_location = CACHEPATH;
 
 	/**
 	 * @var string Function that creates the cache filename
@@ -796,7 +796,7 @@ class SimplePie
 	 * Enable/disable caching in SimplePie.
 	 *
 	 * This option allows you to disable caching all-together in SimplePie.
-	 * However, disabling the cache can lead to longer load times.
+	 * However, disabling the cCACHEPATHache can lead to longer load times.
 	 *
 	 * @since 1.0 Preview Release
 	 * @param bool $enable Enable caching
@@ -833,7 +833,7 @@ class SimplePie
 	 *
 	 * @param string $location The file system location.
 	 */
-	public function set_cache_location($location = './cache')
+	public function set_cache_location($location = CACHEPATH)
 	{
 		$this->cache_location = (string) $location;
 	}
@@ -4326,7 +4326,7 @@ class SimplePie_Sanitize
 		$this->registry = $registry;
 	}
 
-	public function pass_cache_data($enable_cache = true, $cache_location = './cache', $cache_name_function = 'md5', $cache_class = 'SimplePie_Cache')
+	public function pass_cache_data($enable_cache = true, $cache_location = CACHEPATH, $cache_name_function = 'md5', $cache_class = 'SimplePie_Cache')
 	{
 		if (isset($enable_cache))
 		{
