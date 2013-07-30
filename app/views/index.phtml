@@ -30,7 +30,7 @@
         <li class="feed" id="<?php echo $feed->id?>">
             <?php $parsed = parse_url($feed->link); ?>
           <div class="count"><?php echo $feed->unread>0?"<span>".$feed->unread."</span>":""; ?></div>            
-          <img src="http://geticon.org/of/<?php echo $parsed['host']; ?>">
+          <img src="http://g.etfv.co/<?php echo $feed->url; ?>">
           <div class="feedtitle"><?php echo $feed->title?></div>
         </li>
       <?php endforeach; ?>
