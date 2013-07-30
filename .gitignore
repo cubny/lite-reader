@@ -1,5 +1,5 @@
 .DS_Store
 app/db/agg.db
-public/cache/*
+public/cache/*.gzip
 .htaccess
 .htaccess.sample
