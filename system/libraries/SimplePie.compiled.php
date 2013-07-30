@@ -4291,7 +4291,7 @@ class SimplePie_Sanitize
 	var $strip_comments = false;
 	var $output_encoding = 'UTF-8';
 	var $enable_cache = true;
-	var $cache_location = './cache';
+	var $cache_location = CACHEPATH;
 	var $cache_name_function = 'md5';
 	var $timeout = 10;
 	var $useragent = '';
