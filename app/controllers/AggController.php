@@ -23,14 +23,41 @@ class AggController extends Controller
     //var_dump($rss->loadRss());
     $this->display("index",array('feeds'=>$data));
   }
+
   public function getFav($id){
     $rss=new Rss();
     $link=$rss->load($id)->link;
   }
+
   public function getItems($id){
     $item=new Item();
     $items=$item->getAllByRssId($id);
+    $result = array();
+    foreach($items as &$item){
+      $doc = new DOMDocument();
+      $doc->loadHTML($item->desc);
+      $images = $doc->getElementsByTagName('img');
+      foreach ($images as $tag) {
+       $cache_name = 'agg/images/'.base64_encode($tag->getAttribute('src'));
+       $tag->setAttribute('src',"public/images/grey.gif");
+       $tag->setAttribute('data-original',$cache_name);
+       $tag->setAttribute('class','lazy not-loaded');
+      }
+      $item->desc = $doc->saveHTML();
+    }
     echo $this->_jsonify($items);
+  }
+
+  public function images($url_encode){
+    $image_path = CACHEPATH."/images/";
+    if(!is_file($image_path.$url_encode)){
+      $image = file_get_contents(base64_decode($url_encode));
+      file_put_contents($image_path.$url_encode,$image);
+    }
+    $filename = basename(base64_decode($url_encode));
+    $size = getimagesize($image_path.$url_encode);
+    header('Content-type: ' . $size['mime']);
+    echo  file_get_contents($image_path.$url_encode);
   }
 
   public function mark_read_all($rss_id){
@@ -100,16 +127,5 @@ class AggController extends Controller
     $rss->updateItems();
     return $this->getItems($id);
   }
-  public function fetch(){
-    $url='http://feeds.simonwillison.net/swn-everything';
-    $rss=new Rss();
-    $data=$rss->fetch($url);
-    var_dump($data);
-  }
-  public function test(){
-    var_dump($_SERVER['HTTP_ACCEPT_ENCODING']);
-    exit();
-  }
-
 }
   

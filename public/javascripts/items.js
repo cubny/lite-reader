@@ -23,6 +23,11 @@ var items = {
           }
           items.current=$this;
           items.current_id=id;
+          $('.ui-layout-center').scrollTop($this.position().top);
+          $this.find("img.lazy.not-loaded").each(function(i,img){
+            $(img).attr('src',$(img).attr('data-original'));
+            $(img).removeClass('not-loaded');
+          });
 
       });
     },

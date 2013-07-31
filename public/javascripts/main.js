@@ -19,6 +19,12 @@ $(document).ready(function () {
     $('#update-all').click(function(){
       feeds.update_all();
     });
+    /*$("img").lazyload({
+      //event:"mouseover",
+      failure_limit:1000,
+      skip_invisible:false,
+      container:$(".ui-layout-center")
+    });*/
 });
 
 function addFeed(url){
