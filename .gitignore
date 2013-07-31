@@ -2,6 +2,5 @@
 app/db/agg.db
 public/cache/*.gzip
 public/cache/*.spc
-public/cache/images/*
 .htaccess
 .htaccess.sample
