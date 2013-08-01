@@ -23,12 +23,11 @@ var items = {
           }
           items.current=$this;
           items.current_id=id;
-          $('.ui-layout-center').scrollTop($this.position().top);
+          $('.ui-layout-center').scrollTo($this,100);
           $this.find("img.lazy.not-loaded").each(function(i,img){
             $(img).attr('src',$(img).attr('data-original'));
             $(img).removeClass('not-loaded');
           });
-
       });
     },
     render:function(data){

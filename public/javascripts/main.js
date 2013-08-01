@@ -19,12 +19,19 @@ $(document).ready(function () {
     $('#update-all').click(function(){
       feeds.update_all();
     });
-    /*$("img").lazyload({
-      //event:"mouseover",
-      failure_limit:1000,
-      skip_invisible:false,
-      container:$(".ui-layout-center")
-    });*/
+    $(document).bind('keydown',function(e){
+      var code = (e.keyCode ? e.keyCode : e.which);
+      if(code == 32) {
+        if(items.current !== null){
+          var h = items.current.height();
+          var top = items.current.offset().top;
+          console.log(h+top);
+          if(top+h<$('.ui-layout-center').height()){
+            items.current.next().find('.title').click();
+          }
+        }
+      }
+    });
 });
 
 function addFeed(url){
