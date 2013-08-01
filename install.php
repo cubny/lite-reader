@@ -42,7 +42,6 @@ $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, 0);
 $query = file_get_contents(APPPATH.'db/install.sql');
 $conn->exec($query);
 
-
 header('Location: '.$config['base_url']);
 exit;
 ?>

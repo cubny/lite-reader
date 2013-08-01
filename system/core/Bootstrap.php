@@ -70,6 +70,32 @@ try{
   $__CONN__=new DoLite("sqlite:".VARPATH."agg.db");
 }
 
+/**
+ * auto update database based on files in app/db/
+ * naming conversions is app/db/update.[version].sql
+ * version should be sequential
+ *
+ * fetch last version from db and execute the next version sql file in a loop
+ *
+ */
+$result = $__CONN__->query("select value from config where key='version'");
+if($result === false){
+  $version = 0;
+}else{
+  $result = $result->fetch();
+  $version = ((int) $result['value']);
+}
+$__CONN__->setAttribute(PDO::ATTR_EMULATE_PREPARES, 0);
+while(file_exists(APPPATH.'db/update.'.($version+1).'.sql')){
+  $version++;
+  $query = file_get_contents(APPPATH.'db/update.'.$version.'.sql');
+  $__CONN__->exec($query);
+}
+$__CONN__->setAttribute(PDO::ATTR_EMULATE_PREPARES, 1);
+$__CONN__->exec("UPDATE config set value=".$version." where key='version'");
+
+/* end of update */
+
 Model::connection($__CONN__);
 Model::getConnection()->exec("SET NAMES 'utf8'");
 // Dispatch Simplengine
