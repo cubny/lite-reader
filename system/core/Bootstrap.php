@@ -18,6 +18,16 @@ foreach($files as $file){
         include SYSPATH.$config_dir.$file;
     }
 }
+
+/**
+ * install db if not exists
+ */
+$db_file = VARPATH."/agg.db";
+if(!is_file($db_file)){
+  header('Location: '.$config['base_url'].'/install.php');
+  exit;
+}
+
 // Set default controller and action
 define('DEFAULT_CONTROLLER', $route['_default']);
 define('DEFAULT_ACTION', 'index');
@@ -52,17 +62,12 @@ if(isset($route)):
     SE::addRoute($key, $value);
     endforeach;
 endif;
-$db_file = APPPATH."/db/agg.db";
-if(!is_file($db_file)){
-  echo "<b>Database Not Found!</b><br/>";
-  die("rename app/db/agg.db.sample to app/db/agg.db and change its permissions, so it can be writable for the webserver");
-}
 try{
   //$__CONN__=new PDO("mysql:host=localhost;dbname=aggregator","root","ugdvqh");
-  $__CONN__=new PDO("sqlite:".APPPATH."/db/agg.db");
+  $__CONN__=new PDO("sqlite:".VARPATH."agg.db");
 }catch(PDOException $e){
   require SYSPATH.'/libraries/DoLite'.EXT;
-  $__CONN__=new DoLite("sqlite:".APPPATH."/db/agg.db");
+  $__CONN__=new DoLite("sqlite:".VARPATH."agg.db");
 }
 
 Model::connection($__CONN__);

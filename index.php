@@ -16,6 +16,7 @@ define('EXT', '.php');
 define('APPPATH',  dirname(__FILE__).'/'.$application.'/');
 define('SYSPATH', dirname(__FILE__).'/'.$system.'/');
 define('CACHEPATH', dirname(__FILE__).'/public/cache');
+define('VARPATH', dirname(__FILE__).'/var/');
 
 //define('DEFAULT_CONTROLLER', 'welcome');
 //define('DEFAULT_ACTION', 'index');

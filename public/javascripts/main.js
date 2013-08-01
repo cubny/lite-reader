@@ -16,6 +16,9 @@ $(document).ready(function () {
       });
     feeds.init();
 
+    if(feeds.container.find('>li').length < 2){
+      $('#feeds-actions').hide();
+    }
     $('#update-all').click(function(){
       feeds.update_all();
     });
@@ -76,6 +79,9 @@ function showAddFeed(e){
         if(aInput.val() === ""){
           hideAddFeed();
           return;
+        }
+        if(aInput.val().indexOf('http')<0){
+          aInput.val("http://"+aInput.val());
         }
         var bValid = true;
         aInput.removeClass('ui-state-error');

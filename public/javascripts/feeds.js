@@ -43,6 +43,7 @@ var feeds={
          .append($("<div/>").addClass("count").html("<span>"+opts.unread+"</span>"));
        feeds.container.append($item);
        feeds.blink(opts);
+       $("#feeds-actions").show();
        // $item.animate({backgroundColor:"white"},2000);
     },
     del:function(id){
@@ -88,16 +89,16 @@ var feeds={
                     }
                 });
                 if(unreads>0){
-                    feeds.container.find("li[id='"+id+"' .count").html("<span>"+unreads+"</span>")
+                    feeds.container.find("li[id='"+id+"' .count").html("<span>"+unreads+"</span>");
                 }else{
-                    feeds.container.find("li[id='"+id+"' .count").html("")
+                    feeds.container.find("li[id='"+id+"' .count").html("");
                 }
                 if(id == feeds.currentFeed.attr('id')){
                     items.render(feed_items);
                 }
             });
             loadr.hide();
-        });    
+        });
     },
     getCurrentCount:function(){
           return feeds.container.find("li.selected span");

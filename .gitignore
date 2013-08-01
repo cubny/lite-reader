@@ -5,3 +5,4 @@ public/cache/*.spc
 public/cache/images/*
 .htaccess
 .htaccess.sample
+var/*.*

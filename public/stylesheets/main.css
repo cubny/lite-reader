@@ -115,12 +115,12 @@ li.button input {
   overflow: auto;
   transition: all .2s ease-in-out; 
 }
-#feeds ul li.feeds-actions{
+#feeds ul li#feeds-actions{
   cursor: default;
   padding:5px;
   font-size: 10px;
 }
-#feeds ul li.feeds-actions div{
+#feeds ul li#feeds-actions div{
   cursor: pointer;
   float:right;
   color:white;
