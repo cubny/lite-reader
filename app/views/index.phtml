@@ -5,6 +5,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<title>LiteReader</title>
   <link href="css/main.css,jquery-ui.css" media="screen" rel="stylesheet" type="text/css" />
+  <link href="css/font-awesome/css/font-awesome.min.css" media="screen" rel="stylesheet" type="text/css" />
+
   <link href='http://fonts.googleapis.com/css?family=Raleway:200' rel='stylesheet' type='text/css'>
 	<script type="text/javascript">
 	</script>
@@ -16,14 +18,14 @@
    <div id="toolbar" class="ui-layout-north">
         <div id="addfeed" class="button">
             <input type="text" id="urlToAdd" style="display:none">
-            <a href="#">
-              <span class="add">Feed</span>
+            <a class="add btn" href="#">
+              <i class="icon-plus"></i> Feed
             </a>
         </div>
     </div>
       <ul>
         <li id="feeds-actions">
-            <div id="update-all">update all</div>
+            <div id="update-all"><i class="icon-repeat"></i> update all</div>
         </li>
 
       <?php foreach($feeds as $feed): ?>
@@ -41,10 +43,10 @@
           <div id="feedbar">
               <div id="title"></div>
               <div id="actions">
-                  <div class="action update">update</div>
-                  <div id="mark-read-all" class="action markread">Read All</div>
-                  <div id="mark-unread-all" class="action markread">Unread All</div>
-                  <div class="action remove">remove</div>
+                  <div class="action update"><i class="icon-repeat"></i> Update</div>
+                  <div id="mark-read-all" class="action markread"><i class="icon-circle-blank"></i> Read All</div>
+                  <div id="mark-unread-all" class="action markread"><i class="icon-circle"></i> Unread All</div>
+                  <div class="action remove"><i class="icon-trash"></i> Remove</div>
               </div>
           </div>
       </div>
@@ -57,7 +59,7 @@
 
 <script type="text/template" id="item-template">
 <li id={0}>
-<div class="title"><span>{1}</span><a href="{3}" target="blank" class="item-link">link</a></div>
+<div class="title"><span>{1}</span><a href="{3}" target="blank" class="item-link"><i class="icon-external-link"></i> link</a></div>
     <div class="desc">{2}</div>
 </li>
 </script>

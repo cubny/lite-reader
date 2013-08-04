@@ -56,10 +56,12 @@ a {
 }
 
 .add {
-  background-image: url(../images/add.png);
-  background-position: 10px 8px;
-  background-repeat: no-repeat;
-  text-indent: 30px;
+  /*background-image: url(../images/add.png);*/
+  /*background-position: 10px 8px;*/
+  /*background-repeat: no-repeat;*/
+  /*text-indent: 30px;*/
+  font-weight:bold;
+  color: #456445;
   display: block;
   float: left;
   padding-right: 5px;
