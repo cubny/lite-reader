@@ -37,7 +37,14 @@ var items = {
        $.each(data, function(i,item){
          var item_template = $("#item-template").html();
 
-         var $li = $(item_template.format(item.id,item.title,item.desc,item.link,parseInt(item.starred,10)>0?"icon-star":"icon-star-empty"));
+         var $li = $(item_template.format(
+             item.id,
+             item.title,
+             item.desc,
+             item.link,
+             parseInt(item.is_new,10)>0?"icon-circle":"icon-circle-blank",
+             parseInt(item.starred,10)>0?"icon-star":"icon-star-empty"
+           ));
          if(r.test(item.title)){
             $li.addClass("rtl");
          }
@@ -46,11 +53,24 @@ var items = {
            $li.addClass("new");
            unread++;
          }
+
          $li.find('.item-star').click(function(e){
              var id =$(this).parents('li').attr('id');
              items.starred(id);
             e.stopPropagation();
          });
+
+         $li.find('.item-read').click(function(e){
+           var $li = $(this).parents('li');
+           var id = $li.attr('id');
+           if($li.hasClass("new")){
+             items.read(id);
+           }else{
+             items.unread(id);
+           }
+           e.stopPropagation();
+         });
+
          $li.data('starred',item.starred);
          items.$elem.append($li);
        });
@@ -83,14 +103,26 @@ var items = {
           }
       });
     },
+    unread:function(id){
+      var $item=items.$elem.find("li[id='"+id+"']");
+      if(!$item.hasClass("new")){
+        $.getJSON('agg/make_unread/'+id,function(data){
+          if(data){
+            feeds.incCount(".selected");
+            $item.addClass("new");
+            $item.find(".item-read i").removeClass("icon-circle-blank").addClass("icon-circle");
+          }
+        });
+      }
+    },
     read:function(id){
       var $item=items.$elem.find("li[id='"+id+"']");
       if($item.hasClass("new")){
         $.getJSON('agg/make_read/'+id,function(data){
           if(data){
-            var count=feeds.getCurrentCount();
-            count.text(parseInt(count.text(),10)-1);
+            feeds.decCount(".selected");
             $item.removeClass("new");
+            $item.find(".item-read i").removeClass("icon-circle").addClass("icon-circle-blank");
           }
         });
       }

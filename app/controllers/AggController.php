@@ -81,6 +81,11 @@ class AggController extends Controller
     echo $result;
   }
 
+  public function make_unread($id){
+    $item=new Item();
+    $result=$item->make_unread($id);
+    echo $result;
+  }
   public function getDesc($id){
     $item=new Item();
     $desc=$item->getDesc($id);

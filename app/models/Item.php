@@ -24,6 +24,10 @@ class Item extends Model
     $this->id=$id;
     return self::update(self::TABLE_NAME,array("is_new"=>"0"),"id=?",array($id));
   }
+  public function make_unread($id){
+    $this->id=$id;
+    return self::update(self::TABLE_NAME,array("is_new"=>"1"),"id=?",array($id));
+  }
   public function make_starred($id){
     $this->id=$id;
     return self::update(self::TABLE_NAME,array("starred"=>1),"id=?",array($id));

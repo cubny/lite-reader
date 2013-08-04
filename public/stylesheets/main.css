@@ -335,11 +335,23 @@ background-color: #F5ECDE !important;
   background-color: #659165;
   color: #FFF;
 }
+#items li .title a.item-action.item-read,
 #items li .title a.item-action.item-star {
   background-color: none;
   display:inline;
   margin:0;
-  font-size:16px;
+  padding:0;
+  font-size:14px;
+  color:#666;
+}
+#items li .title a.item-action.item-read:hover,
+#items li .title a.item-action.item-star:hover {
+  color:#333;
+}
+#items li .title a.item-action.item-read {
+  font-size:13px;
+  padding-bottom:2px;
+  margin:0 5px 0 2px;
 }
 
 .rtl {
