@@ -1,7 +1,7 @@
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  RewriteBase /lite-reader/
+  RewriteBase /~cubny/lite-reader/
   
   RewriteRule ^.*/font/(.*\.(woff|eot|svg|ttf)) public/stylesheets/font-awesome/font/$1 [L]
   RewriteRule ^css/(.*\.css) public/combine.php?type=css&files=$1 [L]
