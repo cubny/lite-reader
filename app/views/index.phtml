@@ -27,13 +27,18 @@
         <li id="feeds-actions">
             <div id="update-all"><i class="icon-repeat"></i> update all</div>
         </li>
+        <li id="starred" class="feed">
+          <div class="count"><?php echo $starred_count>0?"<span>".$starred_count."</span>":""; ?></div> 
+          <i class="icon-star"></i>
+          <div class="feedtitle">Starred</div>
+        </li>
 
       <?php foreach($feeds as $feed): ?>
         <li class="feed" id="<?php echo $feed->id?>">
             <?php $parsed = parse_url($feed->link); ?>
           <div class="count"><?php echo $feed->unread>0?"<span>".$feed->unread."</span>":""; ?></div>            
           <img src="http://g.etfv.co/<?php echo $feed->url; ?>">
-          <div class="feedtitle"><?php echo $feed->title?></div>
+          <div class="feedtitle"><?php echo $feed->title; ?></div>
         </li>
       <?php endforeach; ?>
      </ul>
@@ -59,7 +64,11 @@
 
 <script type="text/template" id="item-template">
 <li id={0}>
-<div class="title"><span>{1}</span><a href="{3}" target="blank" class="item-link"><i class="icon-external-link"></i> link</a></div>
+<div class="title">
+<a name="starred" class="item-action item-star"><i class="{4}"></i></a>
+    <span>{1}</span>
+    <a href="{3}" target="blank" class="item-action item-link"><i class="icon-external-link"></i> link</a>
+</div>
     <div class="desc">{2}</div>
 </li>
 </script>

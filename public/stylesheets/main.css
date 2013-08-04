@@ -208,6 +208,7 @@ background-color: #F5ECDE !important;
   max-width: 100%;
 }
 
+#feeds li i,
 #feeds li img {
   float: left;
   width: 16px;
@@ -327,17 +328,25 @@ background-color: #F5ECDE !important;
   font-size: 20px;
 }
 
-#items li .title a.item-link {
+#items li .title a.item-action {
   font-size:10px;
   font-weight:bold;
   display:inline-block;
-  margin:0 5px;
-  background-color: #659165;
-  color: #FFF;
+  margin-left:2px;
   cursor: pointer;
   padding: 3px 5px;
   border-radius: 2px;
   display:none;
+}
+#items li .title a.item-action.item-link {
+  background-color: #659165;
+  color: #FFF;
+}
+#items li .title a.item-action.item-star {
+  background-color: none;
+  display:inline;
+  margin:0;
+  font-size:16px;
 }
 
 .rtl {

@@ -37,7 +37,7 @@ var items = {
        $.each(data, function(i,item){
          var item_template = $("#item-template").html();
 
-         var $li = $(item_template.format(item.id,item.title,item.desc,item.link));
+         var $li = $(item_template.format(item.id,item.title,item.desc,item.link,parseInt(item.starred,10)>0?"icon-star":"icon-star-empty"));
          if(r.test(item.title)){
             $li.addClass("rtl");
          }
@@ -46,10 +46,42 @@ var items = {
            $li.addClass("new");
            unread++;
          }
+         $li.find('.item-star').click(function(e){
+             var id =$(this).parents('li').attr('id');
+             items.starred(id);
+            e.stopPropagation();
+         })
+         $li.data('starred',item.starred);
          items.$elem.append($li);
        });
        items.init();
        return unread;
+    },
+    starred:function(id){
+      var $item=items.$elem.find("li[id='"+id+"']");
+      var init_starred = $item.data("starred");
+      var action = $item.data("starred")>0?"unstar":"star";
+      $item.data("starred",action=="star");
+      $item.find(".item-star > i").toggleClass("icon-star").toggleClass("icon-star-empty");
+      if(action == "star"){
+          feeds.incCount("#starred");
+      }else{
+          feeds.decCount("#starred");
+      }
+      $.ajax({
+          url: 'agg/'+action+'/'+id,
+          dataType: 'json',
+          timeout: 2000, //3 second timeout
+          error:function(){
+              $item.data("starred",init_starred);
+              $item.find(".item-star > i").toggleClass("icon-star").toggleClass("icon-star-empty");
+              if(action == "star"){
+                  feeds.decCount("#starred");
+              }else{
+                  feeds.incCount("#starred");
+              }
+          }
+      });
     },
     read:function(id){
       var $item=items.$elem.find("li[id='"+id+"']");

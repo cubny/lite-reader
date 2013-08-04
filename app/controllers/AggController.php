@@ -14,14 +14,13 @@ class AggController extends Controller
   }
 
   public function index(){
-     //var_dump($root);
-    //$vars=array('title'=>(string)$root->channel->title);
     $rss=new Rss();
     $feeds=array();
     $data=$rss->getAllFeeds();
-    //var_dump($rss->getColumns());
-    //var_dump($rss->loadRss());
-    $this->display("index",array('feeds'=>$data));
+    $this->display("index",array(
+        'starred_count'=>Item::countFrom("Item","starred = 1"),
+        'feeds'=>$data
+    ));
   }
 
   public function getFav($id){
@@ -31,7 +30,11 @@ class AggController extends Controller
 
   public function getItems($id){
     $item=new Item();
-    $items=$item->getAllByRssId($id);
+    if($id=="starred"){
+        $items=$item->getAllStarred();
+    }else{
+        $items=$item->getAllByRssId($id);
+    }
     $result = array();
     foreach($items as &$item){
       $doc = new DOMDocument();
@@ -126,6 +129,16 @@ class AggController extends Controller
     $rss->id=$id;
     $rss->updateItems();
     return $this->getItems($id);
+  }
+  public function star($item_id){
+    $item=new Item();
+    $result=$item->make_starred($item_id);
+    echo $result;
+  }
+  public function unstar($item_id){
+    $item=new Item();
+    $result=$item->make_unstarred($item_id);
+    echo $result;
   }
 }
   

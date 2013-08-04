@@ -9,7 +9,7 @@ var feeds={
         $(this).removeClass('new');
         $.cookie("feed",id);
         feeds.load(id);
-        if(feeds.currentFeed) { 
+        if(feeds.currentFeed) {
             feeds.currentFeed.removeClass('selected');
         }
         $this.addClass('selected');
@@ -88,11 +88,7 @@ var feeds={
                         unreads++;
                     }
                 });
-                if(unreads>0){
-                    feeds.container.find("li[id='"+id+"' .count").html("<span>"+unreads+"</span>");
-                }else{
-                    feeds.container.find("li[id='"+id+"' .count").html("");
-                }
+                feeds.setCount("#"+id,unreads);
                 if(id == feeds.currentFeed.attr('id')){
                     items.render(feed_items);
                 }
@@ -103,12 +99,25 @@ var feeds={
     getCurrentCount:function(){
           return feeds.container.find("li.selected span");
     },
-    setCurrentCount: function(count){
+    getCount:function(selector){
+        var counter = feeds.container.find("li"+selector+" .count span");
+        return counter.length>0?parseInt(counter.text(),10):0;
+    },
+    incCount:function(selector){
+        feeds.setCount(selector,feeds.getCount(selector)+1);
+    },
+    decCount:function(selector){
+        feeds.setCount(selector,feeds.getCount(selector)-1);
+    },
+    setCount: function(selector,count){
       if(count > 0){
-        feeds.container.find("li.selected .count").html("<span>"+count+"</span>");
+        feeds.container.find("li"+selector+" .count").html("<span>"+count+"</span>");
       }else{
-        feeds.container.find("li.selected .count").html("");
+        feeds.container.find("li"+selector+" .count").html("");
       }
+    },
+    setCurrentCount: function(count){
+        feeds.setCount(count,".selected");
     },
     blink:function(feed){
         feeds.container.find("li[id='"+feed.id+"']").effect("pulsate",{times:3},200);
