@@ -1,0 +1,28 @@
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /lite-reader/
+  
+  RewriteRule ^.*/font/(.*\.(woff|eot|svg|ttf)) public/stylesheets/font-awesome/font/$1 [L]
+  RewriteRule ^css/(.*\.css) public/combine.php?type=css&files=$1 [L]
+  RewriteRule ^javascript/(.*\.js) public/combine.php?type=javascript&files=$1 [L]
+  RewriteRule ^images/(.*\.(gif|png|jpg)) public/images/$1 [L]
+
+############################################
+## never rewrite for existing files, directories and links
+
+############################################
+## rewrite everything else to index.php
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-l
+  RewriteRule ^(.*)$ index.php?$1 [L]
+
+</IfModule>
+<IfModule !mod_rewrite.c>
+# If we don't have mod_rewrite installed, all 404's
+# can be sent to index.php, and everything works as normal.
+# Submitted by: ElliotHaughin
+
+  ErrorDocument 404 index.php
+</IfModule>
