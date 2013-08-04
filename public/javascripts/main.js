@@ -1,5 +1,6 @@
 $(document).ready(function () {
     stage.init();
+    loadr.init();
     $(document).click(hideAddFeed);
     $('#addfeed > *').click(showAddFeed);
     $('.update').click(function(){
@@ -40,16 +41,18 @@ $(document).ready(function () {
 function addFeed(url){
   var aInput=$("#urlToAdd");
   var af=$('#addfeed .add');
-  var currImg='url(public/images/add.png)';
-  af.css('background-image','url(public/images/loading.gif)');
-  af.text('Adding Feed...');
+  //var currImg='url(public/images/add.png)';
+  //af.css('background-image','url(public/images/loading.gif)');
+  af.find("span").text('Adding Feed...');
+  af.find("i").removeClass("icon-plus");
+  af.find("i").addClass("icon-spin icon-spinner");
   $.ajax({
       url:'agg/add',
       type:"POST",
       data:"url="+url,
       dataType:"json",
       success:function(data){
-          af.text('Feed');
+        af.find("span").text('Feed');
         if(!data.error){
           $.each(data, function(i,feed){
             feeds.add(feed);
@@ -58,7 +61,9 @@ function addFeed(url){
             console.log(data.feed);
             feeds.blink(data.feed);
         }
-        af.css('background-image',currImg);
+        //af.css('background-image',currImg);
+        af.find("i").removeClass("icon-spin icon-spinner");
+        af.find("i").addClass("icon-plus");
         aInput.val("");
         hideAddFeed();
       }   
@@ -68,6 +73,9 @@ function addFeed(url){
 function showAddFeed(e){
   e.stopPropagation();
   var aButton=$("#addfeed a");
+  aButton.removeClass("btn-purple");
+  aButton.addClass("btn-green");
+  aButton.find("span").text("");
   var aInput=$("#urlToAdd");
   aInput.removeClass('ui-state-error');
   //aButton.parent().animate({width:"230px"},500,null,function(e){
@@ -99,6 +107,9 @@ function showAddFeed(e){
 function hideAddFeed(){
   var aButton=$("#addfeed a");
   var aInput=$("#urlToAdd");
+  aButton.addClass("btn-purple");
+  aButton.removeClass("btn-green");
+  aButton.find("span").text("Feed");
   aInput.hide();
   $('#addfeed > *').click(showAddFeed);
   //aButton.parent().animate({width:"60px"},300,null,function(){

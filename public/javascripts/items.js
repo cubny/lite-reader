@@ -50,7 +50,7 @@ var items = {
              var id =$(this).parents('li').attr('id');
              items.starred(id);
             e.stopPropagation();
-         })
+         });
          $li.data('starred',item.starred);
          items.$elem.append($li);
        });

@@ -28,13 +28,21 @@ function get_hostname(url) {
 
 var loadr = {
   elem:$("#msg"),
+  init:function(){
+    $(document).ajaxStart(function(){
+      loadr.show();
+    });
+    $(document).ajaxStop(function(){
+      loadr.hide();
+    });
+  },
   show:function(){
          loadr.elem.animate({top:"60px"},500);
    },
   hide:function(){
          loadr.elem.animate({top:"0px"},500);
    },
-}
+};
 
 String.prototype.format = function() {
     var args = arguments;
@@ -42,3 +50,4 @@ String.prototype.format = function() {
       return typeof args[number] != 'undefined'? args[number]: match;
     });
 };
+

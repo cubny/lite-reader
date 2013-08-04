@@ -17,16 +17,16 @@ var feeds={
         $("#actions .action").attr('id',id).show();
         feeds.currentFeed=$this;
       });
-      var lastFeed = $.cookie("feed");
-      if(lastFeed !== undefined) {
-        feeds.container.find("li#"+lastFeed).click();
-      }
+      setTimeout(function(){
+        var lastFeed = $.cookie("feed");
+        if(lastFeed !== undefined) {
+          feeds.container.find("li#"+lastFeed).click();
+        }
+      },1000);
     },
     load:function(id){
-       loadr.show();
        $.getJSON('agg/getitems/'+id,function(data){
            items.render(data);
-           loadr.hide();
        });
     },
     add:function(options){
@@ -55,31 +55,24 @@ var feeds={
         });
     },
     markread: function(id){
-        loadr.show();
         $.getJSON('agg/mark_read_all/'+id,function(data){
           feeds.setCurrentCount(0);
           items.$elem.find("> li").removeClass("new");
-          loadr.hide();
         });
     },
     markunread: function(id){
-        loadr.show();
         $.getJSON('agg/mark_unread_all/'+id,function(data){
           feeds.setCurrentCount(items.$elem.find('> li').length);
           items.$elem.find("li").addClass("new");
-          loadr.hide();
         });
     },
     update:function(id){
-        loadr.show();
         $.getJSON('agg/update/'+id,function(data){
             unread=items.render(data);
             var count=feeds.setCurrentCount(unread);
-            loadr.hide();
       });
     },
     update_all:function(){
-        loadr.show();
         $.getJSON('agg/update_all',function(data){
             $.each(data,function(id,feed_items){
                 var unreads = 0;
@@ -93,7 +86,6 @@ var feeds={
                     items.render(feed_items);
                 }
             });
-            loadr.hide();
         });
     },
     getCurrentCount:function(){

@@ -33,33 +33,15 @@ a {
   float: left;
 }
 
-#toolbar .button {
-  display: block;
-  color: #555;
-  height: 30px;
-  line-height: 29px;
-  text-decoration: none;
-  transition: all .2s ease-in-out;
-}
-
-#toolbar:hover.button {
-  color: #06C;
-}
-
 #urlToAdd {
   float: right;
   border: 1px solid #ccc;
   padding: 6px;
   color: #666;
-  font-size: 11px;
-  width:120px;
+  width:170px;
 }
 
 .add {
-  /*background-image: url(../images/add.png);*/
-  /*background-position: 10px 8px;*/
-  /*background-repeat: no-repeat;*/
-  /*text-indent: 30px;*/
   font-weight:bold;
   color: #456445;
   display: block;
@@ -117,20 +99,23 @@ li.button input {
   overflow: auto;
   transition: all .2s ease-in-out; 
 }
-#feeds ul li#feeds-actions{
-  cursor: default;
-  padding:5px;
-  font-size: 10px;
-}
-#feeds ul li#feeds-actions div{
+.btn {
   cursor: pointer;
   float:right;
-  color:white;
+  padding:5px 8px;
+  border-radius: 4px;
+  margin:2px;
+  transition: all .2s ease-in-out;
+}
+.btn:hover {  background-color: #000; }
+.btn-small {
   padding:2px;
   border-radius: 2px;
-  background-color: #585A6B;
   margin:2px;
 }
+.btn-purple {  background-color: #585A6B;  color:white;}
+.btn-green {  background-color: #6C8A46;  color:white;}
+
 #items li .title:hover {
   background-color: #eee !important;
 }
@@ -148,15 +133,6 @@ background-color: #F5ECDE !important;
   background-color: #FFFCF7 !important;
   border-bottom: 2px solid rgba(0,0,0,0.1);
   border: 1px solid #DBD4C8;
-}
-
-#feeds li.selected {
-  background-color: #f9f9f9 !important;
-  border-bottom: 1px solid #ccc; 
-}
-
-#feeds ul li:hover {
-  background-color: #f3f3f3 !important;
 }
 
 #items .new {
@@ -208,8 +184,8 @@ background-color: #F5ECDE !important;
   max-width: 100%;
 }
 
-#feeds li i,
-#feeds li img {
+#feeds li.feed i,
+#feeds li.feed img {
   float: left;
   width: 16px;
   padding: 0 3px;
@@ -226,6 +202,23 @@ background-color: #F5ECDE !important;
   line-height: 20px;
 }
 
+#feeds li.selected {
+  background-color: #f9f9f9 !important;
+  border-bottom: 1px solid #ccc; 
+}
+
+#feeds ul li:hover {
+  background-color: #f3f3f3 !important;
+}
+
+#feeds ul li#feeds-actions{
+  cursor: default;
+  padding:5px;
+  font-size: 10px;
+}
+#feeds ul li#feeds-actions:hover{
+  background-color:inherit !important;
+}
 .ui-layout-north {
   overflow: hidden;
   background: #fafafa;

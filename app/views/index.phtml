@@ -16,16 +16,16 @@
 
     <div class="ui-layout-west" id="feeds">
    <div id="toolbar" class="ui-layout-north">
-        <div id="addfeed" class="button">
-            <input type="text" id="urlToAdd" style="display:none">
-            <a class="add btn" href="#">
-              <i class="icon-plus"></i> Feed
+        <div id="addfeed">
+            <a class="add btn btn-purple" href="#">
+              <i class="icon-plus"></i> <span>Feed</span>
             </a>
+            <input type="text" id="urlToAdd" style="display:none">
         </div>
     </div>
       <ul>
         <li id="feeds-actions">
-            <div id="update-all"><i class="icon-repeat"></i> update all</div>
+            <a class="btn btn-purple btn-small" href="#" id="update-all"><i class="icon-repeat"></i> update all</a>
         </li>
         <li id="starred" class="feed">
           <div class="count"><?php echo $starred_count>0?"<span>".$starred_count."</span>":""; ?></div> 
@@ -73,5 +73,15 @@
 </li>
 </script>
 </body>
-<script type="text/javascript" src="javascript/jquery.js,jquery.ui.all.js,jquery.layout.js,jquery.cookie.js,jquery.scrollTo.min.js,utils.js,feeds.js,items.js,stage.js,main.js"></script>
+<script type="text/javascript" src="javascript/jquery.js,
+jquery.ui.all.js,
+jquery.layout.js,
+jquery.cookie.js,
+jquery.scrollTo.min.js,
+spin.min.js,
+utils.js,
+feeds.js,
+items.js,
+stage.js,
+main.js"></script>
 </html>
