@@ -14,6 +14,9 @@ class Item extends Model
   public function getAllStarred(){
     return $this->query("SELECT * from ".self::TABLE_NAME." where starred=1 ORDER BY ID")->fetchAll(self::FETCH_OBJ);
   }
+  public function getAllUnread(){
+    return $this->query("SELECT * from ".self::TABLE_NAME." where is_new=1 ORDER BY ID")->fetchAll(self::FETCH_OBJ);
+  }
   public function make_unread_all($rss_id){
     return self::update(self::TABLE_NAME,array("is_new"=>"1"),"rss_id=?",array($rss_id));
   }

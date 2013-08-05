@@ -27,6 +27,11 @@
         <li id="feeds-actions">
             <a class="btn btn-purple btn-small" href="#" id="update-all"><i class="icon-repeat"></i> update all</a>
         </li>
+        <li id="unread" class="feed">
+          <div class="count"><?php echo $unread_count>0?"<span>".$unread_count."</span>":""; ?></div> 
+          <i class="icon-circle"></i>
+          <div class="feedtitle">Unread</div>
+        </li>
         <li id="starred" class="feed">
           <div class="count"><?php echo $starred_count>0?"<span>".$starred_count."</span>":""; ?></div> 
           <i class="icon-star"></i>

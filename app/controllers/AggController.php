@@ -19,6 +19,7 @@ class AggController extends Controller
     $data=$rss->getAllFeeds();
     $this->display("index",array(
         'starred_count'=>Item::countFrom("Item","starred = 1"),
+        'unread_count'=>Item::countFrom("Item","is_new = 1"),
         'feeds'=>$data
     ));
   }
@@ -30,9 +31,14 @@ class AggController extends Controller
 
   public function getItems($id){
     $item=new Item();
-    if($id=="starred"){
+    switch($id){
+      case "starred":
         $items=$item->getAllStarred();
-    }else{
+        break;
+      case "unread":
+        $items=$item->getAllUnread();
+        break;
+      default:
         $items=$item->getAllByRssId($id);
     }
     $result = array();
