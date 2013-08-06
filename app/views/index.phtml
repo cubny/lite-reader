@@ -7,7 +7,7 @@
   <link href="css/main.css,jquery-ui.css" media="screen" rel="stylesheet" type="text/css" />
   <link href="css/font-awesome/css/font-awesome.min.css" media="screen" rel="stylesheet" type="text/css" />
 
-  <link href='http://fonts.googleapis.com/css?family=Raleway:200' rel='stylesheet' type='text/css'>
+  <!--<link href='http://fonts.googleapis.com/css?family=Raleway:200' rel='stylesheet' type='text/css'>-->
 	<script type="text/javascript">
 	</script>
 </head>
@@ -70,10 +70,11 @@
 <script type="text/template" id="item-template">
 <li id={0}>
 <div class="title">
-<a name="starred" class="item-action item-star"><i class="{5}"></i></a>
-<a name="read" class="item-action item-read"><i class="{4}"></i></a>
+    <a name="starred" class="item-action item-star"><i class="{5}"></i></a>
+    <a name="read" class="item-action item-read"><i class="{4}"></i></a>
     <span>{1}</span>
     <a href="{3}" target="blank" class="item-action item-link"><i class="icon-external-link"></i> link</a>
+    <span class="timestamp">{6}</span>
 </div>
     <div class="desc">{2}</div>
 </li>
@@ -85,6 +86,7 @@ jquery.layout.js,
 jquery.cookie.js,
 jquery.scrollTo.min.js,
 spin.min.js,
+moment.min.js,
 utils.js,
 feeds.js,
 items.js,

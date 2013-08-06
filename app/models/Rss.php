@@ -47,6 +47,7 @@ class Rss extends Model
     //$content = $readability->getContent();
     //$itemModel->desc = $content['content'];
     $itemModel->desc = $item->get_content();
+    $itemModel->timestamp =$item->get_date('Y-m-d H:i:s');
     $itemModel->dir = $itemModel->desc;
     $itemModel->save();
 

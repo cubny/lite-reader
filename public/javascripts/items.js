@@ -43,7 +43,8 @@ var items = {
              item.desc,
              item.link,
              parseInt(item.is_new,10)>0?"icon-circle":"icon-circle-blank",
-             parseInt(item.starred,10)>0?"icon-star":"icon-star-empty"
+             parseInt(item.starred,10)>0?"icon-star":"icon-star-empty",
+             moment(item.timestamp,"YYYY-MM-DD HH:ii:SS").calendar().format('LL')
            ));
          if(r.test(item.title)){
             $li.addClass("rtl");
