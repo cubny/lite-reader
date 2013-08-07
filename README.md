@@ -19,7 +19,7 @@ INSTALL
 2. make public/cache writable for the webserver
 3. make var writable for the webserver
 4. rename .htaccess.sample to .htaccess
-5. modify RewriteBase in .htaccess according to your webserver
+5. modify RewriteBase in .htaccess according to your web directory
 
 that's it, enjoy a very lite and minimal feed aggregator: the lite-reader
 
