@@ -16,9 +16,10 @@ Requirements
 INSTALL
 --------
 1. git clone or download
-3. make public/cache writable for the webserver
-4. make var writable for the webserver
-4. modify RewriteBase in .htaccess 
+2. make public/cache writable for the webserver
+3. make var writable for the webserver
+4. rename .htaccess.sample to .htaccess
+5. modify RewriteBase in .htaccess according to your web directory
 
 that's it, enjoy a very lite and minimal feed aggregator: the lite-reader
 
