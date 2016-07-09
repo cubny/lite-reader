@@ -2971,7 +2971,7 @@ class SimplePie
 
 		if (($url = $this->get_link()) !== null)
 		{
-			return 'http://g.etfv.co/' . urlencode($url);
+			return 'http://api.byi.pw/favicon?url=' . urlencode($url);
 		}
 
 		return false;

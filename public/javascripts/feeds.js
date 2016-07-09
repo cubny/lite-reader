@@ -38,7 +38,7 @@ var feeds={
        };
        var opts = $.extend(defaults, options);
        var $item=$("<li/>").addClass("new").addClass("feed").attr("id",opts.id)
-         .html($("<img/>").attr("src","http://g.etfv.co/"+opts.url))
+         .html($("<img/>").attr("src","http://api.byi.pw/favicon?url="+opts.url))
          .append($("<div/>").addClass("feedtitle").html(opts.title))
          .append($("<div/>").addClass("count").html("<span>"+opts.unread+"</span>"));
        feeds.container.append($item);
