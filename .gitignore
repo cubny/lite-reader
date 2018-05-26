@@ -5,3 +5,7 @@ public/cache/*.spc
 public/cache/images/*
 .htaccess
 var/*.*
+build/
+composer.lock
+vendor/
+phpunit.xml
