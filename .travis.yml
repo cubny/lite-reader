@@ -5,4 +5,5 @@ branches:
     only:
         - slim-3x
 before_script:
+    - composer install --prefer-source --no-interaction --dev
     - cp phpunit.xml.sample phpunit.xml
