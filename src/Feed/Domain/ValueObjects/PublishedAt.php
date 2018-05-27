@@ -2,13 +2,15 @@
 
 namespace LiteReader\Feed\Domain\ValueObjects;
 
+use \Datetime;
+
 final class PublishedAt
 {
     /**
      *
-     * @var DateTime 
+     * @var DateTime
      */
-    private $updateAt;
+    private $publishedAt;
 
     /**
      * Constructoror
@@ -17,8 +19,11 @@ final class PublishedAt
      * @access public
      * @return void
      */
-    public function __constructor(DateTime $publishedAt)
+    public function __construct(?DateTime $publishedAt = null)
     {
+        if ($publishedAt === null) {
+            $publishedAt = new DateTime();
+        }
         $this->publishedAt = $publishedAt;
     }
 
@@ -26,9 +31,9 @@ final class PublishedAt
      * getValue
      *
      * @access public
-     * @return DateTime
+     * @return \DateTime
      */
-    public function getValue(): DateTime
+    public function getValue(): \DateTime
     {
         return $this->publishedAt;
     }

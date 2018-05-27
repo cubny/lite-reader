@@ -17,7 +17,7 @@ final class Title
      * @access public
      * @return void
      */
-    public function __constructor(string $title)
+    public function __construct(string $title)
     {
         $this->title = $title;
     }

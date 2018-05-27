@@ -23,10 +23,13 @@ final class FeedEntityTest extends TestCase
             new Url('http://newfeed.com/rss')
         );
     }
+
     /**
      * @dataProvider attributeValueObjectItems
+     * @param string $type
+     * @param string $attribute
      */
-    public function testAttributeIsInstanceOfValueObjects($type, $attribute)
+    public function testAttributeIsInstanceOfValueObjects(string $type, string $attribute)
     {
         $this->assertAttributeInstanceOf($type, $attribute, $this->feed);
     }

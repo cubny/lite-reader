@@ -15,6 +15,8 @@ use PHPUnit\Framework\TestCase;
 
 final class ItemEntityTest extends TestCase
 {
+    private $item;
+
     public function setUp()
     {
         $this->item = new ItemEntity(
@@ -26,10 +28,13 @@ final class ItemEntityTest extends TestCase
             new PublishedAt(new \DateTime('now'))
         );
     }
+
     /**
      * @dataProvider attributeValueObjectItems
+     * @param string $type
+     * @param string $attribute
      */
-    public function testAttributeIsInstanceOfValueObjects($type, $attribute)
+    public function testAttributeIsInstanceOfValueObjects(string $type, string $attribute)
     {
         $this->assertAttributeInstanceOf($type, $attribute, $this->item);
     }

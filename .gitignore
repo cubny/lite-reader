@@ -9,3 +9,4 @@ build/
 composer.lock
 vendor/
 phpunit.xml
+.idea/

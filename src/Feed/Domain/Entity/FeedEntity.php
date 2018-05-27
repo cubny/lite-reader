@@ -29,12 +29,12 @@ final class FeedEntity
     private $title; 
 
     /**
-     * discription 
+     * description
      *
      * @var Description 
      * @access private
      */
-    private $discription;
+    private $description;
 
     /**
      * url 

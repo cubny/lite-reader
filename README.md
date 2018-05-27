@@ -13,7 +13,7 @@ Screenshot
 Requirements
 ---------------
 - SQLite3
-- PHP 5.3
+- PHP 7.1 
 
 INSTALL
 --------

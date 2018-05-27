@@ -17,7 +17,7 @@ final class Description
      * @access public
      * @return void
      */
-    public function __constructor(string $description)
+    public function __construct(string $description)
     {
         $this->description = $description;
     }
