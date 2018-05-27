@@ -1,0 +1,8 @@
+language: php
+php:
+    - 7.1
+branches: 
+    only:
+        - slim-3x
+before_script:
+    - cp phpunit.xml.sample phpunit.xml
