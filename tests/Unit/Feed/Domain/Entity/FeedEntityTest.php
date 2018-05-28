@@ -2,6 +2,9 @@
 
 namespace LiteReader\Unit\Feed\Domain\Entity;
 
+use \InvalidArgumentException;
+use \TypeError;
+use LiteReader\Feed\Domain\Collection\ItemArrayCollection;
 use LiteReader\Feed\Domain\Entity\FeedEntity;
 use LiteReader\Feed\Domain\ValueObjects\{
     Id,
@@ -43,4 +46,18 @@ final class FeedEntityTest extends TestCase
             "Url" => [Url::class, 'url']
         ];
     }
+
+    public function testAddItemsRejectsArray()
+    {
+        $this->expectException(TypeError::class);
+        $this->feed->addItems([1,2,3]);
+    }
+
+    public function testAddItemsAcceptsItemArrayCollection()
+    {
+        $itemsCollection = $this->prophesize(ItemArrayCollection::class);
+        $this->feed->addItems($itemsCollection->reveal());
+        $this->assertAttributeInstanceOf(ItemArrayCollection::class, 'items', $this->feed);
+    }
+
 }

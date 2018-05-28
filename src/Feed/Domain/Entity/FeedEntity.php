@@ -2,6 +2,7 @@
 
 namespace LiteReader\Feed\Domain\Entity;
 
+use LiteReader\Feed\Domain\Collection\ItemArrayCollection;
 use LiteReader\Feed\Domain\ValueObjects\{
     Id,
     Title,
@@ -52,6 +53,12 @@ final class FeedEntity
      */
     private $updatedAt;
 
+    /**
+     * items 
+     *
+     * @var ItemArrayCollection 
+     * @access private
+     */
     private $items;
 
     public function __construct(
@@ -64,10 +71,12 @@ final class FeedEntity
         $this->title = $title;
         $this->description = $description;
         $this->url = $url;
+        $this->items = new ItemArrayCollection();
     }
 
-    public function addNewItems()
+    public function addItems(ItemArrayCollection $items): void
     {
+        $this->items->add($items);
         $this->updatedAt = new UpdatedAt();
     }
 }
