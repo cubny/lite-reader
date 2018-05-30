@@ -61,6 +61,13 @@ final class FeedEntity
      */
     private $items;
 
+    /**
+     * FeedEntity constructor.
+     * @param Id $id
+     * @param Title $title
+     * @param Description $description
+     * @param Url $url
+     */
     public function __construct(
         Id $id,
         Title $title,
@@ -74,6 +81,9 @@ final class FeedEntity
         $this->items = new ItemArrayCollection();
     }
 
+    /**
+     * @param ItemArrayCollection $items
+     */
     public function addItems(ItemArrayCollection $items): void
     {
         $this->items->add($items);

@@ -60,4 +60,13 @@ final class FeedEntityTest extends TestCase
         $this->assertAttributeInstanceOf(ItemArrayCollection::class, 'items', $this->feed);
     }
 
+    public function testAddItemsUpdatesUpdatedAt()
+    {
+        $updatedAtNow = new UpdatedAt();
+        $this->assertAttributeLessThan($updatedAtNow,'updatedAt',$this->feed);
+        $itemsCollection = $this->prophesize(ItemArrayCollection::class);
+        $this->feed->addItems($itemsCollection->reveal());
+        $this->assertAttributeGreaterThan($updatedAtNow, 'updatedAt', $this->feed);
+    }
+
 }
