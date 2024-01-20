@@ -2,8 +2,6 @@ Lite-Reader
 ===========
 Read your feeds on your own machine with a simple and lite application.
 
-demo: http://cubny.com/lite-reader/
-
 
 Screenshot
 ----------
