@@ -25,7 +25,8 @@ var feeds={
       },1000);
     },
     load:function(id){
-       $.getJSON('agg/getitems/'+id,function(data){
+        const url = id === 'unread' || id === 'starred' ? 'items/'+id : 'items/feed/'+id;
+       $.getJSON(url,function(data){
            items.render(data);
        });
     },

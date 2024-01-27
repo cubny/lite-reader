@@ -4,10 +4,12 @@
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<title>LiteReader</title>
-  <link href="css/main.css,jquery-ui.css" media="screen" rel="stylesheet" type="text/css" />
+  <link href="css/main.css" media="screen" rel="stylesheet" type="text/css" />
+  <link href="css/jquery-ui.css" media="screen" rel="stylesheet" type="text/css" />
+  
+  <link href="css/font-awesome/css/font-awesome.min.css" media="screen" rel="stylesheet" type="text/css" />
   <link href="css/font-awesome/css/font-awesome.min.css" media="screen" rel="stylesheet" type="text/css" />
 
-  <!--<link href='http://fonts.googleapis.com/css?family=Raleway:200' rel='stylesheet' type='text/css'>-->
 	<script type="text/javascript">
 	</script>
 </head>
@@ -28,24 +30,26 @@
             <a class="btn btn-purple btn-small" href="#" id="update-all"><i class="icon-repeat"></i> update all</a>
         </li>
         <li id="unread" class="feed">
-          <div class="count"><?php echo $unread_count>0?"<span>".$unread_count."</span>":""; ?></div> 
+          <div class="count"><span>10</span></div> 
           <i class="icon-circle"></i>
           <div class="feedtitle">Unread</div>
         </li>
         <li id="starred" class="feed">
-          <div class="count"><?php echo $starred_count>0?"<span>".$starred_count."</span>":""; ?></div> 
+          <div class="count"><span>8</span></div> 
           <i class="icon-star"></i>
           <div class="feedtitle">Starred</div>
         </li>
 
-      <?php foreach($feeds as $feed): ?>
-        <li class="feed" id="<?php echo $feed->id?>">
-            <?php $parsed = parse_url($feed->link); ?>
-          <div class="count"><?php echo $feed->unread>0?"<span>".$feed->unread."</span>":""; ?></div>            
-          <img src="http://api.byi.pw/favicon?url=<?php echo $feed->url; ?>
-          <div class="feedtitle"><?php echo $feed->title; ?></div>
+        <li class="feed" id="1">
+          <div class="count"><span>5</span></div>            
+          <img src="https://favicon.yandex.net/favicon/https://news.google.com" />
+          <div class="feedtitle">google news</div>
         </li>
-      <?php endforeach; ?>
+        <li class="feed" id="2">
+          <div class="count"><span>10</span></div>
+          <img src="https://favicon.yandex.net/favicon/https://blog.github.com" />
+          <div class="feedtitle">Github Blog</div>
+        </li>
      </ul>
     </div>
     <div id="content" class="ui-layout-center">
@@ -80,16 +84,16 @@
 </li>
 </script>
 </body>
-<script type="text/javascript" src="javascript/jquery.js,
-jquery.ui.all.js,
-jquery.layout.js,
-jquery.cookie.js,
-jquery.scrollTo.min.js,
-spin.min.js,
-moment.min.js,
-utils.js,
-feeds.js,
-items.js,
-stage.js,
-main.js"></script>
+<script type="text/javascript" src="js/jquery.js"></script>
+ <script type="text/javascript" src="js/jquery.ui.all.js"></script>
+ <script type="text/javascript" src="js/jquery.layout.js"></script>
+ <script type="text/javascript" src="js/jquery.cookie.js"></script>
+ <script type="text/javascript" src="js/jquery.scrollTo.min.js"></script>
+ <script type="text/javascript" src="js/spin.min.js"></script>
+ <script type="text/javascript" src="js/moment.min.js"></script>
+ <script type="text/javascript" src="js/utils.js"></script>
+ <script type="text/javascript" src="js/feeds.js"></script>
+ <script type="text/javascript" src="js/items.js"></script>
+ <script type="text/javascript" src="js/stage.js"></script>
+ <script type="text/javascript" src="js/main.js"></script>
 </html>

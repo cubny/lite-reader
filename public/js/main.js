@@ -49,24 +49,26 @@ function addFeed(url){
   $.ajax({
       url:'agg/add',
       type:"POST",
-      data:"url="+url,
+      data: JSON.stringify({url:url}),
       dataType:"json",
       success:function(data){
         af.find("span").text('Feed');
         if(!data.error){
-          $.each(data, function(i,feed){
-            feeds.add(feed);
-          });
+            feeds.add(data);
         }else{
-            console.log(data.feed);
-            feeds.blink(data.feed);
+            console.log(data);
         }
-        //af.css('background-image',currImg);
-        af.find("i").removeClass("icon-spin icon-spinner");
-        af.find("i").addClass("icon-plus");
-        aInput.val("");
-        hideAddFeed();
-      }   
+      },
+      error:function(data){
+          console.log(data);
+      },
+      complete:function(data){
+          af.find("span").text('Feed');
+          af.find("i").removeClass("icon-spin icon-spinner");
+          af.find("i").addClass("icon-plus");
+          aInput.val("");
+          hideAddFeed();
+      },
   });
 }
 
