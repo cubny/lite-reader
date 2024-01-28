@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"embed"
 	"fmt"
+	"github.com/cubny/lite-reader/internal/infra/job"
 	"net/http"
 	"os"
 	"os/signal"
@@ -20,6 +21,7 @@ import (
 	"github.com/cubny/lite-reader/internal/config"
 	"github.com/cubny/lite-reader/internal/infra/http/api"
 	feedRepo "github.com/cubny/lite-reader/internal/infra/sqlite/feed"
+	itemRepo "github.com/cubny/lite-reader/internal/infra/sqlite/item"
 )
 
 type App struct {
@@ -27,10 +29,14 @@ type App struct {
 	cfg *config.Config
 
 	feedService    api.FeedService
+	jobFeedService job.FeedService
 	itemService    api.ItemService
+	jobItemService job.ItemService
 	apiServer      *http.Server
 	sqlClient      *sql.DB
 	feedRepository feed.Repository
+	itemRepository item.Repository
+	scheduler      *job.Scheduler
 
 	err error
 }
@@ -45,6 +51,7 @@ func Init(ctx context.Context) (*App, error) {
 	a.migrate()
 	a.initRepo()
 	a.initServices()
+	a.initScheduler()
 	a.initAPIServer()
 
 	return a, a.err
@@ -72,6 +79,7 @@ func (a *App) initSqlClient() *App {
 func (a *App) initRepo() *App {
 	return a.ifNoError(func() *App {
 		a.feedRepository = feedRepo.NewDB(a.sqlClient)
+		a.itemRepository = itemRepo.NewDB(a.sqlClient)
 
 		return a
 	})
@@ -116,13 +124,26 @@ func (a *App) initServices() *App {
 		}
 
 		a.feedService = feedService
+		a.jobFeedService = feedService
 
-		itemService, err := item.NewService()
+		itemService, err := item.NewService(a.itemRepository)
 		if err != nil {
 			a.err = err
 			return a
 		}
 		a.itemService = itemService
+		a.jobItemService = itemService
+		return a
+	})
+}
+
+func (a *App) initScheduler() *App {
+	return a.ifNoError(func() *App {
+		a.scheduler = job.NewScheduler(1 * time.Hour)
+		a.scheduler.Start()
+
+		j := job.NewItemsJob(a.jobFeedService, a.jobItemService)
+		a.scheduler.Queue <- j
 		return a
 	})
 }

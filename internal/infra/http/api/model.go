@@ -2,14 +2,14 @@ package api
 
 import (
 	"encoding/json"
+	"github.com/cubny/lite-reader/internal/app/feed"
 	"github.com/cubny/lite-reader/internal/app/item"
 	"github.com/julienschmidt/httprouter"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"net/url"
+	"strconv"
 	"time"
-
-	"github.com/cubny/lite-reader/internal/app/feed"
-	log "github.com/sirupsen/logrus"
 )
 
 type AddFeedRequest struct {
@@ -56,7 +56,7 @@ func toAddFeedResponse(feed *feed.Feed) *AddFeedResponse {
 }
 
 type ItemResponse struct {
-	Id        string    `json:"id"`
+	Id        int       `json:"id"`
 	Title     string    `json:"title"`
 	Desc      string    `json:"desc"`
 	Link      string    `json:"link"`
@@ -70,7 +70,7 @@ type GetUnreadItemsResponse struct {
 }
 
 func toGetItemsResponse(items []*item.Item) ([]*ItemResponse, error) {
-	var resp []*ItemResponse
+	resp := make([]*ItemResponse, 0)
 	for _, i := range items {
 		resp = append(resp, &ItemResponse{
 			Id:        i.Id,
@@ -113,11 +113,17 @@ func toGetStarredItemsCommand(w http.ResponseWriter, r *http.Request, p httprout
 }
 
 func toGetFeedItemsCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*item.GetFeedItemsCommand, error) {
+	feedIdString := p.ByName("id")
+	feedId, err := strconv.Atoi(feedIdString)
+	if err != nil {
+		_ = InvalidParams(w, "invalid feed id")
+		return nil, err
+	}
 	return &item.GetFeedItemsCommand{
-		FeedId: p.ByName("id"),
+		FeedId: feedId,
 	}, nil
 }
 
-func toListFeedsCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*feed.ListFeedsCommand, error) {
-	return &feed.ListFeedsCommand{}, nil
+func toListFeedsCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*feed.ListFeedCommand, error) {
+	return &feed.ListFeedCommand{}, nil
 }

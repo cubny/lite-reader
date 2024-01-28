@@ -2,12 +2,13 @@ package api
 
 import (
 	"encoding/json"
+	"net/http"
+
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
-	"net/http"
 )
 
-// setFeed is the handler for
+// addFeed is the handler for
 // swagger:route POST /feeds setFeedsRequest
 //
 // Schedule a new feed.
@@ -164,6 +165,7 @@ func (h *Router) getFeedItems(w http.ResponseWriter, r *http.Request, p httprout
 		_ = InternalError(w, "cannot get unread items")
 		return
 	}
+	log.Infof("getFeedItems: resp %v", resp)
 
 	w.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(w).Encode(resp); err != nil {

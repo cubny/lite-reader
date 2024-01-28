@@ -1,7 +1,9 @@
 package feed
 
 import (
+	"errors"
 	"fmt"
+	"github.com/cubny/lite-reader/internal/app/item"
 	"time"
 
 	"github.com/mmcdole/gofeed"
@@ -20,7 +22,7 @@ func (s *ServiceImpl) AddFeed(command *AddFeedCommand) (*Feed, error) {
 	fp := gofeed.NewParser()
 	parsedFeed, err := fp.ParseURL(command.URL)
 	switch {
-	case err == gofeed.ErrFeedTypeNotDetected:
+	case errors.Is(err, gofeed.ErrFeedTypeNotDetected):
 		f := feedfinder.NewFeedFinder()
 		links, _ := f.FindFeeds(command.URL)
 		for _, link := range links {
@@ -52,6 +54,35 @@ func (s *ServiceImpl) AddFeed(command *AddFeedCommand) (*Feed, error) {
 	return feed, nil
 }
 
-func (s *ServiceImpl) ListFeeds(command *ListFeedsCommand) ([]*Feed, error) {
+func (s *ServiceImpl) ListFeeds(command *ListFeedCommand) ([]*Feed, error) {
 	return s.repository.ListFeeds()
+}
+
+func (s *ServiceImpl) FetchItems(feedId int) ([]*item.Item, error) {
+	feed, err := s.repository.GetFeed(feedId)
+	if err != nil {
+		return nil, fmt.Errorf("cannot get feed: %w", err)
+	}
+
+	fp := gofeed.NewParser()
+	parsedFeed, err := fp.ParseURL(feed.URL)
+	if err != nil {
+		return nil, fmt.Errorf("cannot parse feed: %w", err)
+	}
+
+	items := make([]*item.Item, 0)
+	for _, t := range parsedFeed.Items {
+		timestamp := t.PublishedParsed
+		items = append(items, &item.Item{
+			Title:     t.Title,
+			Desc:      t.Content,
+			Link:      t.Link,
+			Timestamp: *timestamp,
+			Dir:       t.Description,
+			IsNew:     true,
+			Starred:   false,
+		})
+	}
+
+	return items, nil
 }

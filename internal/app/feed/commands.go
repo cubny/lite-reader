@@ -8,5 +8,5 @@ type GetFeedCommand struct {
 	ID string
 }
 
-type ListFeedsCommand struct {
+type ListFeedCommand struct {
 }

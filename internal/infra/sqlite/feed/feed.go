@@ -8,7 +8,6 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-// implement the feed.Repository interface using sqlite DB
 type DB struct {
 	sqliteDB *sql.DB
 }
@@ -30,12 +29,15 @@ func (r *DB) AddFeed(feed *feed.Feed) (int, error) {
 	return int(lastInsertId), nil
 }
 
-func (r *DB) GetFeed(id string) (*feed.Feed, error) {
-	result, err := r.sqliteDB.Query("SELECT id, title, desc, link, url, lang, updated_at FROM rss WHERE id = ?", id)
+func (r *DB) GetFeed(id int) (*feed.Feed, error) {
+	rows, err := r.sqliteDB.Query("SELECT id, title, desc, link, url, lang, updated_at FROM rss WHERE id = ?", id)
 	if err != nil {
 		return nil, err
 	}
-	return resultToFeed(result)
+	for rows.Next() {
+		return resultToFeed(rows)
+	}
+	return nil, nil
 }
 
 func (r *DB) ListFeeds() ([]*feed.Feed, error) {
@@ -59,10 +61,12 @@ func resultToFeeds(result *sql.Rows) ([]*feed.Feed, error) {
 }
 
 func resultToFeed(result *sql.Rows) (*feed.Feed, error) {
-	// refactor to handle the error
 	var id int
 	var title, description, link, url, lang, updatedAt string
-	result.Scan(&id, &title, &description, &link, &url, &lang, &updatedAt)
+	err := result.Scan(&id, &title, &description, &link, &url, &lang, &updatedAt)
+	if err != nil {
+		return nil, err
+	}
 	updatedAtTime, err := time.Parse(time.RFC3339, updatedAt)
 	if err != nil {
 		return nil, err

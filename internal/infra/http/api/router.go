@@ -31,7 +31,7 @@ import (
 
 type FeedService interface {
 	AddFeed(*feed.AddFeedCommand) (*feed.Feed, error)
-	ListFeeds(*feed.ListFeedsCommand) ([]*feed.Feed, error)
+	ListFeeds(command *feed.ListFeedCommand) ([]*feed.Feed, error)
 	//GetFeed(id string) (*Feed, error)
 }
 

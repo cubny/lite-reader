@@ -7,5 +7,10 @@ type GetStarredItemsCommand struct {
 }
 
 type GetFeedItemsCommand struct {
-	FeedId string
+	FeedId int
+}
+
+type UpsertItemsCommand struct {
+	FeedId int
+	Items  []*Item
 }
