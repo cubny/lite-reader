@@ -20,6 +20,10 @@ help:
 
 dev-dependencies: | $(GOBIN)/mockgen $(GOBIN)/gci $(GOBIN)/golangci-lint
 
+.PHONY: run-dev
+run-dev:
+	HTTP_PORT=3000 DB_PATH=data/agg.db nodemon --watch './**/*.go' --signal SIGTERM --exec 'go' run cmd/main.go
+
 .PHONY: run
 run:
 	CGO_ENABLED=0 GOOS=linux go run -mod=vendor ./cmd/main.go

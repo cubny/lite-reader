@@ -24,7 +24,7 @@ func (r *AddFeedRequest) Validate() error {
 }
 
 type AddFeedResponse struct {
-	Id        string    `json:"id"`
+	Id        int       `json:"id"`
 	Title     string    `json:"title"`
 	Desc      string    `json:"desc"`
 	Link      string    `json:"link"`

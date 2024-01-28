@@ -2,32 +2,41 @@ package feed
 
 import (
 	"fmt"
-	"github.com/google/uuid"
-	"github.com/mmcdole/gofeed"
 	"time"
+
+	"github.com/mmcdole/gofeed"
 )
 
 type ServiceImpl struct {
+	repository Repository
+}
+
+func NewService(repository Repository) (*ServiceImpl, error) {
+	return &ServiceImpl{repository: repository}, nil
 }
 
 func (s ServiceImpl) AddFeed(command *AddFeedCommand) (*Feed, error) {
 	fp := gofeed.NewParser()
-	feed, err := fp.ParseURL(command.URL)
+	parsedFeed, err := fp.ParseURL(command.URL)
 	if err != nil {
 		return nil, fmt.Errorf("cannot parse feed: %w", err)
 	}
-	return &Feed{
-		Id:          uuid.NewString(),
-		Title:       feed.Title,
-		Description: feed.Description,
-		Link:        feed.Link,
-		URL:         feed.FeedLink,
-		Updated:     feed.Updated,
-		Lang:        feed.Language,
-		UpdatedAt:   time.Now(),
-	}, nil
-}
 
-func NewService() (*ServiceImpl, error) {
-	return &ServiceImpl{}, nil
+	feed := &Feed{
+		Title:       parsedFeed.Title,
+		Description: parsedFeed.Description,
+		Link:        parsedFeed.Link,
+		URL:         parsedFeed.FeedLink,
+		Lang:        parsedFeed.Language,
+		UpdatedAt:   time.Now(),
+	}
+
+	id, err := s.repository.AddFeed(feed)
+	if err != nil {
+		return nil, fmt.Errorf("cannot add feed: %w", err)
+	}
+
+	feed.Id = id
+
+	return feed, nil
 }

@@ -1,0 +1,59 @@
+package feed
+
+import (
+	"database/sql"
+	"time"
+
+	"github.com/cubny/lite-reader/internal/app/feed"
+	_ "github.com/mattn/go-sqlite3"
+)
+
+// implement the feed.Repository interface using sqlite DB
+type DB struct {
+	sqliteDB *sql.DB
+}
+
+func NewDB(client *sql.DB) *DB {
+	return &DB{sqliteDB: client}
+}
+
+func (r *DB) AddFeed(feed *feed.Feed) (int, error) {
+	result, err := r.sqliteDB.Exec("INSERT INTO rss (title, desc, link, url, lang, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
+		feed.Title, feed.Description, feed.Link, feed.URL, feed.Lang, feed.UpdatedAt.Format(time.RFC3339))
+	if err != nil {
+		return 0, err
+	}
+	lastInsertId, err := result.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+	return int(lastInsertId), nil
+}
+
+func (r *DB) GetFeed(id string) (*feed.Feed, error) {
+	result, err := r.sqliteDB.Query("SELECT id, title, description, link, url, updated, lang, updated_at FROM rss WHERE id = ?", id)
+	if err != nil {
+		return nil, err
+	}
+	return resultToFeed(result)
+}
+
+func resultToFeed(result *sql.Rows) (*feed.Feed, error) {
+	// refactor to handle the error
+	var id int
+	var title, description, link, url, lang, updatedAt string
+	result.Scan(&id, &title, &description, &link, &url, &lang, &updatedAt)
+	updatedAtTime, err := time.Parse(time.RFC3339, updatedAt)
+	if err != nil {
+		return nil, err
+	}
+	return &feed.Feed{
+		Id:          id,
+		Title:       title,
+		Description: description,
+		Link:        link,
+		URL:         url,
+		Lang:        lang,
+		UpdatedAt:   updatedAtTime,
+	}, nil
+}

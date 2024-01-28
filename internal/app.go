@@ -5,29 +5,32 @@ import (
 	"database/sql"
 	"embed"
 	"fmt"
-	"github.com/cubny/lite-reader/internal/app/feed"
-	"github.com/cubny/lite-reader/internal/app/item"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
 
+	_ "github.com/mattn/go-sqlite3"
+	"github.com/pressly/goose/v3"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/sys/unix"
 
+	"github.com/cubny/lite-reader/internal/app/feed"
+	"github.com/cubny/lite-reader/internal/app/item"
 	"github.com/cubny/lite-reader/internal/config"
 	"github.com/cubny/lite-reader/internal/infra/http/api"
-	_ "github.com/mattn/go-sqlite3"
-	"github.com/pressly/goose/v3"
+	feedRepo "github.com/cubny/lite-reader/internal/infra/sqlite/feed"
 )
 
 type App struct {
 	ctx context.Context
 	cfg *config.Config
 
-	feedService api.FeedService
-	itemService api.ItemService
-	apiServer   *http.Server
+	feedService    api.FeedService
+	itemService    api.ItemService
+	apiServer      *http.Server
+	sqlClient      *sql.DB
+	feedRepository feed.Repository
 
 	err error
 }
@@ -38,7 +41,9 @@ var embedMigrations embed.FS
 func Init(ctx context.Context) (*App, error) {
 	a := &App{ctx: ctx}
 	a.initConfig()
+	a.initSqlClient()
 	a.migrate()
+	a.initRepo()
 	a.initServices()
 	a.initAPIServer()
 
@@ -50,6 +55,26 @@ func (a *App) ifNoError(fn func() *App) *App {
 		return a
 	}
 	return fn()
+}
+func (a *App) initSqlClient() *App {
+	return a.ifNoError(func() *App {
+		var sqlClient *sql.DB
+		if sqlClient, a.err = sql.Open("sqlite3", a.cfg.DB.Path); a.err != nil {
+			a.err = fmt.Errorf("failed to open db: %v", a.err)
+			return a
+		}
+		a.sqlClient = sqlClient
+
+		return a
+	})
+}
+
+func (a *App) initRepo() *App {
+	return a.ifNoError(func() *App {
+		a.feedRepository = feedRepo.NewDB(a.sqlClient)
+
+		return a
+	})
 }
 func (a *App) initConfig() *App {
 	return a.ifNoError(
@@ -67,12 +92,6 @@ func (a *App) initConfig() *App {
 
 func (a *App) migrate() *App {
 	return a.ifNoError(func() *App {
-		var db *sql.DB
-		if db, a.err = sql.Open("sqlite3", a.cfg.DB.Path); a.err != nil {
-			a.err = fmt.Errorf("failed to open db: %v", a.err)
-			return a
-		}
-
 		goose.SetBaseFS(embedMigrations)
 
 		if err := goose.SetDialect("sqlite3"); err != nil {
@@ -80,7 +99,7 @@ func (a *App) migrate() *App {
 			return a
 		}
 
-		if err := goose.Up(db, "infra/sqlite/migrations"); err != nil {
+		if err := goose.Up(a.sqlClient, "infra/sqlite/migrations"); err != nil {
 			a.err = fmt.Errorf("failed to migrate: %v", err)
 		}
 
@@ -90,7 +109,7 @@ func (a *App) migrate() *App {
 
 func (a *App) initServices() *App {
 	return a.ifNoError(func() *App {
-		feedService, err := feed.NewService()
+		feedService, err := feed.NewService(a.feedRepository)
 		if err != nil {
 			a.err = err
 			return a
