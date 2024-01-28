@@ -31,11 +31,31 @@ func (r *DB) AddFeed(feed *feed.Feed) (int, error) {
 }
 
 func (r *DB) GetFeed(id string) (*feed.Feed, error) {
-	result, err := r.sqliteDB.Query("SELECT id, title, description, link, url, updated, lang, updated_at FROM rss WHERE id = ?", id)
+	result, err := r.sqliteDB.Query("SELECT id, title, desc, link, url, lang, updated_at FROM rss WHERE id = ?", id)
 	if err != nil {
 		return nil, err
 	}
 	return resultToFeed(result)
+}
+
+func (r *DB) ListFeeds() ([]*feed.Feed, error) {
+	result, err := r.sqliteDB.Query("SELECT id, title, desc, link, url, lang, updated_at FROM rss")
+	if err != nil {
+		return nil, err
+	}
+	return resultToFeeds(result)
+}
+
+func resultToFeeds(result *sql.Rows) ([]*feed.Feed, error) {
+	feeds := make([]*feed.Feed, 0)
+	for result.Next() {
+		f, err := resultToFeed(result)
+		if err != nil {
+			return nil, err
+		}
+		feeds = append(feeds, f)
+	}
+	return feeds, nil
 }
 
 func resultToFeed(result *sql.Rows) (*feed.Feed, error) {

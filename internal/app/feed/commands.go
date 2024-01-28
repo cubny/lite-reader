@@ -7,3 +7,6 @@ type AddFeedCommand struct {
 type GetFeedCommand struct {
 	ID string
 }
+
+type ListFeedsCommand struct {
+}

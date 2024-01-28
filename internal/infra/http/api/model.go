@@ -33,24 +33,14 @@ type AddFeedResponse struct {
 	Lang      string    `json:"lang"`
 }
 
-func toAddFeedCommand(w http.ResponseWriter, r *http.Request) (*feed.AddFeedCommand, error) {
-	request := &AddFeedRequest{}
-	if err := json.NewDecoder(r.Body).Decode(request); err != nil {
-		log.WithError(err).Errorf("toAddFeedCommand: decoder %s", err)
-		_ = BadRequest(w, "cannot decode request body")
-		return nil, err
+type ListFeedResponse []*AddFeedResponse
+
+func toListFeedResponse(feeds []*feed.Feed) *ListFeedResponse {
+	resp := make(ListFeedResponse, 0)
+	for _, f := range feeds {
+		resp = append(resp, toAddFeedResponse(f))
 	}
-
-	if err := request.Validate(); err != nil {
-		log.WithError(err).Errorf("toAddFeedCommand: validator %s", err)
-		_ = InvalidParams(w, "invalid params")
-		return nil, err
-	}
-
-	return &feed.AddFeedCommand{
-		URL: request.URL,
-	}, nil
-
+	return &resp
 }
 
 func toAddFeedResponse(feed *feed.Feed) *AddFeedResponse {
@@ -95,16 +85,39 @@ func toGetItemsResponse(items []*item.Item) ([]*ItemResponse, error) {
 	return resp, nil
 }
 
-func toGetUnreadItemsCommand(w http.ResponseWriter, params httprouter.Params) (*item.GetUnreadItemsCommand, error) {
+func toAddFeedCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*feed.AddFeedCommand, error) {
+	request := &AddFeedRequest{}
+	if err := json.NewDecoder(r.Body).Decode(request); err != nil {
+		log.WithError(err).Errorf("toAddFeedCommand: decoder %s", err)
+		_ = BadRequest(w, "cannot decode request body")
+		return nil, err
+	}
+
+	if err := request.Validate(); err != nil {
+		log.WithError(err).Errorf("toAddFeedCommand: validator %s", err)
+		_ = InvalidParams(w, "invalid params")
+		return nil, err
+	}
+
+	return &feed.AddFeedCommand{
+		URL: request.URL,
+	}, nil
+}
+
+func toGetUnreadItemsCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*item.GetUnreadItemsCommand, error) {
 	return &item.GetUnreadItemsCommand{}, nil
 }
 
-func toGetStarredItemsCommand(r *http.Request, params httprouter.Params) (*item.GetStarredItemsCommand, error) {
+func toGetStarredItemsCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*item.GetStarredItemsCommand, error) {
 	return &item.GetStarredItemsCommand{}, nil
 }
 
-func toGetFeedItemsCommand(r *http.Request, params httprouter.Params) (*item.GetFeedItemsCommand, error) {
+func toGetFeedItemsCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*item.GetFeedItemsCommand, error) {
 	return &item.GetFeedItemsCommand{
-		FeedId: params.ByName("id"),
+		FeedId: p.ByName("id"),
 	}, nil
+}
+
+func toListFeedsCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*feed.ListFeedsCommand, error) {
+	return &feed.ListFeedsCommand{}, nil
 }

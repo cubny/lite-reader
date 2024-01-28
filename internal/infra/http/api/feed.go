@@ -19,10 +19,10 @@ import (
 //	404: notFoundError
 //	422: invalidParams
 //	500: serverError
-func (h *Router) addFeed(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	command, err := toAddFeedCommand(w, r)
+func (h *Router) addFeed(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	command, err := toAddFeedCommand(w, r, p)
 	if err != nil {
-		// toSetFeedCommand responds with a proper error
+		_ = InternalError(w, "failed to parse request body")
 		return
 	}
 
@@ -38,6 +38,27 @@ func (h *Router) addFeed(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 	w.WriteHeader(http.StatusCreated)
 	if err := json.NewEncoder(w).Encode(toAddFeedResponse(t)); err != nil {
 		log.WithError(err).Errorf("setFeed: encoder %s", err)
+		_ = InternalError(w, "cannot encode response")
+		return
+	}
+}
+func (h *Router) listFeeds(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	command, err := toListFeedsCommand(w, r, p)
+	if err != nil {
+		_ = InternalError(w, "cannot list feeds")
+		return
+	}
+
+	resp, err := h.feedService.ListFeeds(command)
+	if err != nil {
+		log.WithError(err).Errorf("listFeeds: service %s", err)
+		_ = InternalError(w, "cannot list feeds")
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(toListFeedResponse(resp)); err != nil {
+		log.WithError(err).Errorf("listFeeds: encoder %s", err)
 		_ = InternalError(w, "cannot encode response")
 		return
 	}
@@ -71,8 +92,8 @@ func (h *Router) getFeed(w http.ResponseWriter, r *http.Request, p httprouter.Pa
 	}
 }
 
-func (h *Router) getUnreadItems(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-	command, err := toGetUnreadItemsCommand(w, params)
+func (h *Router) getUnreadItems(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	command, err := toGetUnreadItemsCommand(w, r, p)
 	if err != nil {
 		_ = InternalError(w, "cannot get unread items")
 		return
@@ -98,8 +119,8 @@ func (h *Router) getUnreadItems(w http.ResponseWriter, r *http.Request, params h
 	}
 }
 
-func (h *Router) getStarredItems(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-	command, err := toGetStarredItemsCommand(r, params)
+func (h *Router) getStarredItems(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	command, err := toGetStarredItemsCommand(w, r, p)
 	if err != nil {
 		_ = InternalError(w, "cannot get unread items")
 		return
@@ -125,8 +146,8 @@ func (h *Router) getStarredItems(w http.ResponseWriter, r *http.Request, params 
 	}
 }
 
-func (h *Router) getFeedItems(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-	command, err := toGetFeedItemsCommand(r, params)
+func (h *Router) getFeedItems(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	command, err := toGetFeedItemsCommand(w, r, p)
 	if err != nil {
 		_ = InternalError(w, "cannot get feed items")
 		return

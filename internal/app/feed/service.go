@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/mmcdole/gofeed"
+	"github.com/nikhil1raghav/feedfinder"
 )
 
 type ServiceImpl struct {
@@ -15,10 +16,20 @@ func NewService(repository Repository) (*ServiceImpl, error) {
 	return &ServiceImpl{repository: repository}, nil
 }
 
-func (s ServiceImpl) AddFeed(command *AddFeedCommand) (*Feed, error) {
+func (s *ServiceImpl) AddFeed(command *AddFeedCommand) (*Feed, error) {
 	fp := gofeed.NewParser()
 	parsedFeed, err := fp.ParseURL(command.URL)
-	if err != nil {
+	switch {
+	case err == gofeed.ErrFeedTypeNotDetected:
+		f := feedfinder.NewFeedFinder()
+		links, _ := f.FindFeeds(command.URL)
+		for _, link := range links {
+			parsedFeed, err = fp.ParseURL(link)
+			if err == nil {
+				break
+			}
+		}
+	case err != nil:
 		return nil, fmt.Errorf("cannot parse feed: %w", err)
 	}
 
@@ -39,4 +50,8 @@ func (s ServiceImpl) AddFeed(command *AddFeedCommand) (*Feed, error) {
 	feed.Id = id
 
 	return feed, nil
+}
+
+func (s *ServiceImpl) ListFeeds(command *ListFeedsCommand) ([]*Feed, error) {
+	return s.repository.ListFeeds()
 }

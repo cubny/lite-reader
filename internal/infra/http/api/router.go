@@ -18,9 +18,10 @@
 package api
 
 import (
+	"net/http"
+
 	"github.com/cubny/lite-reader/internal/app/feed"
 	"github.com/cubny/lite-reader/internal/app/item"
-	"net/http"
 
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
@@ -30,6 +31,7 @@ import (
 
 type FeedService interface {
 	AddFeed(*feed.AddFeedCommand) (*feed.Feed, error)
+	ListFeeds(*feed.ListFeedsCommand) ([]*feed.Feed, error)
 	//GetFeed(id string) (*Feed, error)
 }
 
@@ -58,6 +60,7 @@ func New(itemService ItemService, feedService FeedService) (*Router, error) {
 
 	router.GET("/health", h.health)
 	router.POST("/agg/add", chain.Wrap(h.addFeed))
+	router.GET("/feeds", chain.Wrap(h.listFeeds))
 	router.GET("/feed/:id", chain.Wrap(h.getFeed))
 	router.GET("/items/unread", chain.Wrap(h.getUnreadItems))
 	router.GET("/items/starred", chain.Wrap(h.getStarredItems))
