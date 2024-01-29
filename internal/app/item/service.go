@@ -23,3 +23,7 @@ func (s *ServiceImpl) GetFeedItems(command *GetFeedItemsCommand) ([]*Item, error
 func (s *ServiceImpl) UpsertItems(command *UpsertItemsCommand) error {
 	return s.repository.UpsertItems(command.FeedId, command.Items)
 }
+
+func (s *ServiceImpl) UpdateItem(command *UpdateItemCommand) error {
+	return s.repository.UpdateItem(command.Id, command.Starred, command.IsNew)
+}

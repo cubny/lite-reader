@@ -122,3 +122,11 @@ func (r *DB) UpsertItem(feedId int, item *item.Item) (int, error) {
 	}
 	return int(lastInsertId), nil
 }
+
+func (r *DB) UpdateItem(id int, starred bool, isNew bool) error {
+	_, err := r.sqliteDB.Exec("UPDATE item SET starred = ?, is_new = ? WHERE id = ?", starred, isNew, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

@@ -65,88 +65,6 @@ func (h *Router) listFeeds(w http.ResponseWriter, r *http.Request, p httprouter.
 	}
 }
 
-// getFeed is the handler for
-// swagger:route GET /feeds/{feed_id} getFeedRequest
-//
-// Responds how much time remains until the feed's webhook is shot.
-//
-// Responses:
-//
-//	200: getFeed
-//	404: notFoundError
-//	422: invalidParams
-//	500: serverError
-func (h *Router) getFeed(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	feedID := p.ByName("id")
-	if feedID == "" {
-		_ = InvalidParams(w, "invalid param: id is empty")
-		return
-	}
-
-	resp := "1 hour"
-
-	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(resp); err != nil {
-		log.WithError(err).Errorf("getFeed: encoder %s", err)
-		_ = InternalError(w, "cannot encode response")
-		return
-	}
-}
-
-func (h *Router) getUnreadItems(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	command, err := toGetUnreadItemsCommand(w, r, p)
-	if err != nil {
-		_ = InternalError(w, "cannot get unread items")
-		return
-	}
-
-	items, err := h.itemService.GetUnreadItems(command)
-	if err != nil {
-		_ = InternalError(w, "cannot get unread items")
-		return
-	}
-
-	resp, err := toGetItemsResponse(items)
-	if err != nil {
-		_ = InternalError(w, "cannot get unread items")
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(resp); err != nil {
-		log.WithError(err).Errorf("getUnreadItems: encoder %s", err)
-		_ = InternalError(w, "cannot encode response")
-		return
-	}
-}
-
-func (h *Router) getStarredItems(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	command, err := toGetStarredItemsCommand(w, r, p)
-	if err != nil {
-		_ = InternalError(w, "cannot get unread items")
-		return
-	}
-
-	items, err := h.itemService.GetStarredItems(command)
-	if err != nil {
-		_ = InternalError(w, "cannot get unread items")
-		return
-	}
-
-	resp, err := toGetItemsResponse(items)
-	if err != nil {
-		_ = InternalError(w, "cannot get unread items")
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(resp); err != nil {
-		log.WithError(err).Errorf("getStarredItems: encoder %s", err)
-		_ = InternalError(w, "cannot encode response")
-		return
-	}
-}
-
 func (h *Router) getFeedItems(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	command, err := toGetFeedItemsCommand(w, r, p)
 	if err != nil {
@@ -173,4 +91,20 @@ func (h *Router) getFeedItems(w http.ResponseWriter, r *http.Request, p httprout
 		_ = InternalError(w, "cannot encode response")
 		return
 	}
+}
+
+func (h *Router) updateFeed(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	command, err := toUpdateFeedCommand(w, r, p)
+	if err != nil {
+		_ = InternalError(w, "cannot update feed")
+		return
+	}
+
+	err = h.feedService.UpdateFeed(command)
+	if err != nil {
+		_ = InternalError(w, "cannot update feed")
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }

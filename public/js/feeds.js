@@ -50,7 +50,7 @@ var feeds = {
       .addClass("feed")
       .attr("id", opts.id)
       .html(
-        $("<img/>").attr("src", "http://api.byi.pw/favicon?url=" + opts.url),
+        $("<img/>").attr("src", "http://api.byi.pw/favicon?url=" + opts.link),
       )
       .append($("<div/>").addClass("feedtitle").html(opts.title))
       .append(

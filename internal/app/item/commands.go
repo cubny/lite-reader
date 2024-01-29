@@ -14,3 +14,9 @@ type UpsertItemsCommand struct {
 	FeedId int
 	Items  []*Item
 }
+
+type UpdateItemCommand struct {
+	Id      int
+	Starred bool
+	IsNew   bool
+}

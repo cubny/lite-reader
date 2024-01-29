@@ -127,3 +127,30 @@ func toGetFeedItemsCommand(w http.ResponseWriter, r *http.Request, p httprouter.
 func toListFeedsCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*feed.ListFeedCommand, error) {
 	return &feed.ListFeedCommand{}, nil
 }
+
+type UpdateItemRequest struct {
+	Starred bool `json:"starred"`
+	IsNew   bool `json:"is_new"`
+}
+
+func toUpdateItemCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*item.UpdateItemCommand, error) {
+	itemIdString := p.ByName("id")
+	itemId, err := strconv.Atoi(itemIdString)
+	if err != nil {
+		_ = InvalidParams(w, "invalid item id")
+		return nil, err
+	}
+
+	requst := &UpdateItemRequest{}
+	if err := json.NewDecoder(r.Body).Decode(requst); err != nil {
+		log.WithError(err).Errorf("toUpdateItemCommand: decoder %s", err)
+		_ = BadRequest(w, "cannot decode request body")
+		return nil, err
+	}
+
+	return &item.UpdateItemCommand{
+		Id:      itemId,
+		Starred: requst.Starred,
+		IsNew:   requst.IsNew,
+	}, nil
+}

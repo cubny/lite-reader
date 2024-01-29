@@ -39,6 +39,7 @@ type ItemService interface {
 	GetUnreadItems(*item.GetUnreadItemsCommand) ([]*item.Item, error)
 	GetStarredItems(*item.GetStarredItemsCommand) ([]*item.Item, error)
 	GetFeedItems(*item.GetFeedItemsCommand) ([]*item.Item, error)
+	UpdateItem(*item.UpdateItemCommand) error
 }
 
 // Router handles http requests
@@ -61,7 +62,8 @@ func New(itemService ItemService, feedService FeedService) (*Router, error) {
 	router.GET("/health", h.health)
 	router.POST("/agg/add", chain.Wrap(h.addFeed))
 	router.GET("/feeds", chain.Wrap(h.listFeeds))
-	router.GET("/feed/:id", chain.Wrap(h.getFeed))
+	router.PUT("/feeds/:id", chain.Wrap(h.updateFeed))
+	router.PUT("/items/:id", chain.Wrap(h.updateItem))
 	router.GET("/items/unread", chain.Wrap(h.getUnreadItems))
 	router.GET("/items/starred", chain.Wrap(h.getStarredItems))
 	router.GET("/items/feed/:id", chain.Wrap(h.getFeedItems))
