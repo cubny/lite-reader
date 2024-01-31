@@ -20,3 +20,15 @@ type UpdateItemCommand struct {
 	Starred bool
 	IsNew   bool
 }
+
+type FetchFeedNewItemsCommand struct {
+	FeedId int
+}
+
+type ReadFeedItemsCommand struct {
+	FeedId int
+}
+
+type UnreadFeedItemsCommand struct {
+	FeedId int
+}

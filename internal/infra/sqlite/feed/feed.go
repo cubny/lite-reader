@@ -34,6 +34,11 @@ func (r *DB) GetFeed(id int) (*feed.Feed, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer func() {
+		if err = rows.Close(); err != nil {
+			panic(err)
+		}
+	}()
 	for rows.Next() {
 		return resultToFeed(rows)
 	}
@@ -45,6 +50,11 @@ func (r *DB) ListFeeds() ([]*feed.Feed, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer func() {
+		if err = result.Close(); err != nil {
+			panic(err)
+		}
+	}()
 	return resultToFeeds(result)
 }
 

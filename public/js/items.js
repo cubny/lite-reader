@@ -30,10 +30,14 @@ const items = {
         });
     },
     render:function(data){
+        if(data.length===0){
+            items.$elem.html("<li class='empty'>No items found</li>");
+            return;
+        }
         items.$elem.html("");
         let unread=0;
-        r = new RegExp(/[\u0600-\u06FF]/);
-        $.each(data, function(i,item){
+        const r = new RegExp(/[\u0600-\u06FF]/);
+        data.forEach(function(item){
             const item_template = $("#item-template").html();
 
             const $li = $(item_template.format(
@@ -43,7 +47,7 @@ const items = {
                 item.link,
                 item.is_new ? "icon-circle":"icon-circle-blank",
                 item.starred?"icon-star":"icon-star-empty",
-                moment(item.timestamp,"YYYY-MM-DD HH:ii:SS").calendar().format('LL')
+                moment(item.timestamp || new Date(),"YYYY-MM-DD HH:ii:SS").calendar().format('LL')
             ));
             if(r.test(item.title)){
                 $li.addClass("rtl");

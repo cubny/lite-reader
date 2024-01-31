@@ -27,3 +27,11 @@ func (s *ServiceImpl) UpsertItems(command *UpsertItemsCommand) error {
 func (s *ServiceImpl) UpdateItem(command *UpdateItemCommand) error {
 	return s.repository.UpdateItem(command.Id, command.Starred, command.IsNew)
 }
+
+func (s *ServiceImpl) ReadFeedItems(command *ReadFeedItemsCommand) error {
+	return s.repository.ReadFeedItems(command.FeedId)
+}
+
+func (s *ServiceImpl) UnreadFeedItems(command *UnreadFeedItemsCommand) error {
+	return s.repository.UnreadFeedItems(command.FeedId)
+}

@@ -35,6 +35,10 @@ func (s *ServiceImpl) AddFeed(command *AddFeedCommand) (*Feed, error) {
 		return nil, fmt.Errorf("cannot parse feed: %w", err)
 	}
 
+	if parsedFeed == nil {
+		return nil, fmt.Errorf("cannot parse feed: %w", err)
+	}
+
 	feed := &Feed{
 		Title:       parsedFeed.Title,
 		Description: parsedFeed.Description,
@@ -54,7 +58,7 @@ func (s *ServiceImpl) AddFeed(command *AddFeedCommand) (*Feed, error) {
 	return feed, nil
 }
 
-func (s *ServiceImpl) ListFeeds(command *ListFeedCommand) ([]*Feed, error) {
+func (s *ServiceImpl) ListFeeds(command *ListFeedsCommand) ([]*Feed, error) {
 	return s.repository.ListFeeds()
 }
 

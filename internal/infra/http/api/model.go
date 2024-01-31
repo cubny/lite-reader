@@ -69,7 +69,7 @@ type GetUnreadItemsResponse struct {
 	Items []*ItemResponse `json:"items"`
 }
 
-func toGetItemsResponse(items []*item.Item) ([]*ItemResponse, error) {
+func toGetItemsResponse(items []*item.Item) []*ItemResponse {
 	resp := make([]*ItemResponse, 0)
 	for _, i := range items {
 		resp = append(resp, &ItemResponse{
@@ -82,7 +82,7 @@ func toGetItemsResponse(items []*item.Item) ([]*ItemResponse, error) {
 			Timestamp: i.Timestamp,
 		})
 	}
-	return resp, nil
+	return resp
 }
 
 func toAddFeedCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*feed.AddFeedCommand, error) {
@@ -124,8 +124,8 @@ func toGetFeedItemsCommand(w http.ResponseWriter, r *http.Request, p httprouter.
 	}, nil
 }
 
-func toListFeedsCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*feed.ListFeedCommand, error) {
-	return &feed.ListFeedCommand{}, nil
+func toListFeedsCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*feed.ListFeedsCommand, error) {
+	return &feed.ListFeedsCommand{}, nil
 }
 
 type UpdateItemRequest struct {
@@ -152,5 +152,44 @@ func toUpdateItemCommand(w http.ResponseWriter, r *http.Request, p httprouter.Pa
 		Id:      itemId,
 		Starred: requst.Starred,
 		IsNew:   requst.IsNew,
+	}, nil
+}
+
+func toFetchFeedNewItemsCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*item.FetchFeedNewItemsCommand, error) {
+	feedIdString := p.ByName("id")
+	feedId, err := strconv.Atoi(feedIdString)
+	if err != nil {
+		_ = InvalidParams(w, "invalid feed id")
+		return nil, err
+	}
+
+	return &item.FetchFeedNewItemsCommand{
+		FeedId: feedId,
+	}, nil
+}
+
+func toReadFeedItemsCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*item.ReadFeedItemsCommand, error) {
+	feedIdString := p.ByName("id")
+	feedId, err := strconv.Atoi(feedIdString)
+	if err != nil {
+		_ = InvalidParams(w, "invalid feed id")
+		return nil, err
+	}
+
+	return &item.ReadFeedItemsCommand{
+		FeedId: feedId,
+	}, nil
+}
+
+func toUnreadFeedItemCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*item.UnreadFeedItemsCommand, error) {
+	feedIdString := p.ByName("id")
+	feedId, err := strconv.Atoi(feedIdString)
+	if err != nil {
+		_ = InvalidParams(w, "invalid item id")
+		return nil, err
+	}
+
+	return &item.UnreadFeedItemsCommand{
+		FeedId: feedId,
 	}, nil
 }

@@ -72,21 +72,35 @@ var feeds = {
     });
   },
   markread: function (id) {
-    $.getJSON("agg/mark_read_all/" + id, function (data) {
-      feeds.setCurrentCount(0);
-      items.$elem.find("> li").removeClass("new");
+    $.ajax({
+        url: `feeds/${id}/read`,
+        type: "POST",
+        success: function (data) {
+            feeds.setCurrentCount(0);
+            items.$elem.find("> li").removeClass("new");
+        },
     });
   },
   markunread: function (id) {
-    $.getJSON("agg/mark_unread_all/" + id, function (data) {
-      feeds.setCurrentCount(items.$elem.find("> li").length);
-      items.$elem.find("li").addClass("new");
+    $.ajax({
+        url: `feeds/${id}/unread`,
+        type: "POST",
+        success: function (data) {
+            feeds.setCurrentCount(items.$elem.find("> li").length);
+            items.$elem.find("li").addClass("new");
+        },
     });
   },
   update: function (id) {
-    $.getJSON("agg/update/" + id, function (data) {
-      unread = items.render(data);
-      var count = feeds.setCurrentCount(unread);
+    $.ajax({
+      url: `feeds/${id}/fetch`,
+      type: "PUT",
+      content: "application/json",
+      success: function (encryptedData) {
+        const data = JSON.parse(encryptedData);
+        const unread = items.render(data);
+        feeds.setCurrentCount(unread);
+      },
     });
   },
   update_all: function () {

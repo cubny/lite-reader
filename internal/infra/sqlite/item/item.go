@@ -76,6 +76,9 @@ func resultToItems(result *sql.Rows) ([]*item.Item, error) {
 		}
 		items = append(items, i)
 	}
+	if err := result.Close(); err != nil {
+		return nil, err
+	}
 	return items, nil
 }
 
@@ -102,8 +105,7 @@ func (r *DB) UpsertItem(feedId int, item *item.Item) (int, error) {
 			return 0, err
 		}
 	}
-	err = result.Close()
-	if err != nil {
+	if err := result.Close(); err != nil {
 		return 0, err
 	}
 	// if item exists, ignore it
@@ -125,6 +127,22 @@ func (r *DB) UpsertItem(feedId int, item *item.Item) (int, error) {
 
 func (r *DB) UpdateItem(id int, starred bool, isNew bool) error {
 	_, err := r.sqliteDB.Exec("UPDATE item SET starred = ?, is_new = ? WHERE id = ?", starred, isNew, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *DB) ReadFeedItems(feedId int) error {
+	_, err := r.sqliteDB.Exec("UPDATE item SET is_new = 0 WHERE rss_id = ?", feedId)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *DB) UnreadFeedItems(feedId int) error {
+	_, err := r.sqliteDB.Exec("UPDATE item SET is_new = 1 WHERE rss_id = ?", feedId)
 	if err != nil {
 		return err
 	}

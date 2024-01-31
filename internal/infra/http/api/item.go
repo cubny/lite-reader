@@ -20,14 +20,8 @@ func (h *Router) getStarredItems(w http.ResponseWriter, r *http.Request, p httpr
 		return
 	}
 
-	resp, err := toGetItemsResponse(items)
-	if err != nil {
-		_ = InternalError(w, "cannot get unread items")
-		return
-	}
-
 	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(resp); err != nil {
+	if err := json.NewEncoder(w).Encode(toGetItemsResponse(items)); err != nil {
 		log.WithError(err).Errorf("getStarredItems: encoder %s", err)
 		_ = InternalError(w, "cannot encode response")
 		return
@@ -47,14 +41,8 @@ func (h *Router) getUnreadItems(w http.ResponseWriter, r *http.Request, p httpro
 		return
 	}
 
-	resp, err := toGetItemsResponse(items)
-	if err != nil {
-		_ = InternalError(w, "cannot get unread items")
-		return
-	}
-
 	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(resp); err != nil {
+	if err := json.NewEncoder(w).Encode(toGetItemsResponse(items)); err != nil {
 		log.WithError(err).Errorf("getUnreadItems: encoder %s", err)
 		_ = InternalError(w, "cannot encode response")
 		return

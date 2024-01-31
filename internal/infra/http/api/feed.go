@@ -6,10 +6,12 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
+
+	"github.com/cubny/lite-reader/internal/app/item"
 )
 
 // addFeed is the handler for
-// swagger:route POST /feeds setFeedsRequest
+// swagger:route POST /feeds AddFeedResponse
 //
 // Schedule a new feed.
 //
@@ -78,11 +80,7 @@ func (h *Router) getFeedItems(w http.ResponseWriter, r *http.Request, p httprout
 		return
 	}
 
-	resp, err := toGetItemsResponse(items)
-	if err != nil {
-		_ = InternalError(w, "cannot get unread items")
-		return
-	}
+	resp := toGetItemsResponse(items)
 	log.Infof("getFeedItems: resp %v", resp)
 
 	w.WriteHeader(http.StatusOK)
@@ -93,18 +91,72 @@ func (h *Router) getFeedItems(w http.ResponseWriter, r *http.Request, p httprout
 	}
 }
 
-func (h *Router) updateFeed(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	command, err := toUpdateFeedCommand(w, r, p)
+func (h *Router) fetchFeedNewItems(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	command, err := toFetchFeedNewItemsCommand(w, r, p)
 	if err != nil {
+		log.WithError(err).Errorf("fetchFeedNewItems: toFetchFeedNewItemsCommand")
 		_ = InternalError(w, "cannot update feed")
 		return
 	}
 
-	err = h.feedService.UpdateFeed(command)
+	items, err := h.feedService.FetchItems(command.FeedId)
 	if err != nil {
+		log.WithError(err).Errorf("fetchFeedNewItems: FetchItems")
+		_ = InternalError(w, "cannot update feed")
+		return
+	}
+
+	upsertItemsCommand := &item.UpsertItemsCommand{FeedId: command.FeedId, Items: items}
+	if err := h.itemService.UpsertItems(upsertItemsCommand); err != nil {
+		log.WithError(err).Errorf("fetchFeedNewItems: UpsertItems")
+		_ = InternalError(w, "cannot update feed")
+		return
+	}
+
+	getFeedItemsCommand := &item.GetFeedItemsCommand{FeedId: command.FeedId}
+	items, err = h.itemService.GetFeedItems(getFeedItemsCommand)
+	if err != nil {
+		log.WithError(err).Errorf("fetchFeedNewItems: GetFeedItems")
 		_ = InternalError(w, "cannot update feed")
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(toGetItemsResponse(items)); err != nil {
+		log.WithError(err).Errorf("fetchFeedNewItems: encoder %s", err)
+		_ = InternalError(w, "cannot encode response")
+		return
+	}
+}
+
+func (h *Router) readFeedItems(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	command, err := toReadFeedItemsCommand(w, r, p)
+	if err != nil {
+		_ = InternalError(w, "cannot read feed items")
+		return
+	}
+
+	if err := h.itemService.ReadFeedItems(command); err != nil {
+		_ = InternalError(w, "cannot read feed items")
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+	return
+}
+
+func (h *Router) unreadFeedItems(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	command, err := toUnreadFeedItemCommand(w, r, p)
+	if err != nil {
+		_ = InternalError(w, "cannot unread feed items")
+		return
+	}
+
+	if err := h.itemService.UnreadFeedItems(command); err != nil {
+		_ = InternalError(w, "cannot unread feed items")
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+	return
 }

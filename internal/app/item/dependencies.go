@@ -6,4 +6,6 @@ type Repository interface {
 	GetStarredItems() ([]*Item, error)
 	GetFeedItems(feedId int) ([]*Item, error)
 	UpdateItem(id int, starred bool, isNew bool) error
+	ReadFeedItems(feedId int) error
+	UnreadFeedItems(feedId int) error
 }

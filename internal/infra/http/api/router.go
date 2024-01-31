@@ -30,16 +30,19 @@ import (
 )
 
 type FeedService interface {
-	AddFeed(*feed.AddFeedCommand) (*feed.Feed, error)
-	ListFeeds(command *feed.ListFeedCommand) ([]*feed.Feed, error)
-	//GetFeed(id string) (*Feed, error)
+	AddFeed(command *feed.AddFeedCommand) (*feed.Feed, error)
+	ListFeeds(command *feed.ListFeedsCommand) ([]*feed.Feed, error)
+	FetchItems(int) ([]*item.Item, error)
 }
 
 type ItemService interface {
 	GetUnreadItems(*item.GetUnreadItemsCommand) ([]*item.Item, error)
 	GetStarredItems(*item.GetStarredItemsCommand) ([]*item.Item, error)
 	GetFeedItems(*item.GetFeedItemsCommand) ([]*item.Item, error)
+	UpsertItems(command *item.UpsertItemsCommand) error
 	UpdateItem(*item.UpdateItemCommand) error
+	ReadFeedItems(*item.ReadFeedItemsCommand) error
+	UnreadFeedItems(*item.UnreadFeedItemsCommand) error
 }
 
 // Router handles http requests
@@ -62,7 +65,9 @@ func New(itemService ItemService, feedService FeedService) (*Router, error) {
 	router.GET("/health", h.health)
 	router.POST("/agg/add", chain.Wrap(h.addFeed))
 	router.GET("/feeds", chain.Wrap(h.listFeeds))
-	router.PUT("/feeds/:id", chain.Wrap(h.updateFeed))
+	router.PUT("/feeds/:id/fetch", chain.Wrap(h.fetchFeedNewItems))
+	router.POST("/feeds/:id/read", chain.Wrap(h.readFeedItems))
+	router.POST("/feeds/:id/unread", chain.Wrap(h.unreadFeedItems))
 	router.PUT("/items/:id", chain.Wrap(h.updateItem))
 	router.GET("/items/unread", chain.Wrap(h.getUnreadItems))
 	router.GET("/items/starred", chain.Wrap(h.getStarredItems))

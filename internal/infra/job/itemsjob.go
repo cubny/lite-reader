@@ -7,12 +7,13 @@ import (
 )
 
 type FeedService interface {
-	ListFeeds(command *feed.ListFeedCommand) ([]*feed.Feed, error)
+	ListFeeds(command *feed.ListFeedsCommand) ([]*feed.Feed, error)
 	FetchItems(feedId int) ([]*item.Item, error)
 }
 type ItemService interface {
 	UpsertItems(command *item.UpsertItemsCommand) error
 }
+
 type ItemsJob struct {
 	feedService FeedService
 	itemService ItemService
@@ -23,7 +24,7 @@ func NewItemsJob(feedService FeedService, itemService ItemService) *ItemsJob {
 }
 
 func (j *ItemsJob) Execute() {
-	listFeedsCommand := &feed.ListFeedCommand{}
+	listFeedsCommand := &feed.ListFeedsCommand{}
 	log.Infof("Fetching items for feeds")
 	feeds, err := j.feedService.ListFeeds(listFeedsCommand)
 	if err != nil {
