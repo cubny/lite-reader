@@ -63,3 +63,33 @@ func (h *Router) updateItem(w http.ResponseWriter, r *http.Request, p httprouter
 	w.WriteHeader(http.StatusNoContent)
 	return
 }
+
+func (h *Router) getUnreadItemsCount(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	items, err := h.itemService.GetUnreadItemsCount()
+	if err != nil {
+		_ = InternalError(w, "cannot get unread items")
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(toGetItemsCountResponse(items)); err != nil {
+		log.WithError(err).Errorf("getUnreadItemsCount: encoder %s", err)
+		_ = InternalError(w, "cannot encode response")
+		return
+	}
+}
+
+func (h *Router) getStarredItemsCount(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	items, err := h.itemService.GetStarredItemsCount()
+	if err != nil {
+		_ = InternalError(w, "cannot get unread items")
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(toGetItemsCountResponse(items)); err != nil {
+		log.WithError(err).Errorf("getStarredItemsCount: encoder %s", err)
+		_ = InternalError(w, "cannot encode response")
+		return
+	}
+}

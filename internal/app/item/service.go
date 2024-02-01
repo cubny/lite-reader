@@ -35,3 +35,11 @@ func (s *ServiceImpl) ReadFeedItems(command *ReadFeedItemsCommand) error {
 func (s *ServiceImpl) UnreadFeedItems(command *UnreadFeedItemsCommand) error {
 	return s.repository.UnreadFeedItems(command.FeedId)
 }
+
+func (s *ServiceImpl) GetStarredItemsCount() (int, error) {
+	return s.repository.GetStarredItemsCount()
+}
+
+func (s *ServiceImpl) GetUnreadItemsCount() (int, error) {
+	return s.repository.GetUnreadItemsCount()
+}

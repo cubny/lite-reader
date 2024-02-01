@@ -8,4 +8,6 @@ type Repository interface {
 	UpdateItem(id int, starred bool, isNew bool) error
 	ReadFeedItems(feedId int) error
 	UnreadFeedItems(feedId int) error
+	GetStarredItemsCount() (int, error)
+	GetUnreadItemsCount() (int, error)
 }

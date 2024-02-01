@@ -193,3 +193,13 @@ func toUnreadFeedItemCommand(w http.ResponseWriter, r *http.Request, p httproute
 		FeedId: feedId,
 	}, nil
 }
+
+type GetItemsCountResponse struct {
+	Count int `json:"count"`
+}
+
+func toGetItemsCountResponse(count int) *GetItemsCountResponse {
+	return &GetItemsCountResponse{
+		Count: count,
+	}
+}

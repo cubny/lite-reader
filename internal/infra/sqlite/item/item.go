@@ -148,3 +148,39 @@ func (r *DB) UnreadFeedItems(feedId int) error {
 	}
 	return nil
 }
+
+func (r *DB) GetUnreadItemsCount() (int, error) {
+	result, err := r.sqliteDB.Query("SELECT COUNT(*) FROM item WHERE is_new = 1")
+	if err != nil {
+		return 0, err
+	}
+	var count int
+	if result.Next() {
+		err = result.Scan(&count)
+		if err != nil {
+			return 0, err
+		}
+	}
+	if err := result.Close(); err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
+func (r *DB) GetStarredItemsCount() (int, error) {
+	result, err := r.sqliteDB.Query("SELECT COUNT(*) FROM item WHERE starred = 1")
+	if err != nil {
+		return 0, err
+	}
+	var count int
+	if result.Next() {
+		err = result.Scan(&count)
+		if err != nil {
+			return 0, err
+		}
+	}
+	if err := result.Close(); err != nil {
+		return 0, err
+	}
+	return count, nil
+}

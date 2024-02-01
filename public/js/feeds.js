@@ -29,6 +29,8 @@ var feeds = {
         feeds.container.find("li#" + lastFeed).click();
       }
     }, 1000);
+    this.getUnreadItemsCount();
+    this.getStarredItemsCount();
   },
   load: function (id) {
     const url =
@@ -131,6 +133,16 @@ var feeds = {
   },
   decCount: function (selector) {
     feeds.setCount(selector, feeds.getCount(selector) - 1);
+  },
+  getUnreadItemsCount: function () {
+    $.getJSON("items/unread/count", function (data) {
+        feeds.setCount("#unread", data.count);
+    });
+  },
+  getStarredItemsCount: function () {
+    $.getJSON("items/starred/count", function (data) {
+        feeds.setCount("#starred", data.count);
+    });
   },
   setCount: function (selector, count) {
     if (count > 0) {
