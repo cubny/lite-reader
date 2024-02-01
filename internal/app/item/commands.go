@@ -32,3 +32,7 @@ type ReadFeedItemsCommand struct {
 type UnreadFeedItemsCommand struct {
 	FeedId int
 }
+
+type DeleteFeedItemsCommand struct {
+	FeedId int
+}

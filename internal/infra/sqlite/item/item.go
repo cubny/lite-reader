@@ -184,3 +184,8 @@ func (r *DB) GetStarredItemsCount() (int, error) {
 	}
 	return count, nil
 }
+
+func (r *DB) DeleteFeedItems(feedId int) error {
+	_, err := r.sqliteDB.Exec("DELETE FROM item WHERE rss_id = ?", feedId)
+	return err
+}

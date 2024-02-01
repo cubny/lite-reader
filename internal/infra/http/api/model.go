@@ -24,13 +24,14 @@ func (r *AddFeedRequest) Validate() error {
 }
 
 type AddFeedResponse struct {
-	Id        int       `json:"id"`
-	Title     string    `json:"title"`
-	Desc      string    `json:"desc"`
-	Link      string    `json:"link"`
-	URL       string    `json:"url"`
-	UpdatedAt time.Time `json:"updated_at"`
-	Lang      string    `json:"lang"`
+	Id          int       `json:"id"`
+	Title       string    `json:"title"`
+	Desc        string    `json:"desc"`
+	Link        string    `json:"link"`
+	URL         string    `json:"url"`
+	UpdatedAt   time.Time `json:"updated_at"`
+	Lang        string    `json:"lang"`
+	UnreadCount int       `json:"unread_count"`
 }
 
 type ListFeedResponse []*AddFeedResponse
@@ -45,13 +46,14 @@ func toListFeedResponse(feeds []*feed.Feed) *ListFeedResponse {
 
 func toAddFeedResponse(feed *feed.Feed) *AddFeedResponse {
 	return &AddFeedResponse{
-		Id:        feed.Id,
-		Title:     feed.Title,
-		Desc:      feed.Description,
-		Link:      feed.Link,
-		URL:       feed.URL,
-		UpdatedAt: feed.UpdatedAt,
-		Lang:      feed.Lang,
+		Id:          feed.Id,
+		Title:       feed.Title,
+		Desc:        feed.Description,
+		Link:        feed.Link,
+		URL:         feed.URL,
+		UpdatedAt:   feed.UpdatedAt,
+		Lang:        feed.Lang,
+		UnreadCount: feed.UnreadCount,
 	}
 }
 
@@ -202,4 +204,30 @@ func toGetItemsCountResponse(count int) *GetItemsCountResponse {
 	return &GetItemsCountResponse{
 		Count: count,
 	}
+}
+
+func toDeleteFeedCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*feed.DeleteFeedCommand, error) {
+	feedIdString := p.ByName("id")
+	feedId, err := strconv.Atoi(feedIdString)
+	if err != nil {
+		_ = InvalidParams(w, "invalid feed id")
+		return nil, err
+	}
+
+	return &feed.DeleteFeedCommand{
+		FeedId: feedId,
+	}, nil
+}
+
+func toDeleteFeedItemsCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*item.DeleteFeedItemsCommand, error) {
+	feedIdString := p.ByName("id")
+	feedId, err := strconv.Atoi(feedIdString)
+	if err != nil {
+		_ = InvalidParams(w, "invalid feed id")
+		return nil, err
+	}
+
+	return &item.DeleteFeedItemsCommand{
+		FeedId: feedId,
+	}, nil
 }

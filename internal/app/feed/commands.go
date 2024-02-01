@@ -6,3 +6,6 @@ type AddFeedCommand struct {
 
 type ListFeedsCommand struct {
 }
+type DeleteFeedCommand struct {
+	FeedId int
+}

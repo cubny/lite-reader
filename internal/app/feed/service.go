@@ -46,6 +46,7 @@ func (s *ServiceImpl) AddFeed(command *AddFeedCommand) (*Feed, error) {
 		URL:         parsedFeed.FeedLink,
 		Lang:        parsedFeed.Language,
 		UpdatedAt:   time.Now(),
+		UnreadCount: len(parsedFeed.Items),
 	}
 
 	id, err := s.repository.AddFeed(feed)
@@ -89,4 +90,8 @@ func (s *ServiceImpl) FetchItems(feedId int) ([]*item.Item, error) {
 	}
 
 	return items, nil
+}
+
+func (s *ServiceImpl) DeleteFeed(command *DeleteFeedCommand) error {
+	return s.repository.DeleteFeed(command.FeedId)
 }

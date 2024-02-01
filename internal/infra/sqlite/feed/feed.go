@@ -46,7 +46,10 @@ func (r *DB) GetFeed(id int) (*feed.Feed, error) {
 }
 
 func (r *DB) ListFeeds() ([]*feed.Feed, error) {
-	result, err := r.sqliteDB.Query("SELECT id, title, desc, link, url, lang, updated_at FROM rss")
+	query := "SELECT " +
+		"id, title, desc, link, url, lang, updated_at, " +
+		"(SELECT COUNT(*) FROM item WHERE rss_id = rss.id AND is_new = 1) AS unread_count FROM rss"
+	result, err := r.sqliteDB.Query(query)
 	if err != nil {
 		return nil, err
 	}
@@ -56,6 +59,11 @@ func (r *DB) ListFeeds() ([]*feed.Feed, error) {
 		}
 	}()
 	return resultToFeeds(result)
+}
+
+func (r *DB) DeleteFeed(id int) error {
+	_, err := r.sqliteDB.Exec("DELETE FROM rss WHERE id = ?", id)
+	return err
 }
 
 func resultToFeeds(result *sql.Rows) ([]*feed.Feed, error) {
@@ -71,9 +79,9 @@ func resultToFeeds(result *sql.Rows) ([]*feed.Feed, error) {
 }
 
 func resultToFeed(result *sql.Rows) (*feed.Feed, error) {
-	var id int
+	var id, unreadCount int
 	var title, description, link, url, lang, updatedAt string
-	err := result.Scan(&id, &title, &description, &link, &url, &lang, &updatedAt)
+	err := result.Scan(&id, &title, &description, &link, &url, &lang, &updatedAt, &unreadCount)
 	if err != nil {
 		return nil, err
 	}
@@ -89,5 +97,6 @@ func resultToFeed(result *sql.Rows) (*feed.Feed, error) {
 		URL:         url,
 		Lang:        lang,
 		UpdatedAt:   updatedAtTime,
+		UnreadCount: unreadCount,
 	}, nil
 }

@@ -33,6 +33,7 @@ type FeedService interface {
 	AddFeed(command *feed.AddFeedCommand) (*feed.Feed, error)
 	ListFeeds(command *feed.ListFeedsCommand) ([]*feed.Feed, error)
 	FetchItems(int) ([]*item.Item, error)
+	DeleteFeed(command *feed.DeleteFeedCommand) error
 }
 
 type ItemService interface {
@@ -45,6 +46,7 @@ type ItemService interface {
 	UnreadFeedItems(*item.UnreadFeedItemsCommand) error
 	GetStarredItemsCount() (int, error)
 	GetUnreadItemsCount() (int, error)
+	DeleteFeedItems(*item.DeleteFeedItemsCommand) error
 }
 
 // Router handles http requests
@@ -71,6 +73,7 @@ func New(itemService ItemService, feedService FeedService) (*Router, error) {
 	router.POST("/feeds/:id/read", chain.Wrap(h.readFeedItems))
 	router.POST("/feeds/:id/unread", chain.Wrap(h.unreadFeedItems))
 	router.PUT("/items/:id", chain.Wrap(h.updateItem))
+	router.DELETE("/feeds/:id", chain.Wrap(h.deleteFeed))
 	router.GET("/items/unread", chain.Wrap(h.getUnreadItems))
 	router.GET("/items/starred", chain.Wrap(h.getStarredItems))
 	router.GET("/items/unread/count", chain.Wrap(h.getUnreadItemsCount))

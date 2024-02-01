@@ -10,4 +10,5 @@ type Feed struct {
 	URL         string
 	Lang        string
 	UpdatedAt   time.Time
+	UnreadCount int
 }

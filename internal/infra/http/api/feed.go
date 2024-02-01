@@ -160,3 +160,25 @@ func (h *Router) unreadFeedItems(w http.ResponseWriter, r *http.Request, p httpr
 	w.WriteHeader(http.StatusNoContent)
 	return
 }
+
+func (h *Router) deleteFeed(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	command, err := toDeleteFeedCommand(w, r, p)
+	if err != nil {
+		_ = InternalError(w, "cannot delete feed")
+		return
+	}
+
+	cmdDeleteFeedItems, err := toDeleteFeedItemsCommand(w, r, p)
+	if err := h.itemService.DeleteFeedItems(cmdDeleteFeedItems); err != nil {
+		_ = InternalError(w, "cannot delete feed")
+		return
+	}
+
+	if err := h.feedService.DeleteFeed(command); err != nil {
+		_ = InternalError(w, "cannot delete feed")
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+	return
+}

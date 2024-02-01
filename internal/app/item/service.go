@@ -43,3 +43,7 @@ func (s *ServiceImpl) GetStarredItemsCount() (int, error) {
 func (s *ServiceImpl) GetUnreadItemsCount() (int, error) {
 	return s.repository.GetUnreadItemsCount()
 }
+
+func (s *ServiceImpl) DeleteFeedItems(command *DeleteFeedItemsCommand) error {
+	return s.repository.DeleteFeedItems(command.FeedId)
+}

@@ -10,4 +10,5 @@ type Repository interface {
 	UnreadFeedItems(feedId int) error
 	GetStarredItemsCount() (int, error)
 	GetUnreadItemsCount() (int, error)
+	DeleteFeedItems(feedId int) error
 }

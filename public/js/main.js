@@ -20,9 +20,6 @@ $(document).ready(function () {
     if(feeds.container.find('>li').length < 2){
       $('#feeds-actions').hide();
     }
-    $('#update-all').click(function(){
-      feeds.update_all();
-    });
     $(document).bind('keydown',function(e){
       var code = (e.keyCode ? e.keyCode : e.which);
       if(code == 32) {
@@ -41,8 +38,6 @@ $(document).ready(function () {
 function addFeed(url){
   var aInput=$("#urlToAdd");
   var af=$('#addfeed .add');
-  //var currImg='url(public/images/add.png)';
-  //af.css('background-image','url(public/images/loading.gif)');
   af.find("span").text('Adding Feed...');
   af.find("i").removeClass("icon-plus");
   af.find("i").addClass("icon-spin icon-spinner");
@@ -80,7 +75,6 @@ function showAddFeed(e){
   aButton.find("span").text("");
   var aInput=$("#urlToAdd");
   aInput.removeClass('ui-state-error');
-  //aButton.parent().animate({width:"230px"},500,null,function(e){
       aInput.show();
       aButton.unbind('click');
       aButton.click(function(e){
@@ -103,7 +97,6 @@ function showAddFeed(e){
           hideAddFeed();
         }
       });
-  //});
 }
 
 function hideAddFeed(){
@@ -114,9 +107,6 @@ function hideAddFeed(){
   aButton.find("span").text("Feed");
   aInput.hide();
   $('#addfeed > *').click(showAddFeed);
-  //aButton.parent().animate({width:"60px"},300,null,function(){
-      //$('#addfeed > *').click(showAddFeed);
-  //});
 }
 
 

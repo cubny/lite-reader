@@ -21,6 +21,11 @@ var feeds = {
       $this.addClass("selected");
       $("#title").html($this.find(".feedtitle").html());
       $("#actions .action").attr("id", id).show();
+      if(id === "unread" || id === "starred"){
+        $(".remove").hide()
+      } else {
+        $(".remove").show()
+      }
       feeds.currentFeed = $this;
     });
     setTimeout(function () {
@@ -58,19 +63,22 @@ var feeds = {
       .append(
         $("<div/>")
           .addClass("count")
-          .html("<span>" + opts.unread + "</span>"),
+          .html("<span>" + opts.unread_count + "</span>"),
       );
     feeds.container.append($item);
     feeds.blink(opts);
     $("#feeds-actions").show();
-    // $item.animate({backgroundColor:"white"},2000);
   },
   del: function (id) {
-    $.get("agg/del/" + id, function () {
-      feeds.container.find("li[id='" + id + "']").remove();
-      $("#items").html("");
-      $("#actions .action").hide();
-      $("#feedbar #title").html("");
+    $.ajax({
+        url: `feeds/${id}`,
+        type: "DELETE",
+        success: function (data) {
+          feeds.container.find("li[id='" + id + "']").remove();
+          $("#items").html("");
+          $("#actions .action").hide();
+          $("#feedbar #title").html("");
+        },
     });
   },
   markread: function (id) {
@@ -103,22 +111,6 @@ var feeds = {
         const unread = items.render(data);
         feeds.setCurrentCount(unread);
       },
-    });
-  },
-  update_all: function () {
-    $.getJSON("agg/update_all", function (data) {
-      $.each(data, function (id, feed_items) {
-        var unreads = 0;
-        $.each(feed_items, function (item_id, item) {
-          if (item.is_new == 1) {
-            unreads++;
-          }
-        });
-        feeds.setCount("#" + id, unreads);
-        if (id == feeds.currentFeed.attr("id")) {
-          items.render(feed_items);
-        }
-      });
     });
   },
   getCurrentCount: function () {
