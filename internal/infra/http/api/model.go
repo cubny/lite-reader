@@ -106,14 +106,6 @@ func toAddFeedCommand(w http.ResponseWriter, r *http.Request, p httprouter.Param
 	}, nil
 }
 
-func toGetUnreadItemsCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*item.GetUnreadItemsCommand, error) {
-	return &item.GetUnreadItemsCommand{}, nil
-}
-
-func toGetStarredItemsCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*item.GetStarredItemsCommand, error) {
-	return &item.GetStarredItemsCommand{}, nil
-}
-
 func toGetFeedItemsCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*item.GetFeedItemsCommand, error) {
 	feedIdString := p.ByName("id")
 	feedId, err := strconv.Atoi(feedIdString)
@@ -124,10 +116,6 @@ func toGetFeedItemsCommand(w http.ResponseWriter, r *http.Request, p httprouter.
 	return &item.GetFeedItemsCommand{
 		FeedId: feedId,
 	}, nil
-}
-
-func toListFeedsCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*feed.ListFeedsCommand, error) {
-	return &feed.ListFeedsCommand{}, nil
 }
 
 type UpdateItemRequest struct {

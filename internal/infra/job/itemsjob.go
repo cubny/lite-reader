@@ -7,7 +7,7 @@ import (
 )
 
 type FeedService interface {
-	ListFeeds(command *feed.ListFeedsCommand) ([]*feed.Feed, error)
+	ListFeeds() ([]*feed.Feed, error)
 	FetchItems(feedId int) ([]*item.Item, error)
 }
 type ItemService interface {
@@ -24,9 +24,7 @@ func NewItemsJob(feedService FeedService, itemService ItemService) *ItemsJob {
 }
 
 func (j *ItemsJob) Execute() {
-	listFeedsCommand := &feed.ListFeedsCommand{}
-	log.Infof("Fetching items for feeds")
-	feeds, err := j.feedService.ListFeeds(listFeedsCommand)
+	feeds, err := j.feedService.ListFeeds()
 	if err != nil {
 		return
 	}

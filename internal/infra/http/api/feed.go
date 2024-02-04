@@ -46,13 +46,7 @@ func (h *Router) addFeed(w http.ResponseWriter, r *http.Request, p httprouter.Pa
 	}
 }
 func (h *Router) listFeeds(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	command, err := toListFeedsCommand(w, r, p)
-	if err != nil {
-		_ = InternalError(w, "cannot list feeds")
-		return
-	}
-
-	resp, err := h.feedService.ListFeeds(command)
+	resp, err := h.feedService.ListFeeds()
 	if err != nil {
 		log.WithError(err).Errorf("listFeeds: service %s", err)
 		_ = InternalError(w, "cannot list feeds")

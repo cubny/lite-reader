@@ -8,13 +8,7 @@ import (
 )
 
 func (h *Router) getStarredItems(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	command, err := toGetStarredItemsCommand(w, r, p)
-	if err != nil {
-		_ = InternalError(w, "cannot get unread items")
-		return
-	}
-
-	items, err := h.itemService.GetStarredItems(command)
+	items, err := h.itemService.GetStarredItems()
 	if err != nil {
 		_ = InternalError(w, "cannot get unread items")
 		return
@@ -29,13 +23,7 @@ func (h *Router) getStarredItems(w http.ResponseWriter, r *http.Request, p httpr
 }
 
 func (h *Router) getUnreadItems(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	command, err := toGetUnreadItemsCommand(w, r, p)
-	if err != nil {
-		_ = InternalError(w, "cannot get unread items")
-		return
-	}
-
-	items, err := h.itemService.GetUnreadItems(command)
+	items, err := h.itemService.GetUnreadItems()
 	if err != nil {
 		_ = InternalError(w, "cannot get unread items")
 		return

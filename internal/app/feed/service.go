@@ -7,26 +7,32 @@ import (
 	"time"
 
 	"github.com/mmcdole/gofeed"
-	"github.com/nikhil1raghav/feedfinder"
 )
 
 type ServiceImpl struct {
 	repository Repository
+	Parser     Parser
+	finder     Finder
 }
 
-func NewService(repository Repository) (*ServiceImpl, error) {
-	return &ServiceImpl{repository: repository}, nil
+func NewService(repository Repository, parser Parser, finder Finder) *ServiceImpl {
+	return &ServiceImpl{
+		repository: repository,
+		Parser:     parser,
+		finder:     finder,
+	}
 }
 
 func (s *ServiceImpl) AddFeed(command *AddFeedCommand) (*Feed, error) {
-	fp := gofeed.NewParser()
-	parsedFeed, err := fp.ParseURL(command.URL)
+	parsedFeed, err := s.Parser.ParseURL(command.URL)
 	switch {
 	case errors.Is(err, gofeed.ErrFeedTypeNotDetected):
-		f := feedfinder.NewFeedFinder()
-		links, _ := f.FindFeeds(command.URL)
+		links, err := s.finder.FindFeeds(command.URL)
+		if err != nil {
+			return nil, fmt.Errorf("cannot find feeds: %w", err)
+		}
 		for _, link := range links {
-			parsedFeed, err = fp.ParseURL(link)
+			parsedFeed, err = s.Parser.ParseURL(link)
 			if err == nil {
 				break
 			}
@@ -59,7 +65,7 @@ func (s *ServiceImpl) AddFeed(command *AddFeedCommand) (*Feed, error) {
 	return feed, nil
 }
 
-func (s *ServiceImpl) ListFeeds(command *ListFeedsCommand) ([]*Feed, error) {
+func (s *ServiceImpl) ListFeeds() ([]*Feed, error) {
 	return s.repository.ListFeeds()
 }
 
@@ -69,8 +75,7 @@ func (s *ServiceImpl) FetchItems(feedId int) ([]*item.Item, error) {
 		return nil, fmt.Errorf("cannot get feed: %w", err)
 	}
 
-	fp := gofeed.NewParser()
-	parsedFeed, err := fp.ParseURL(feed.URL)
+	parsedFeed, err := s.Parser.ParseURL(feed.URL)
 	if err != nil {
 		return nil, fmt.Errorf("cannot parse feed: %w", err)
 	}

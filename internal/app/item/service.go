@@ -8,11 +8,11 @@ func NewService(repository Repository) (*ServiceImpl, error) {
 	return &ServiceImpl{repository: repository}, nil
 }
 
-func (s *ServiceImpl) GetUnreadItems(command *GetUnreadItemsCommand) ([]*Item, error) {
+func (s *ServiceImpl) GetUnreadItems() ([]*Item, error) {
 	return s.repository.GetUnreadItems()
 }
 
-func (s *ServiceImpl) GetStarredItems(command *GetStarredItemsCommand) ([]*Item, error) {
+func (s *ServiceImpl) GetStarredItems() ([]*Item, error) {
 	return s.repository.GetStarredItems()
 }
 

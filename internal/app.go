@@ -6,6 +6,8 @@ import (
 	"embed"
 	"fmt"
 	"github.com/cubny/lite-reader/internal/infra/job"
+	"github.com/mmcdole/gofeed"
+	"github.com/nikhil1raghav/feedfinder"
 	"net/http"
 	"os"
 	"os/signal"
@@ -117,12 +119,9 @@ func (a *App) migrate() *App {
 
 func (a *App) initServices() *App {
 	return a.ifNoError(func() *App {
-		feedService, err := feed.NewService(a.feedRepository)
-		if err != nil {
-			a.err = err
-			return a
-		}
-
+		finder := feedfinder.NewFeedFinder()
+		parser := gofeed.NewParser()
+		feedService := feed.NewService(a.feedRepository, parser, finder)
 		a.feedService = feedService
 		a.jobFeedService = feedService
 

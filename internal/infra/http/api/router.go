@@ -31,14 +31,14 @@ import (
 
 type FeedService interface {
 	AddFeed(command *feed.AddFeedCommand) (*feed.Feed, error)
-	ListFeeds(command *feed.ListFeedsCommand) ([]*feed.Feed, error)
+	ListFeeds() ([]*feed.Feed, error)
 	FetchItems(int) ([]*item.Item, error)
 	DeleteFeed(command *feed.DeleteFeedCommand) error
 }
 
 type ItemService interface {
-	GetUnreadItems(*item.GetUnreadItemsCommand) ([]*item.Item, error)
-	GetStarredItems(*item.GetStarredItemsCommand) ([]*item.Item, error)
+	GetUnreadItems() ([]*item.Item, error)
+	GetStarredItems() ([]*item.Item, error)
 	GetFeedItems(*item.GetFeedItemsCommand) ([]*item.Item, error)
 	UpsertItems(command *item.UpsertItemsCommand) error
 	UpdateItem(*item.UpdateItemCommand) error

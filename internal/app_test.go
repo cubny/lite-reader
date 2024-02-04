@@ -26,4 +26,10 @@ func TestApp_StopOnError(t *testing.T) {
 
 	t.Run("initConfig", testFn(app.initConfig))
 	t.Run("initAPIServer", testFn(app.initAPIServer))
+	t.Run("initSqlClient", testFn(app.initSqlClient))
+	t.Run("migrate", testFn(app.migrate))
+	t.Run("initRepo", testFn(app.initRepo))
+	t.Run("initServices", testFn(app.initServices))
+	t.Run("initScheduler", testFn(app.initScheduler))
+
 }
