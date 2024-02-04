@@ -125,11 +125,7 @@ func (a *App) initServices() *App {
 		a.feedService = feedService
 		a.jobFeedService = feedService
 
-		itemService, err := item.NewService(a.itemRepository)
-		if err != nil {
-			a.err = err
-			return a
-		}
+		itemService := item.NewService(a.itemRepository)
 		a.itemService = itemService
 		a.jobItemService = itemService
 		return a

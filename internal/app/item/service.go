@@ -4,8 +4,8 @@ type ServiceImpl struct {
 	repository Repository
 }
 
-func NewService(repository Repository) (*ServiceImpl, error) {
-	return &ServiceImpl{repository: repository}, nil
+func NewService(repository Repository) *ServiceImpl {
+	return &ServiceImpl{repository: repository}
 }
 
 func (s *ServiceImpl) GetUnreadItems() ([]*Item, error) {
