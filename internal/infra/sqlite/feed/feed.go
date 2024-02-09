@@ -30,7 +30,10 @@ func (r *DB) AddFeed(feed *feed.Feed) (int, error) {
 }
 
 func (r *DB) GetFeed(id int) (*feed.Feed, error) {
-	rows, err := r.sqliteDB.Query("SELECT id, title, desc, link, url, lang, updated_at FROM rss WHERE id = ?", id)
+	query := "SELECT " +
+		"id, title, desc, link, url, lang, updated_at, " +
+		"(SELECT COUNT(*) FROM item WHERE rss_id = rss.id AND is_new = 1) AS unread_count FROM rss where id = ?"
+	rows, err := r.sqliteDB.Query(query, id)
 	if err != nil {
 		return nil, err
 	}

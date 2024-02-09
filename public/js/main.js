@@ -42,7 +42,7 @@ function addFeed(url){
   af.find("i").removeClass("icon-plus");
   af.find("i").addClass("icon-spin icon-spinner");
   $.ajax({
-      url:'agg/add',
+      url:'feeds',
       type:"POST",
       data: JSON.stringify({url:url}),
       dataType:"json",

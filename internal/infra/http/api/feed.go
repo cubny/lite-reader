@@ -25,7 +25,6 @@ import (
 func (h *Router) addFeed(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	command, err := toAddFeedCommand(w, r, p)
 	if err != nil {
-		_ = InternalError(w, "failed to parse request body")
 		return
 	}
 
@@ -64,7 +63,6 @@ func (h *Router) listFeeds(w http.ResponseWriter, r *http.Request, p httprouter.
 func (h *Router) getFeedItems(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	command, err := toGetFeedItemsCommand(w, r, p)
 	if err != nil {
-		_ = InternalError(w, "cannot get feed items")
 		return
 	}
 
@@ -89,21 +87,20 @@ func (h *Router) fetchFeedNewItems(w http.ResponseWriter, r *http.Request, p htt
 	command, err := toFetchFeedNewItemsCommand(w, r, p)
 	if err != nil {
 		log.WithError(err).Errorf("fetchFeedNewItems: toFetchFeedNewItemsCommand")
-		_ = InternalError(w, "cannot update feed")
 		return
 	}
 
 	items, err := h.feedService.FetchItems(command.FeedId)
 	if err != nil {
 		log.WithError(err).Errorf("fetchFeedNewItems: FetchItems")
-		_ = InternalError(w, "cannot update feed")
+		_ = InternalError(w, "cannot fetch feed items")
 		return
 	}
 
 	upsertItemsCommand := &item.UpsertItemsCommand{FeedId: command.FeedId, Items: items}
 	if err := h.itemService.UpsertItems(upsertItemsCommand); err != nil {
 		log.WithError(err).Errorf("fetchFeedNewItems: UpsertItems")
-		_ = InternalError(w, "cannot update feed")
+		_ = InternalError(w, "cannot store feed items")
 		return
 	}
 
@@ -111,7 +108,7 @@ func (h *Router) fetchFeedNewItems(w http.ResponseWriter, r *http.Request, p htt
 	items, err = h.itemService.GetFeedItems(getFeedItemsCommand)
 	if err != nil {
 		log.WithError(err).Errorf("fetchFeedNewItems: GetFeedItems")
-		_ = InternalError(w, "cannot update feed")
+		_ = InternalError(w, "cannot get feed items")
 		return
 	}
 

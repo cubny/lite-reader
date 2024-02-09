@@ -39,7 +39,7 @@ var feeds = {
   },
   load: function (id) {
     const url =
-      id === "unread" || id === "starred" ? "items/" + id : "items/feed/" + id;
+      id === "unread" || id === "starred" ? `items/${id}` : `feeds/${id}/items`;
     $.getJSON(url, function (data) {
       items.render(data);
     });
