@@ -7,6 +7,21 @@ import (
 	"net/http"
 )
 
+func (h *Router) updateItem(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	command, err := toUpdateItemCommand(w, r, p)
+	if err != nil {
+		return
+	}
+
+	if err := h.itemService.UpdateItem(command); err != nil {
+		_ = InternalError(w, "cannot update item")
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+	return
+}
+
 func (h *Router) getStarredItems(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	items, err := h.itemService.GetStarredItems()
 	if err != nil {
@@ -35,21 +50,6 @@ func (h *Router) getUnreadItems(w http.ResponseWriter, r *http.Request, p httpro
 		_ = InternalError(w, "cannot encode response")
 		return
 	}
-}
-func (h *Router) updateItem(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	command, err := toUpdateItemCommand(w, r, p)
-	if err != nil {
-		_ = InternalError(w, "cannot update item")
-		return
-	}
-
-	if err := h.itemService.UpdateItem(command); err != nil {
-		_ = InternalError(w, "cannot update item")
-		return
-	}
-
-	w.WriteHeader(http.StatusNoContent)
-	return
 }
 
 func (h *Router) getUnreadItemsCount(w http.ResponseWriter, r *http.Request, p httprouter.Params) {

@@ -13,3 +13,5 @@ import (
 //go:generate mockgen -destination=./app/item/repo_mock.go -package=mocks -mock_names=Repository=Repository github.com/cubny/lite-reader/internal/app/item Repository
 //go:generate mockgen -destination=./infra/http/api/feed_mock.go -package=mocks -mock_names=FeedService=FeedService   github.com/cubny/lite-reader/internal/infra/http/api FeedService
 //go:generate mockgen -destination=./infra/http/api/item_mock.go -package=mocks -mock_names=ItemService=ItemService   github.com/cubny/lite-reader/internal/infra/http/api ItemService
+
+//go:generate mockgen -destination=./infra/job/dependencies_mock.go -package=mocks -mock_names=FeedService=FeedService,ItemService=ItemService github.com/cubny/lite-reader/internal/infra/job FeedService,ItemService

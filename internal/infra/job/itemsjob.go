@@ -1,18 +1,9 @@
 package job
 
 import (
-	"github.com/cubny/lite-reader/internal/app/feed"
 	"github.com/cubny/lite-reader/internal/app/item"
 	log "github.com/sirupsen/logrus"
 )
-
-type FeedService interface {
-	ListFeeds() ([]*feed.Feed, error)
-	FetchItems(feedId int) ([]*item.Item, error)
-}
-type ItemService interface {
-	UpsertItems(command *item.UpsertItemsCommand) error
-}
 
 type ItemsJob struct {
 	feedService FeedService

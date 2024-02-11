@@ -67,14 +67,17 @@ func New(itemService ItemService, feedService FeedService) (*Router, error) {
 	chain := middleware.NewChain(middleware.ContentTypeJSON)
 
 	router.GET("/health", h.health)
-	router.POST("/feeds", chain.Wrap(h.addFeed))
+
 	router.GET("/feeds", chain.Wrap(h.listFeeds))
+	router.POST("/feeds", chain.Wrap(h.addFeed))
+
+	router.DELETE("/feeds/:id", chain.Wrap(h.deleteFeed))
 	router.PUT("/feeds/:id/fetch", chain.Wrap(h.fetchFeedNewItems))
 	router.POST("/feeds/:id/read", chain.Wrap(h.readFeedItems))
 	router.POST("/feeds/:id/unread", chain.Wrap(h.unreadFeedItems))
 	router.GET("/feeds/:id/items", chain.Wrap(h.getFeedItems))
+
 	router.PUT("/items/:id", chain.Wrap(h.updateItem))
-	router.DELETE("/feeds/:id", chain.Wrap(h.deleteFeed))
 	router.GET("/items/unread", chain.Wrap(h.getUnreadItems))
 	router.GET("/items/starred", chain.Wrap(h.getStarredItems))
 	router.GET("/items/unread/count", chain.Wrap(h.getUnreadItemsCount))

@@ -123,7 +123,6 @@ func (h *Router) fetchFeedNewItems(w http.ResponseWriter, r *http.Request, p htt
 func (h *Router) readFeedItems(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	command, err := toReadFeedItemsCommand(w, r, p)
 	if err != nil {
-		_ = InternalError(w, "cannot read feed items")
 		return
 	}
 
@@ -139,7 +138,6 @@ func (h *Router) readFeedItems(w http.ResponseWriter, r *http.Request, p httprou
 func (h *Router) unreadFeedItems(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	command, err := toUnreadFeedItemCommand(w, r, p)
 	if err != nil {
-		_ = InternalError(w, "cannot unread feed items")
 		return
 	}
 
@@ -155,7 +153,6 @@ func (h *Router) unreadFeedItems(w http.ResponseWriter, r *http.Request, p httpr
 func (h *Router) deleteFeed(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	command, err := toDeleteFeedCommand(w, r, p)
 	if err != nil {
-		_ = InternalError(w, "cannot delete feed")
 		return
 	}
 

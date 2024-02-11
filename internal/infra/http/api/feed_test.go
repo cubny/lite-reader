@@ -1,69 +1,15 @@
 package api_test
 
 import (
-	"encoding/json"
 	"github.com/cubny/lite-reader/internal/app/feed"
 	"github.com/cubny/lite-reader/internal/app/item"
-	"github.com/cubny/lite-reader/internal/infra/http/api"
 	mocks "github.com/cubny/lite-reader/internal/mocks/infra/http/api"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
-	"io"
 	"net/http"
-	"net/http/httptest"
-	"strings"
 	"testing"
 	"time"
 )
-
-type spec struct {
-	Name           string
-	ReqBody        string
-	ExpectedStatus int
-	ExpectedBody   string
-	Method         string
-	Target         string
-	MockFn         func(i *mocks.ItemService, f *mocks.FeedService)
-}
-
-func (s *spec) execHTTPTestCases(i *mocks.ItemService, f *mocks.FeedService) func(t *testing.T) {
-	return func(t *testing.T) {
-		s.MockFn(i, f)
-		handler, err := api.New(i, f)
-		assert.Nil(t, err)
-		s.HandlerTest(t, handler)
-	}
-}
-
-// HandlerTest is a helper method to run http test cases
-func (s *spec) HandlerTest(t *testing.T, h *api.Router) {
-	t.Helper()
-
-	req := httptest.NewRequest(s.Method, s.Target, strings.NewReader(s.ReqBody))
-
-	rec := httptest.NewRecorder()
-	h.ServeHTTP(rec, req)
-
-	resp := rec.Result()
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	assert.Nil(t, err)
-
-	switch {
-	case s.ExpectedBody != "" && isJSON(s.ExpectedBody):
-		assert.JSONEq(t, s.ExpectedBody, string(body))
-	case s.ExpectedBody != "" && !isJSON(s.ExpectedBody):
-		assert.Equal(t, s.ExpectedBody, strings.TrimSpace(string(body)))
-	}
-
-	assert.Equal(t, s.ExpectedStatus, resp.StatusCode)
-}
-
-func isJSON(str string) bool {
-	var js json.RawMessage
-	return json.Unmarshal([]byte(str), &js) == nil
-}
 
 func TestRouter_addFeed(t *testing.T) {
 	ctrl := gomock.NewController(t)
@@ -241,13 +187,193 @@ func TestRouter_fetchFeedNewItems(t *testing.T) {
 			MockFn:         func(i *mocks.ItemService, f *mocks.FeedService) {},
 		},
 		{
-			Name:           "service returns error",
+			Name:           "feed service fetch items returns error",
 			Method:         http.MethodPut,
 			Target:         "/feeds/1/fetch",
 			ExpectedStatus: http.StatusInternalServerError,
 			ExpectedBody:   `{"error":{"code":500,"details":"Internal error - cannot fetch feed items"}}`,
 			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
 				f.EXPECT().FetchItems(1).Return(nil, assert.AnError)
+			},
+		},
+		{
+			Name:           "item service returns error",
+			Method:         http.MethodPut,
+			Target:         "/feeds/1/fetch",
+			ExpectedStatus: http.StatusInternalServerError,
+			ExpectedBody:   `{"error":{"code":500,"details":"Internal error - cannot store feed items"}}`,
+			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
+				f.EXPECT().FetchItems(1).Return([]*item.Item{
+					{
+						Id:        1,
+						Title:     "title",
+						Desc:      "description",
+						Dir:       "dir",
+						Link:      "link",
+						IsNew:     true,
+						Starred:   false,
+						Timestamp: now,
+					},
+				}, nil)
+				i.EXPECT().UpsertItems(gomock.Any()).Return(assert.AnError)
+			},
+		},
+		{
+			Name:           "item service get feed items returns error",
+			Method:         http.MethodPut,
+			Target:         "/feeds/1/fetch",
+			ExpectedStatus: http.StatusInternalServerError,
+			ExpectedBody:   `{"error":{"code":500,"details":"Internal error - cannot get feed items"}}`,
+			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
+				f.EXPECT().FetchItems(1).Return([]*item.Item{
+					{
+						Id:        1,
+						Title:     "title",
+						Desc:      "description",
+						Dir:       "dir",
+						Link:      "link",
+						IsNew:     true,
+						Starred:   false,
+						Timestamp: now,
+					},
+				}, nil)
+				i.EXPECT().UpsertItems(gomock.Any()).Return(nil)
+				i.EXPECT().GetFeedItems(gomock.Any()).Return(nil, assert.AnError)
+			},
+		},
+	}
+
+	for _, s := range specs {
+		t.Run(s.Name, s.execHTTPTestCases(itemService, feedService))
+	}
+}
+
+func TestRouter_readFeedItems(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	itemService := mocks.NewItemService(ctrl)
+	feedService := mocks.NewFeedService(ctrl)
+
+	specs := []spec{
+		{
+			Name:           "ok",
+			Method:         http.MethodPost,
+			Target:         "/feeds/1/read",
+			ExpectedStatus: http.StatusNoContent,
+			ExpectedBody:   ``,
+			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
+				i.EXPECT().ReadFeedItems(gomock.Any()).Return(nil)
+			},
+		},
+		{
+			Name:           "invalid feed id",
+			Method:         http.MethodPost,
+			Target:         "/feeds/invalid/read",
+			ExpectedStatus: http.StatusUnprocessableEntity,
+			ExpectedBody:   `{"error":{"code":422,"details":"Invalid params - invalid feed id"}}`,
+			MockFn:         func(i *mocks.ItemService, f *mocks.FeedService) {},
+		},
+		{
+			Name:           "service returns error",
+			Method:         http.MethodPost,
+			Target:         "/feeds/1/read",
+			ExpectedStatus: http.StatusInternalServerError,
+			ExpectedBody:   `{"error":{"code":500,"details":"Internal error - cannot read feed items"}}`,
+			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
+				i.EXPECT().ReadFeedItems(gomock.Any()).Return(assert.AnError)
+			},
+		},
+	}
+
+	for _, s := range specs {
+		t.Run(s.Name, s.execHTTPTestCases(itemService, feedService))
+	}
+}
+
+func TestRouter_unreadFeedItems(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	itemService := mocks.NewItemService(ctrl)
+	feedService := mocks.NewFeedService(ctrl)
+
+	specs := []spec{
+		{
+			Name:           "ok",
+			Method:         http.MethodPost,
+			Target:         "/feeds/1/unread",
+			ExpectedStatus: http.StatusNoContent,
+			ExpectedBody:   ``,
+			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
+				i.EXPECT().UnreadFeedItems(gomock.Any()).Return(nil)
+			},
+		},
+		{
+			Name:           "invalid feed id",
+			Method:         http.MethodPost,
+			Target:         "/feeds/invalid/unread",
+			ExpectedStatus: http.StatusUnprocessableEntity,
+			ExpectedBody:   `{"error":{"code":422,"details":"Invalid params - invalid feed id"}}`,
+			MockFn:         func(i *mocks.ItemService, f *mocks.FeedService) {},
+		},
+		{
+			Name:           "service returns error",
+			Method:         http.MethodPost,
+			Target:         "/feeds/1/unread",
+			ExpectedStatus: http.StatusInternalServerError,
+			ExpectedBody:   `{"error":{"code":500,"details":"Internal error - cannot unread feed items"}}`,
+			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
+				i.EXPECT().UnreadFeedItems(gomock.Any()).Return(assert.AnError)
+			},
+		},
+	}
+
+	for _, s := range specs {
+		t.Run(s.Name, s.execHTTPTestCases(itemService, feedService))
+	}
+}
+
+func TestRouter_DeleteFeed(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	itemService := mocks.NewItemService(ctrl)
+	feedService := mocks.NewFeedService(ctrl)
+
+	specs := []spec{
+		{
+			Name:           "ok",
+			Method:         http.MethodDelete,
+			Target:         "/feeds/1",
+			ExpectedStatus: http.StatusNoContent,
+			ExpectedBody:   ``,
+			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
+				f.EXPECT().DeleteFeed(gomock.Any()).Return(nil)
+				i.EXPECT().DeleteFeedItems(gomock.Any()).Return(nil)
+			},
+		},
+		{
+			Name:           "invalid feed id",
+			Method:         http.MethodDelete,
+			Target:         "/feeds/invalid",
+			ExpectedStatus: http.StatusUnprocessableEntity,
+			ExpectedBody:   `{"error":{"code":422,"details":"Invalid params - invalid feed id"}}`,
+			MockFn:         func(i *mocks.ItemService, f *mocks.FeedService) {},
+		},
+		{
+			Name:           "item service returns error",
+			Method:         http.MethodDelete,
+			Target:         "/feeds/1",
+			ExpectedStatus: http.StatusInternalServerError,
+			ExpectedBody:   `{"error":{"code":500,"details":"Internal error - cannot delete feed"}}`,
+			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
+				i.EXPECT().DeleteFeedItems(gomock.Any()).Return(assert.AnError)
+			},
+		},
+		{
+			Name:           "feed service returns error",
+			Method:         http.MethodDelete,
+			Target:         "/feeds/1",
+			ExpectedStatus: http.StatusInternalServerError,
+			ExpectedBody:   `{"error":{"code":500,"details":"Internal error - cannot delete feed"}}`,
+			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
+				i.EXPECT().DeleteFeedItems(gomock.Any()).Return(nil)
+				f.EXPECT().DeleteFeed(gomock.Any()).Return(assert.AnError)
 			},
 		},
 	}

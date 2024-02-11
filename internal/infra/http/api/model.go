@@ -131,8 +131,8 @@ func toUpdateItemCommand(w http.ResponseWriter, r *http.Request, p httprouter.Pa
 		return nil, err
 	}
 
-	requst := &UpdateItemRequest{}
-	if err := json.NewDecoder(r.Body).Decode(requst); err != nil {
+	request := &UpdateItemRequest{}
+	if err := json.NewDecoder(r.Body).Decode(request); err != nil {
 		log.WithError(err).Errorf("toUpdateItemCommand: decoder %s", err)
 		_ = BadRequest(w, "cannot decode request body")
 		return nil, err
@@ -140,8 +140,8 @@ func toUpdateItemCommand(w http.ResponseWriter, r *http.Request, p httprouter.Pa
 
 	return &item.UpdateItemCommand{
 		Id:      itemId,
-		Starred: requst.Starred,
-		IsNew:   requst.IsNew,
+		Starred: request.Starred,
+		IsNew:   request.IsNew,
 	}, nil
 }
 
@@ -175,7 +175,7 @@ func toUnreadFeedItemCommand(w http.ResponseWriter, r *http.Request, p httproute
 	feedIdString := p.ByName("id")
 	feedId, err := strconv.Atoi(feedIdString)
 	if err != nil {
-		_ = InvalidParams(w, "invalid item id")
+		_ = InvalidParams(w, "invalid feed id")
 		return nil, err
 	}
 
