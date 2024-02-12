@@ -12,8 +12,9 @@ package mocks
 import (
 	reflect "reflect"
 
-	feed "github.com/cubny/lite-reader/internal/app/feed"
 	gomock "go.uber.org/mock/gomock"
+
+	feed "github.com/cubny/lite-reader/internal/app/feed"
 )
 
 // Repository is a mock of Repository interface.

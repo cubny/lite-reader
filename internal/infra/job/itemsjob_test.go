@@ -1,13 +1,15 @@
 package job_test
 
 import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
+
 	"github.com/cubny/lite-reader/internal/app/feed"
 	"github.com/cubny/lite-reader/internal/app/item"
 	"github.com/cubny/lite-reader/internal/infra/job"
 	mocks "github.com/cubny/lite-reader/internal/mocks/infra/job"
-	"github.com/stretchr/testify/assert"
-	"go.uber.org/mock/gomock"
-	"testing"
 )
 
 func TestItemsJob_Execute(t *testing.T) {

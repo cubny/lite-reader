@@ -20,12 +20,11 @@ package api
 import (
 	"net/http"
 
-	"github.com/cubny/lite-reader/internal/app/feed"
-	"github.com/cubny/lite-reader/internal/app/item"
-
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
 
+	"github.com/cubny/lite-reader/internal/app/feed"
+	"github.com/cubny/lite-reader/internal/app/item"
 	"github.com/cubny/lite-reader/internal/infra/http/api/middleware"
 )
 

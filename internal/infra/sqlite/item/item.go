@@ -2,8 +2,9 @@ package item
 
 import (
 	"database/sql"
-	_ "github.com/mattn/go-sqlite3"
 	"time"
+
+	_ "github.com/mattn/go-sqlite3"
 
 	"github.com/cubny/lite-reader/internal/app/item"
 )

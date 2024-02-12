@@ -1,13 +1,13 @@
 package api_test
 
 import (
-	"github.com/cubny/lite-reader/internal/app/item"
-	"github.com/stretchr/testify/assert"
 	"net/http"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 
+	"github.com/cubny/lite-reader/internal/app/item"
 	mocks "github.com/cubny/lite-reader/internal/mocks/infra/http/api"
 )
 

@@ -3,10 +3,11 @@ package feed
 import (
 	"errors"
 	"fmt"
-	"github.com/cubny/lite-reader/internal/app/item"
 	"time"
 
 	"github.com/mmcdole/gofeed"
+
+	"github.com/cubny/lite-reader/internal/app/item"
 )
 
 type ServiceImpl struct {

@@ -1,14 +1,16 @@
 package api_test
 
 import (
-	"github.com/cubny/lite-reader/internal/app/feed"
-	"github.com/cubny/lite-reader/internal/app/item"
-	mocks "github.com/cubny/lite-reader/internal/mocks/infra/http/api"
-	"github.com/stretchr/testify/assert"
-	"go.uber.org/mock/gomock"
 	"net/http"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
+
+	"github.com/cubny/lite-reader/internal/app/feed"
+	"github.com/cubny/lite-reader/internal/app/item"
+	mocks "github.com/cubny/lite-reader/internal/mocks/infra/http/api"
 )
 
 func TestRouter_addFeed(t *testing.T) {

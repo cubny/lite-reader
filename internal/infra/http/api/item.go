@@ -2,9 +2,10 @@ package api
 
 import (
 	"encoding/json"
+	"net/http"
+
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
-	"net/http"
 )
 
 func (h *Router) updateItem(w http.ResponseWriter, r *http.Request, p httprouter.Params) {

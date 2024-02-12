@@ -1,15 +1,15 @@
 package feed_test
 
 import (
-	"github.com/cubny/lite-reader/internal/app/feed"
-	"github.com/cubny/lite-reader/internal/app/item"
-	"github.com/mmcdole/gofeed"
 	"testing"
 	"time"
 
+	"github.com/mmcdole/gofeed"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 
+	"github.com/cubny/lite-reader/internal/app/feed"
+	"github.com/cubny/lite-reader/internal/app/item"
 	mocks "github.com/cubny/lite-reader/internal/mocks/app/feed"
 )
 

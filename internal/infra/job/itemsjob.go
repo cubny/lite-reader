@@ -1,8 +1,9 @@
 package job
 
 import (
-	"github.com/cubny/lite-reader/internal/app/item"
 	log "github.com/sirupsen/logrus"
+
+	"github.com/cubny/lite-reader/internal/app/item"
 )
 
 type ItemsJob struct {
