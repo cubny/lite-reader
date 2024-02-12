@@ -10,7 +10,8 @@ import (
 )
 
 func TestWithContext(t *testing.T) {
-	app, err := Init(context.Background())
+	runMigration := false
+	app, err := Init(context.Background(), runMigration)
 	require.NoError(t, err)
 	assert.Equal(t, context.Background(), app.ctx)
 }

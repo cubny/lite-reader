@@ -16,7 +16,8 @@ func main() {
 
 	ctx, cancel := context.WithCancel(context.Background())
 
-	app, err := internal.Init(ctx)
+	runMigration := true
+	app, err := internal.Init(ctx, runMigration)
 	if err != nil {
 		log.Fatalf("failed to initiate App, %v", err)
 	}

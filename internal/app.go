@@ -46,11 +46,13 @@ type App struct {
 //go:embed infra/sqlite/migrations/*.sql
 var embedMigrations embed.FS
 
-func Init(ctx context.Context) (*App, error) {
+func Init(ctx context.Context, runMigration bool) (*App, error) {
 	a := &App{ctx: ctx}
 	a.initConfig()
 	a.initSqlClient()
-	a.migrate()
+	if runMigration {
+		a.migrate()
+	}
 	a.initRepo()
 	a.initServices()
 	a.initScheduler()

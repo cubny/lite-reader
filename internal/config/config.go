@@ -12,11 +12,11 @@ type Config struct {
 }
 
 type DB struct {
-	Path string `env:"DB_PATH"`
+	Path string `env:"DB_PATH, default=data/agg.db"`
 }
 
 type HTTP struct {
-	Port int `env:"HTTP_PORT"`
+	Port int `env:"HTTP_PORT, default=3000"`
 }
 
 // New constructs the config.
