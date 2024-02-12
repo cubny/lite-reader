@@ -17,17 +17,17 @@ var (
 	errNotFound      errorType = 404
 )
 
-// JsonError is used to return http errors encoded in json
-type JsonError struct {
+// JSONError is used to return http errors encoded in json
+type JSONError struct {
 	// Code of the error
 	Code int `json:"code"`
 	// Details of the error
 	Details string `json:"details"`
 }
 
-func newJsonError(errorType errorType, details string) JsonError {
+func newJSONError(errorType errorType, details string) JSONError {
 
-	e := JsonError{Code: int(errorType)}
+	e := JSONError{Code: int(errorType)}
 
 	switch errorType {
 	case errInternalError:
@@ -50,12 +50,12 @@ func newJsonError(errorType errorType, details string) JsonError {
 	return e
 }
 
-func (e JsonError) write(w http.ResponseWriter, statusCode int) error {
+func (e JSONError) write(w http.ResponseWriter, statusCode int) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 
 	resp := struct {
-		Err JsonError `json:"error"`
+		Err JSONError `json:"error"`
 	}{
 		Err: e,
 	}
@@ -65,20 +65,20 @@ func (e JsonError) write(w http.ResponseWriter, statusCode int) error {
 
 // InternalError writes the error details in json with the provided details
 func InternalError(w http.ResponseWriter, details string) error {
-	return newJsonError(errInternalError, details).write(w, http.StatusInternalServerError)
+	return newJSONError(errInternalError, details).write(w, http.StatusInternalServerError)
 }
 
 // BadRequest writes the BadRequest error details in json with the provided details
 func BadRequest(w http.ResponseWriter, details string) error {
-	return newJsonError(errBadRequest, details).write(w, http.StatusBadRequest)
+	return newJSONError(errBadRequest, details).write(w, http.StatusBadRequest)
 }
 
 // InvalidParams writes the UnprocessableEntity error details in json with the provided details
 func InvalidParams(w http.ResponseWriter, details string) error {
-	return newJsonError(errInvalidParams, details).write(w, http.StatusUnprocessableEntity)
+	return newJSONError(errInvalidParams, details).write(w, http.StatusUnprocessableEntity)
 }
 
 // NotFound writes the NotFound error details in json with the provided details
 func NotFound(w http.ResponseWriter, details string) error {
-	return newJsonError(errNotFound, details).write(w, http.StatusNotFound)
+	return newJSONError(errNotFound, details).write(w, http.StatusNotFound)
 }

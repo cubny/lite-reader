@@ -3,7 +3,7 @@ package item
 import "time"
 
 type Item struct {
-	Id        int
+	ID        int
 	Title     string
 	Desc      string
 	Dir       string

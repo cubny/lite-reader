@@ -7,7 +7,7 @@ import (
 
 type FeedService interface {
 	ListFeeds() ([]*feed.Feed, error)
-	FetchItems(feedId int) ([]*item.Item, error)
+	FetchItems(feedID int) ([]*item.Item, error)
 }
 type ItemService interface {
 	UpsertItems(command *item.UpsertItemsCommand) error

@@ -22,13 +22,13 @@ func (j *ItemsJob) Execute() {
 	}
 	log.Infof("Found %d feeds", len(feeds))
 	for _, f := range feeds {
-		items, err := j.feedService.FetchItems(f.Id)
+		items, err := j.feedService.FetchItems(f.ID)
 		if err != nil {
-			log.Errorf("Failed to fetch items for feed %d: %v", f.Id, err)
+			log.Errorf("Failed to fetch items for feed %d: %v", f.ID, err)
 			continue
 		}
-		log.Infof("Fetched %d items for feed %d", len(items), f.Id)
-		upsertItemsCommand := &item.UpsertItemsCommand{FeedId: f.Id, Items: items}
+		log.Infof("Fetched %d items for feed %d", len(items), f.ID)
+		upsertItemsCommand := &item.UpsertItemsCommand{FeedID: f.ID, Items: items}
 		if err := j.itemService.UpsertItems(upsertItemsCommand); err != nil {
 			continue
 		}

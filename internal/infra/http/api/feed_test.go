@@ -27,9 +27,9 @@ func TestRouter_addFeed(t *testing.T) {
 			ReqBody:        `{"url":"http://valid.url"}`,
 			ExpectedStatus: http.StatusCreated,
 			ExpectedBody:   `{"id":1,"title":"title","desc":"description","link":"link","url":"url","updated_at":"` + now.Format(time.RFC3339Nano) + `","lang":"lang","unread_count":0}`,
-			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
+			MockFn: func(_ *mocks.ItemService, f *mocks.FeedService) {
 				f.EXPECT().AddFeed(gomock.Any()).Return(&feed.Feed{
-					Id:          1,
+					ID:          1,
 					Title:       "title",
 					Description: "description",
 					Link:        "link",
@@ -47,7 +47,7 @@ func TestRouter_addFeed(t *testing.T) {
 			ExpectedBody:   `{"error":{"code":400,"details":"Bad Request - cannot decode request body"}}`,
 			Method:         http.MethodPost,
 			Target:         "/feeds",
-			MockFn:         func(i *mocks.ItemService, f *mocks.FeedService) {},
+			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService) {},
 		},
 		{
 			Name:           "invalid url",
@@ -56,7 +56,7 @@ func TestRouter_addFeed(t *testing.T) {
 			ExpectedBody:   `{"error":{"code":422,"details":"Invalid params - invalid params"}}`,
 			Method:         http.MethodPost,
 			Target:         "/feeds",
-			MockFn:         func(i *mocks.ItemService, f *mocks.FeedService) {},
+			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService) {},
 		},
 		{
 			Name:           "service returns error",
@@ -65,7 +65,7 @@ func TestRouter_addFeed(t *testing.T) {
 			ExpectedBody:   `{"error":{"code":500,"details":"Internal error - failed to add feed due to server internal error"}}`,
 			Method:         http.MethodPost,
 			Target:         "/feeds",
-			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
+			MockFn: func(_ *mocks.ItemService, f *mocks.FeedService) {
 				f.EXPECT().AddFeed(gomock.Any()).Return(nil, assert.AnError)
 			},
 		},
@@ -76,7 +76,7 @@ func TestRouter_addFeed(t *testing.T) {
 			ExpectedBody:   `{"error":{"code":400,"details":"Bad Request - cannot decode request body"}}`,
 			Method:         http.MethodPost,
 			Target:         "/feeds",
-			MockFn:         func(i *mocks.ItemService, f *mocks.FeedService) {},
+			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService) {},
 		},
 	}
 
@@ -101,7 +101,7 @@ func TestRouter_getFeedItems(t *testing.T) {
 			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
 				i.EXPECT().GetFeedItems(gomock.Any()).Return([]*item.Item{
 					{
-						Id:        1,
+						ID:        1,
 						Title:     "title",
 						Desc:      "description",
 						Dir:       "dir",
@@ -155,7 +155,7 @@ func TestRouter_fetchFeedNewItems(t *testing.T) {
 			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
 				f.EXPECT().FetchItems(1).Return([]*item.Item{
 					{
-						Id:        1,
+						ID:        1,
 						Title:     "title",
 						Desc:      "description",
 						Dir:       "dir",
@@ -168,7 +168,7 @@ func TestRouter_fetchFeedNewItems(t *testing.T) {
 				i.EXPECT().UpsertItems(gomock.Any()).Return(nil)
 				i.EXPECT().GetFeedItems(gomock.Any()).Return([]*item.Item{
 					{
-						Id:        1,
+						ID:        1,
 						Title:     "title",
 						Desc:      "description",
 						Dir:       "dir",
@@ -207,7 +207,7 @@ func TestRouter_fetchFeedNewItems(t *testing.T) {
 			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
 				f.EXPECT().FetchItems(1).Return([]*item.Item{
 					{
-						Id:        1,
+						ID:        1,
 						Title:     "title",
 						Desc:      "description",
 						Dir:       "dir",
@@ -229,7 +229,7 @@ func TestRouter_fetchFeedNewItems(t *testing.T) {
 			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
 				f.EXPECT().FetchItems(1).Return([]*item.Item{
 					{
-						Id:        1,
+						ID:        1,
 						Title:     "title",
 						Desc:      "description",
 						Dir:       "dir",

@@ -5,5 +5,5 @@ type AddFeedCommand struct {
 }
 
 type DeleteFeedCommand struct {
-	FeedId int
+	FeedID int
 }

@@ -43,13 +43,15 @@ type App struct {
 	err error
 }
 
+const gracePeriod = 10 * time.Second
+
 //go:embed infra/sqlite/migrations/*.sql
 var embedMigrations embed.FS
 
 func Init(ctx context.Context, runMigration bool) (*App, error) {
 	a := &App{ctx: ctx}
 	a.initConfig()
-	a.initSqlClient()
+	a.initSQLClient()
 	if runMigration {
 		a.migrate()
 	}
@@ -67,11 +69,11 @@ func (a *App) ifNoError(fn func() *App) *App {
 	}
 	return fn()
 }
-func (a *App) initSqlClient() *App {
+func (a *App) initSQLClient() *App {
 	return a.ifNoError(func() *App {
 		var sqlClient *sql.DB
 		if sqlClient, a.err = sql.Open("sqlite3", a.cfg.DB.Path); a.err != nil {
-			a.err = fmt.Errorf("failed to open db: %v", a.err)
+			a.err = fmt.Errorf("failed to open db: %w", a.err)
 			return a
 		}
 		a.sqlClient = sqlClient
@@ -107,12 +109,12 @@ func (a *App) migrate() *App {
 		goose.SetBaseFS(embedMigrations)
 
 		if err := goose.SetDialect("sqlite3"); err != nil {
-			a.err = fmt.Errorf("failed to set dialect: %v", err)
+			a.err = fmt.Errorf("failed to set dialect: %w", err)
 			return a
 		}
 
 		if err := goose.Up(a.sqlClient, "infra/sqlite/migrations"); err != nil {
-			a.err = fmt.Errorf("failed to migrate: %v", err)
+			a.err = fmt.Errorf("failed to migrate: %w", err)
 		}
 
 		return a
@@ -147,10 +149,10 @@ func (a *App) initScheduler() *App {
 
 func (a *App) stopAPIServer() *App {
 	log.Info("shutting down HTTP component")
-	tctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	tctx, cancel := context.WithTimeout(context.Background(), gracePeriod)
 	defer cancel()
 	if err := a.apiServer.Shutdown(tctx); err != nil {
-		a.err = fmt.Errorf("failed to shut down api server, %v", err)
+		a.err = fmt.Errorf("failed to shut down api server, %w", err)
 		return a
 	}
 	log.Infof("api server shut down successfully")
@@ -161,7 +163,7 @@ func (a *App) initAPIServer() *App {
 	return a.ifNoError(func() *App {
 		handler, err := api.New(a.itemService, a.feedService)
 		if err != nil {
-			a.err = fmt.Errorf("cannot create handler, %v", err)
+			a.err = fmt.Errorf("cannot create handler, %w", err)
 			return a
 		}
 		a.apiServer = &http.Server{

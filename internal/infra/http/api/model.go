@@ -26,7 +26,7 @@ func (r *AddFeedRequest) Validate() error {
 }
 
 type AddFeedResponse struct {
-	Id          int       `json:"id"`
+	ID          int       `json:"id"`
 	Title       string    `json:"title"`
 	Desc        string    `json:"desc"`
 	Link        string    `json:"link"`
@@ -48,7 +48,7 @@ func toListFeedResponse(feeds []*feed.Feed) *ListFeedResponse {
 
 func toAddFeedResponse(feed *feed.Feed) *AddFeedResponse {
 	return &AddFeedResponse{
-		Id:          feed.Id,
+		ID:          feed.ID,
 		Title:       feed.Title,
 		Desc:        feed.Description,
 		Link:        feed.Link,
@@ -60,7 +60,7 @@ func toAddFeedResponse(feed *feed.Feed) *AddFeedResponse {
 }
 
 type ItemResponse struct {
-	Id        int       `json:"id"`
+	ID        int       `json:"id"`
 	Title     string    `json:"title"`
 	Desc      string    `json:"desc"`
 	Link      string    `json:"link"`
@@ -77,7 +77,7 @@ func toGetItemsResponse(items []*item.Item) []*ItemResponse {
 	resp := make([]*ItemResponse, 0)
 	for _, i := range items {
 		resp = append(resp, &ItemResponse{
-			Id:        i.Id,
+			ID:        i.ID,
 			Title:     i.Title,
 			Desc:      i.Desc,
 			Link:      i.Link,
@@ -109,14 +109,14 @@ func toAddFeedCommand(w http.ResponseWriter, r *http.Request, p httprouter.Param
 }
 
 func toGetFeedItemsCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*item.GetFeedItemsCommand, error) {
-	feedIdString := p.ByName("id")
-	feedId, err := strconv.Atoi(feedIdString)
+	feedIDString := p.ByName("id")
+	feedID, err := strconv.Atoi(feedIDString)
 	if err != nil {
 		_ = InvalidParams(w, "invalid feed id")
 		return nil, err
 	}
 	return &item.GetFeedItemsCommand{
-		FeedId: feedId,
+		FeedID: feedID,
 	}, nil
 }
 
@@ -126,8 +126,8 @@ type UpdateItemRequest struct {
 }
 
 func toUpdateItemCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*item.UpdateItemCommand, error) {
-	itemIdString := p.ByName("id")
-	itemId, err := strconv.Atoi(itemIdString)
+	itemIDString := p.ByName("id")
+	itemID, err := strconv.Atoi(itemIDString)
 	if err != nil {
 		_ = InvalidParams(w, "invalid item id")
 		return nil, err
@@ -141,48 +141,48 @@ func toUpdateItemCommand(w http.ResponseWriter, r *http.Request, p httprouter.Pa
 	}
 
 	return &item.UpdateItemCommand{
-		Id:      itemId,
+		ID:      itemID,
 		Starred: request.Starred,
 		IsNew:   request.IsNew,
 	}, nil
 }
 
 func toFetchFeedNewItemsCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*item.FetchFeedNewItemsCommand, error) {
-	feedIdString := p.ByName("id")
-	feedId, err := strconv.Atoi(feedIdString)
+	feedIDString := p.ByName("id")
+	feedID, err := strconv.Atoi(feedIDString)
 	if err != nil {
 		_ = InvalidParams(w, "invalid feed id")
 		return nil, err
 	}
 
 	return &item.FetchFeedNewItemsCommand{
-		FeedId: feedId,
+		FeedID: feedID,
 	}, nil
 }
 
 func toReadFeedItemsCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*item.ReadFeedItemsCommand, error) {
-	feedIdString := p.ByName("id")
-	feedId, err := strconv.Atoi(feedIdString)
+	feedIDString := p.ByName("id")
+	feedID, err := strconv.Atoi(feedIDString)
 	if err != nil {
 		_ = InvalidParams(w, "invalid feed id")
 		return nil, err
 	}
 
 	return &item.ReadFeedItemsCommand{
-		FeedId: feedId,
+		FeedID: feedID,
 	}, nil
 }
 
 func toUnreadFeedItemCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*item.UnreadFeedItemsCommand, error) {
-	feedIdString := p.ByName("id")
-	feedId, err := strconv.Atoi(feedIdString)
+	feedIDString := p.ByName("id")
+	feedID, err := strconv.Atoi(feedIDString)
 	if err != nil {
 		_ = InvalidParams(w, "invalid feed id")
 		return nil, err
 	}
 
 	return &item.UnreadFeedItemsCommand{
-		FeedId: feedId,
+		FeedID: feedID,
 	}, nil
 }
 
@@ -197,27 +197,27 @@ func toGetItemsCountResponse(count int) *GetItemsCountResponse {
 }
 
 func toDeleteFeedCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*feed.DeleteFeedCommand, error) {
-	feedIdString := p.ByName("id")
-	feedId, err := strconv.Atoi(feedIdString)
+	feedIDString := p.ByName("id")
+	feedID, err := strconv.Atoi(feedIDString)
 	if err != nil {
 		_ = InvalidParams(w, "invalid feed id")
 		return nil, err
 	}
 
 	return &feed.DeleteFeedCommand{
-		FeedId: feedId,
+		FeedID: feedID,
 	}, nil
 }
 
 func toDeleteFeedItemsCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*item.DeleteFeedItemsCommand, error) {
-	feedIdString := p.ByName("id")
-	feedId, err := strconv.Atoi(feedIdString)
+	feedIDString := p.ByName("id")
+	feedID, err := strconv.Atoi(feedIDString)
 	if err != nil {
 		_ = InvalidParams(w, "invalid feed id")
 		return nil, err
 	}
 
 	return &item.DeleteFeedItemsCommand{
-		FeedId: feedId,
+		FeedID: feedID,
 	}, nil
 }

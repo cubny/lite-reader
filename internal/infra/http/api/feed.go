@@ -41,7 +41,6 @@ func (h *Router) addFeed(w http.ResponseWriter, r *http.Request, p httprouter.Pa
 	if err := json.NewEncoder(w).Encode(toAddFeedResponse(t)); err != nil {
 		log.WithError(err).Errorf("setFeed: encoder %s", err)
 		_ = InternalError(w, "cannot encode response")
-		return
 	}
 }
 func (h *Router) listFeeds(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
@@ -90,21 +89,21 @@ func (h *Router) fetchFeedNewItems(w http.ResponseWriter, r *http.Request, p htt
 		return
 	}
 
-	items, err := h.feedService.FetchItems(command.FeedId)
+	items, err := h.feedService.FetchItems(command.FeedID)
 	if err != nil {
 		log.WithError(err).Errorf("fetchFeedNewItems: FetchItems")
 		_ = InternalError(w, "cannot fetch feed items")
 		return
 	}
 
-	upsertItemsCommand := &item.UpsertItemsCommand{FeedId: command.FeedId, Items: items}
+	upsertItemsCommand := &item.UpsertItemsCommand{FeedID: command.FeedID, Items: items}
 	if err := h.itemService.UpsertItems(upsertItemsCommand); err != nil {
 		log.WithError(err).Errorf("fetchFeedNewItems: UpsertItems")
 		_ = InternalError(w, "cannot store feed items")
 		return
 	}
 
-	getFeedItemsCommand := &item.GetFeedItemsCommand{FeedId: command.FeedId}
+	getFeedItemsCommand := &item.GetFeedItemsCommand{FeedID: command.FeedID}
 	items, err = h.itemService.GetFeedItems(getFeedItemsCommand)
 	if err != nil {
 		log.WithError(err).Errorf("fetchFeedNewItems: GetFeedItems")
@@ -132,7 +131,6 @@ func (h *Router) readFeedItems(w http.ResponseWriter, r *http.Request, p httprou
 	}
 
 	w.WriteHeader(http.StatusNoContent)
-	return
 }
 
 func (h *Router) unreadFeedItems(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
@@ -147,7 +145,6 @@ func (h *Router) unreadFeedItems(w http.ResponseWriter, r *http.Request, p httpr
 	}
 
 	w.WriteHeader(http.StatusNoContent)
-	return
 }
 
 func (h *Router) deleteFeed(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
@@ -157,6 +154,10 @@ func (h *Router) deleteFeed(w http.ResponseWriter, r *http.Request, p httprouter
 	}
 
 	cmdDeleteFeedItems, err := toDeleteFeedItemsCommand(w, r, p)
+	if err != nil {
+		return
+	}
+
 	if err := h.itemService.DeleteFeedItems(cmdDeleteFeedItems); err != nil {
 		_ = InternalError(w, "cannot delete feed")
 		return
@@ -168,5 +169,4 @@ func (h *Router) deleteFeed(w http.ResponseWriter, r *http.Request, p httprouter
 	}
 
 	w.WriteHeader(http.StatusNoContent)
-	return
 }

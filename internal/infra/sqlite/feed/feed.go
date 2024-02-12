@@ -23,11 +23,11 @@ func (r *DB) AddFeed(feed *feed.Feed) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	lastInsertId, err := result.LastInsertId()
+	lastInsertID, err := result.LastInsertId()
 	if err != nil {
 		return 0, err
 	}
-	return int(lastInsertId), nil
+	return int(lastInsertID), nil
 }
 
 func (r *DB) GetFeed(id int) (*feed.Feed, error) {
@@ -94,7 +94,7 @@ func resultToFeed(result *sql.Rows) (*feed.Feed, error) {
 		return nil, err
 	}
 	return &feed.Feed{
-		Id:          id,
+		ID:          id,
 		Title:       title,
 		Description: description,
 		Link:        link,

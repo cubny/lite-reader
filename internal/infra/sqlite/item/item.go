@@ -34,8 +34,8 @@ func (r *DB) GetStarredItems() ([]*item.Item, error) {
 	return resultToItems(result)
 }
 
-func (r *DB) GetFeedItems(feedId int) ([]*item.Item, error) {
-	result, err := r.sqliteDB.Query("SELECT id, is_new, desc, link, rss_id, title, dir, starred, timestamp FROM item WHERE rss_id = ? ORDER BY timestamp DESC", feedId)
+func (r *DB) GetFeedItems(feedID int) ([]*item.Item, error) {
+	result, err := r.sqliteDB.Query("SELECT id, is_new, desc, link, rss_id, title, dir, starred, timestamp FROM item WHERE rss_id = ? ORDER BY timestamp DESC", feedID)
 	if err != nil {
 		return nil, err
 	}
@@ -47,17 +47,17 @@ func resultToItem(result *sql.Rows) (*item.Item, error) {
 	var isNew int
 	var desc string
 	var link string
-	var rssId int
+	var rssID int
 	var title string
 	var dir string
 	var starred int
 	var timestamp time.Time
-	err := result.Scan(&id, &isNew, &desc, &link, &rssId, &title, &dir, &starred, &timestamp)
+	err := result.Scan(&id, &isNew, &desc, &link, &rssID, &title, &dir, &starred, &timestamp)
 	if err != nil {
 		return nil, err
 	}
 	return &item.Item{
-		Id:        id,
+		ID:        id,
 		IsNew:     isNew == 1,
 		Desc:      desc,
 		Link:      link,
@@ -83,9 +83,9 @@ func resultToItems(result *sql.Rows) ([]*item.Item, error) {
 	return items, nil
 }
 
-func (r *DB) UpsertItems(feedId int, items []*item.Item) error {
+func (r *DB) UpsertItems(feedID int, items []*item.Item) error {
 	for _, t := range items {
-		_, err := r.UpsertItem(feedId, t)
+		_, err := r.UpsertItem(feedID, t)
 		if err != nil {
 			return err
 		}
@@ -93,7 +93,7 @@ func (r *DB) UpsertItems(feedId int, items []*item.Item) error {
 	return nil
 }
 
-func (r *DB) UpsertItem(feedId int, item *item.Item) (int, error) {
+func (r *DB) UpsertItem(feedID int, item *item.Item) (int, error) {
 	// first find if item exists
 	result, err := r.sqliteDB.Query("SELECT id FROM item WHERE link = ?", item.Link)
 	if err != nil {
@@ -115,15 +115,15 @@ func (r *DB) UpsertItem(feedId int, item *item.Item) (int, error) {
 	}
 	// if item does not exist, insert it
 	insertResult, err := r.sqliteDB.Exec("INSERT INTO item (is_new, desc, link, rss_id, title, dir, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?)",
-		item.IsNew, item.Desc, item.Link, feedId, item.Title, item.Dir, item.Timestamp)
+		item.IsNew, item.Desc, item.Link, feedID, item.Title, item.Dir, item.Timestamp)
 	if err != nil {
 		return 0, err
 	}
-	lastInsertId, err := insertResult.LastInsertId()
+	lastInsertID, err := insertResult.LastInsertId()
 	if err != nil {
 		return 0, err
 	}
-	return int(lastInsertId), nil
+	return int(lastInsertID), nil
 }
 
 func (r *DB) UpdateItem(id int, starred bool, isNew bool) error {
@@ -134,16 +134,16 @@ func (r *DB) UpdateItem(id int, starred bool, isNew bool) error {
 	return nil
 }
 
-func (r *DB) ReadFeedItems(feedId int) error {
-	_, err := r.sqliteDB.Exec("UPDATE item SET is_new = 0 WHERE rss_id = ?", feedId)
+func (r *DB) ReadFeedItems(feedID int) error {
+	_, err := r.sqliteDB.Exec("UPDATE item SET is_new = 0 WHERE rss_id = ?", feedID)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (r *DB) UnreadFeedItems(feedId int) error {
-	_, err := r.sqliteDB.Exec("UPDATE item SET is_new = 1 WHERE rss_id = ?", feedId)
+func (r *DB) UnreadFeedItems(feedID int) error {
+	_, err := r.sqliteDB.Exec("UPDATE item SET is_new = 1 WHERE rss_id = ?", feedID)
 	if err != nil {
 		return err
 	}
@@ -186,7 +186,7 @@ func (r *DB) GetStarredItemsCount() (int, error) {
 	return count, nil
 }
 
-func (r *DB) DeleteFeedItems(feedId int) error {
-	_, err := r.sqliteDB.Exec("DELETE FROM item WHERE rss_id = ?", feedId)
+func (r *DB) DeleteFeedItems(feedID int) error {
+	_, err := r.sqliteDB.Exec("DELETE FROM item WHERE rss_id = ?", feedID)
 	return err
 }

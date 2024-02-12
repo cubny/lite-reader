@@ -1,14 +1,14 @@
 package item
 
 type Repository interface {
-	UpsertItems(feedId int, items []*Item) error
+	UpsertItems(feedID int, items []*Item) error
 	GetUnreadItems() ([]*Item, error)
 	GetStarredItems() ([]*Item, error)
-	GetFeedItems(feedId int) ([]*Item, error)
+	GetFeedItems(feedID int) ([]*Item, error)
 	UpdateItem(id int, starred bool, isNew bool) error
-	ReadFeedItems(feedId int) error
-	UnreadFeedItems(feedId int) error
+	ReadFeedItems(feedID int) error
+	UnreadFeedItems(feedID int) error
 	GetStarredItemsCount() (int, error)
 	GetUnreadItemsCount() (int, error)
-	DeleteFeedItems(feedId int) error
+	DeleteFeedItems(feedID int) error
 }

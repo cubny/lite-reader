@@ -17,23 +17,23 @@ func (s *ServiceImpl) GetStarredItems() ([]*Item, error) {
 }
 
 func (s *ServiceImpl) GetFeedItems(command *GetFeedItemsCommand) ([]*Item, error) {
-	return s.repository.GetFeedItems(command.FeedId)
+	return s.repository.GetFeedItems(command.FeedID)
 }
 
 func (s *ServiceImpl) UpsertItems(command *UpsertItemsCommand) error {
-	return s.repository.UpsertItems(command.FeedId, command.Items)
+	return s.repository.UpsertItems(command.FeedID, command.Items)
 }
 
 func (s *ServiceImpl) UpdateItem(command *UpdateItemCommand) error {
-	return s.repository.UpdateItem(command.Id, command.Starred, command.IsNew)
+	return s.repository.UpdateItem(command.ID, command.Starred, command.IsNew)
 }
 
 func (s *ServiceImpl) ReadFeedItems(command *ReadFeedItemsCommand) error {
-	return s.repository.ReadFeedItems(command.FeedId)
+	return s.repository.ReadFeedItems(command.FeedID)
 }
 
 func (s *ServiceImpl) UnreadFeedItems(command *UnreadFeedItemsCommand) error {
-	return s.repository.UnreadFeedItems(command.FeedId)
+	return s.repository.UnreadFeedItems(command.FeedID)
 }
 
 func (s *ServiceImpl) GetStarredItemsCount() (int, error) {
@@ -45,5 +45,5 @@ func (s *ServiceImpl) GetUnreadItemsCount() (int, error) {
 }
 
 func (s *ServiceImpl) DeleteFeedItems(command *DeleteFeedItemsCommand) error {
-	return s.repository.DeleteFeedItems(command.FeedId)
+	return s.repository.DeleteFeedItems(command.FeedID)
 }

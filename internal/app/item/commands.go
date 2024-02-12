@@ -1,32 +1,32 @@
 package item
 
 type GetFeedItemsCommand struct {
-	FeedId int
+	FeedID int
 }
 
 type UpsertItemsCommand struct {
-	FeedId int
+	FeedID int
 	Items  []*Item
 }
 
 type UpdateItemCommand struct {
-	Id      int
+	ID      int
 	Starred bool
 	IsNew   bool
 }
 
 type FetchFeedNewItemsCommand struct {
-	FeedId int
+	FeedID int
 }
 
 type ReadFeedItemsCommand struct {
-	FeedId int
+	FeedID int
 }
 
 type UnreadFeedItemsCommand struct {
-	FeedId int
+	FeedID int
 }
 
 type DeleteFeedItemsCommand struct {
-	FeedId int
+	FeedID int
 }

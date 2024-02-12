@@ -27,7 +27,7 @@ func TestServiceImpl_GetUnreadItems(t *testing.T) {
 			repo: Repo{
 				result: []*item.Item{
 					{
-						Id:        1,
+						ID:        1,
 						Title:     "title",
 						Desc:      "desc",
 						Dir:       "dir",
@@ -41,7 +41,7 @@ func TestServiceImpl_GetUnreadItems(t *testing.T) {
 			},
 			want: []*item.Item{
 				{
-					Id:        1,
+					ID:        1,
 					Title:     "title",
 					Desc:      "desc",
 					Dir:       "dir",
@@ -101,7 +101,7 @@ func TestServiceImpl_GetStarredItems(t *testing.T) {
 			repo: Repo{
 				result: []*item.Item{
 					{
-						Id:        1,
+						ID:        1,
 						Title:     "title",
 						Desc:      "desc",
 						Dir:       "dir",
@@ -115,7 +115,7 @@ func TestServiceImpl_GetStarredItems(t *testing.T) {
 			},
 			want: []*item.Item{
 				{
-					Id:        1,
+					ID:        1,
 					Title:     "title",
 					Desc:      "desc",
 					Dir:       "dir",
@@ -165,7 +165,7 @@ func TestServiceImpl_GetFeedItems(t *testing.T) {
 		err    error
 	}
 	type Command struct {
-		FeedId int
+		FeedID int
 	}
 	tests := []struct {
 		name    string
@@ -179,7 +179,7 @@ func TestServiceImpl_GetFeedItems(t *testing.T) {
 			repo: Repo{
 				result: []*item.Item{
 					{
-						Id:        1,
+						ID:        1,
 						Title:     "title",
 						Desc:      "desc",
 						Dir:       "dir",
@@ -192,11 +192,11 @@ func TestServiceImpl_GetFeedItems(t *testing.T) {
 				err: nil,
 			},
 			command: Command{
-				FeedId: 1,
+				FeedID: 1,
 			},
 			want: []*item.Item{
 				{
-					Id:        1,
+					ID:        1,
 					Title:     "title",
 					Desc:      "desc",
 					Dir:       "dir",
@@ -214,7 +214,7 @@ func TestServiceImpl_GetFeedItems(t *testing.T) {
 				err:    assert.AnError,
 			},
 			command: Command{
-				FeedId: 1,
+				FeedID: 1,
 			},
 			want:    nil,
 			wantErr: true,
@@ -224,10 +224,10 @@ func TestServiceImpl_GetFeedItems(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			repo := mocks.NewRepository(ctrl)
-			repo.EXPECT().GetFeedItems(tt.command.FeedId).Return(tt.repo.result, tt.repo.err)
+			repo.EXPECT().GetFeedItems(tt.command.FeedID).Return(tt.repo.result, tt.repo.err)
 
 			s := item.NewService(repo)
-			got, err := s.GetFeedItems(&item.GetFeedItemsCommand{FeedId: tt.command.FeedId})
+			got, err := s.GetFeedItems(&item.GetFeedItemsCommand{FeedID: tt.command.FeedID})
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetFeedItems() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -248,7 +248,7 @@ func TestServiceImpl_UpsertItems(t *testing.T) {
 		err error
 	}
 	type Command struct {
-		FeedId int
+		FeedID int
 		Items  []*item.Item
 	}
 	tests := []struct {
@@ -263,10 +263,10 @@ func TestServiceImpl_UpsertItems(t *testing.T) {
 				err: nil,
 			},
 			command: Command{
-				FeedId: 1,
+				FeedID: 1,
 				Items: []*item.Item{
 					{
-						Id:        1,
+						ID:        1,
 						Title:     "title",
 						Desc:      "desc",
 						Dir:       "dir",
@@ -284,10 +284,10 @@ func TestServiceImpl_UpsertItems(t *testing.T) {
 				err: assert.AnError,
 			},
 			command: Command{
-				FeedId: 1,
+				FeedID: 1,
 				Items: []*item.Item{
 					{
-						Id:        1,
+						ID:        1,
 						Title:     "title",
 						Desc:      "desc",
 						Dir:       "dir",
@@ -304,10 +304,10 @@ func TestServiceImpl_UpsertItems(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			repo := mocks.NewRepository(ctrl)
-			repo.EXPECT().UpsertItems(tt.command.FeedId, tt.command.Items).Return(tt.repo.err)
+			repo.EXPECT().UpsertItems(tt.command.FeedID, tt.command.Items).Return(tt.repo.err)
 
 			s := item.NewService(repo)
-			err := s.UpsertItems(&item.UpsertItemsCommand{FeedId: tt.command.FeedId, Items: tt.command.Items})
+			err := s.UpsertItems(&item.UpsertItemsCommand{FeedID: tt.command.FeedID, Items: tt.command.Items})
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UpsertItems() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -321,7 +321,7 @@ func TestServiceImpl_UpdateItem(t *testing.T) {
 		err error
 	}
 	type Command struct {
-		Id      int
+		ID      int
 		Starred bool
 		IsNew   bool
 	}
@@ -337,7 +337,7 @@ func TestServiceImpl_UpdateItem(t *testing.T) {
 				err: nil,
 			},
 			command: Command{
-				Id:      1,
+				ID:      1,
 				Starred: true,
 				IsNew:   false,
 			}, wantErr: false,
@@ -348,7 +348,7 @@ func TestServiceImpl_UpdateItem(t *testing.T) {
 				err: assert.AnError,
 			},
 			command: Command{
-				Id:      1,
+				ID:      1,
 				Starred: true,
 				IsNew:   false,
 			}, wantErr: true,
@@ -358,10 +358,10 @@ func TestServiceImpl_UpdateItem(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			repo := mocks.NewRepository(ctrl)
-			repo.EXPECT().UpdateItem(tt.command.Id, tt.command.Starred, tt.command.IsNew).Return(tt.repo.err)
+			repo.EXPECT().UpdateItem(tt.command.ID, tt.command.Starred, tt.command.IsNew).Return(tt.repo.err)
 
 			s := item.NewService(repo)
-			err := s.UpdateItem(&item.UpdateItemCommand{Id: tt.command.Id, Starred: tt.command.Starred, IsNew: tt.command.IsNew})
+			err := s.UpdateItem(&item.UpdateItemCommand{ID: tt.command.ID, Starred: tt.command.Starred, IsNew: tt.command.IsNew})
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UpdateItem() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -375,7 +375,7 @@ func TestServiceImpl_ReadFeedItems(t *testing.T) {
 		err error
 	}
 	type Command struct {
-		FeedId int
+		FeedID int
 	}
 	tests := []struct {
 		name    string
@@ -389,7 +389,7 @@ func TestServiceImpl_ReadFeedItems(t *testing.T) {
 				err: nil,
 			},
 			command: Command{
-				FeedId: 1,
+				FeedID: 1,
 			}, wantErr: false,
 		},
 		{
@@ -398,7 +398,7 @@ func TestServiceImpl_ReadFeedItems(t *testing.T) {
 				err: assert.AnError,
 			},
 			command: Command{
-				FeedId: 1,
+				FeedID: 1,
 			}, wantErr: true,
 		},
 	}
@@ -406,10 +406,10 @@ func TestServiceImpl_ReadFeedItems(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			repo := mocks.NewRepository(ctrl)
-			repo.EXPECT().ReadFeedItems(tt.command.FeedId).Return(tt.repo.err)
+			repo.EXPECT().ReadFeedItems(tt.command.FeedID).Return(tt.repo.err)
 
 			s := item.NewService(repo)
-			err := s.ReadFeedItems(&item.ReadFeedItemsCommand{FeedId: tt.command.FeedId})
+			err := s.ReadFeedItems(&item.ReadFeedItemsCommand{FeedID: tt.command.FeedID})
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ReadFeedItems() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -423,7 +423,7 @@ func TestServiceImpl_UnreadFeedItems(t *testing.T) {
 		err error
 	}
 	type Command struct {
-		FeedId int
+		FeedID int
 	}
 	tests := []struct {
 		name    string
@@ -437,7 +437,7 @@ func TestServiceImpl_UnreadFeedItems(t *testing.T) {
 				err: nil,
 			},
 			command: Command{
-				FeedId: 1,
+				FeedID: 1,
 			}, wantErr: false,
 		},
 		{
@@ -446,7 +446,7 @@ func TestServiceImpl_UnreadFeedItems(t *testing.T) {
 				err: assert.AnError,
 			},
 			command: Command{
-				FeedId: 1,
+				FeedID: 1,
 			}, wantErr: true,
 		},
 	}
@@ -454,10 +454,10 @@ func TestServiceImpl_UnreadFeedItems(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			repo := mocks.NewRepository(ctrl)
-			repo.EXPECT().UnreadFeedItems(tt.command.FeedId).Return(tt.repo.err)
+			repo.EXPECT().UnreadFeedItems(tt.command.FeedID).Return(tt.repo.err)
 
 			s := item.NewService(repo)
-			err := s.UnreadFeedItems(&item.UnreadFeedItemsCommand{FeedId: tt.command.FeedId})
+			err := s.UnreadFeedItems(&item.UnreadFeedItemsCommand{FeedID: tt.command.FeedID})
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UnreadFeedItems() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -569,7 +569,7 @@ func TestServiceImpl_DeleteFeedItems(t *testing.T) {
 		err error
 	}
 	type Command struct {
-		FeedId int
+		FeedID int
 	}
 	tests := []struct {
 		name    string
@@ -583,7 +583,7 @@ func TestServiceImpl_DeleteFeedItems(t *testing.T) {
 				err: nil,
 			},
 			command: Command{
-				FeedId: 1,
+				FeedID: 1,
 			}, wantErr: false,
 		},
 		{
@@ -592,7 +592,7 @@ func TestServiceImpl_DeleteFeedItems(t *testing.T) {
 				err: assert.AnError,
 			},
 			command: Command{
-				FeedId: 1,
+				FeedID: 1,
 			}, wantErr: true,
 		},
 	}
@@ -600,10 +600,10 @@ func TestServiceImpl_DeleteFeedItems(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			repo := mocks.NewRepository(ctrl)
-			repo.EXPECT().DeleteFeedItems(tt.command.FeedId).Return(tt.repo.err)
+			repo.EXPECT().DeleteFeedItems(tt.command.FeedID).Return(tt.repo.err)
 
 			s := item.NewService(repo)
-			err := s.DeleteFeedItems(&item.DeleteFeedItemsCommand{FeedId: tt.command.FeedId})
+			err := s.DeleteFeedItems(&item.DeleteFeedItemsCommand{FeedID: tt.command.FeedID})
 			if (err != nil) != tt.wantErr {
 				t.Errorf("DeleteFeedItems() error = %v, wantErr %v", err, tt.wantErr)
 				return

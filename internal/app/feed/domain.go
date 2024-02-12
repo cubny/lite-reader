@@ -3,7 +3,7 @@ package feed
 import "time"
 
 type Feed struct {
-	Id          int
+	ID          int
 	Title       string
 	Description string
 	Link        string

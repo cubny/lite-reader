@@ -46,7 +46,7 @@ func TestServiceImpl_AddFeed(t *testing.T) {
 			repoResult:   1,
 			repoError:    nil,
 			want: &feed.Feed{
-				Id:          1,
+				ID:          1,
 				Title:       "Example Feed",
 				Link:        "https//example.com",
 				URL:         "https://example.com/feed",
@@ -214,7 +214,7 @@ func TestServiceImpl_FetchItems(t *testing.T) {
 			},
 			repo: Repo{
 				result: &feed.Feed{
-					Id:          1,
+					ID:          1,
 					Title:       "Example Feed",
 					Link:        "https//example.com",
 					URL:         "https://example.com/feed",
@@ -251,7 +251,7 @@ func TestServiceImpl_FetchItems(t *testing.T) {
 			},
 			repo: Repo{
 				result: &feed.Feed{
-					Id:          1,
+					ID:          1,
 					Title:       "Example Feed",
 					Link:        "https//example.com",
 					URL:         "https://example.com/feed",
@@ -296,7 +296,7 @@ func TestServiceImpl_DeleteFeed(t *testing.T) {
 	finderMock := mocks.NewFinder(ctrl)
 
 	s := feed.NewService(repoMock, parserMock, finderMock)
-	cmd := &feed.DeleteFeedCommand{FeedId: 1}
+	cmd := &feed.DeleteFeedCommand{FeedID: 1}
 	err := s.DeleteFeed(cmd)
 	assert.NoError(t, err)
 }

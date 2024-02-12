@@ -20,29 +20,29 @@ func TestItemsJob_Execute(t *testing.T) {
 
 	t.Run("Success", func(t *testing.T) {
 		feedService.EXPECT().ListFeeds().Return([]*feed.Feed{
-			{Id: 1},
-			{Id: 2},
+			{ID: 1},
+			{ID: 2},
 		}, nil)
 		feedService.EXPECT().FetchItems(1).Return([]*item.Item{
-			{Id: 1},
-			{Id: 2},
+			{ID: 1},
+			{ID: 2},
 		}, nil)
 		feedService.EXPECT().FetchItems(2).Return([]*item.Item{
-			{Id: 3},
-			{Id: 4},
+			{ID: 3},
+			{ID: 4},
 		}, nil)
 		itemService.EXPECT().UpsertItems(&item.UpsertItemsCommand{
-			FeedId: 1,
+			FeedID: 1,
 			Items: []*item.Item{
-				{Id: 1},
-				{Id: 2},
+				{ID: 1},
+				{ID: 2},
 			},
 		}).Return(nil)
 		itemService.EXPECT().UpsertItems(&item.UpsertItemsCommand{
-			FeedId: 2,
+			FeedID: 2,
 			Items: []*item.Item{
-				{Id: 3},
-				{Id: 4},
+				{ID: 3},
+				{ID: 4},
 			},
 		}).Return(nil)
 		j.Execute()
@@ -56,7 +56,7 @@ func TestItemsJob_Execute(t *testing.T) {
 
 	t.Run("FailFetchItems", func(t *testing.T) {
 		feedService.EXPECT().ListFeeds().Return([]*feed.Feed{
-			{Id: 1},
+			{ID: 1},
 		}, nil)
 		feedService.EXPECT().FetchItems(1).Return(nil, assert.AnError)
 		itemService.EXPECT().UpsertItems(gomock.Any()).Times(0)
@@ -65,25 +65,25 @@ func TestItemsJob_Execute(t *testing.T) {
 
 	t.Run("FailUpsertItems", func(t *testing.T) {
 		feedService.EXPECT().ListFeeds().Return([]*feed.Feed{
-			{Id: 1},
-			{Id: 2},
+			{ID: 1},
+			{ID: 2},
 		}, nil)
 		feedService.EXPECT().FetchItems(1).Return([]*item.Item{
-			{Id: 1},
+			{ID: 1},
 		}, nil)
 		feedService.EXPECT().FetchItems(2).Return([]*item.Item{
-			{Id: 2},
+			{ID: 2},
 		}, nil)
 		itemService.EXPECT().UpsertItems(&item.UpsertItemsCommand{
-			FeedId: 1,
+			FeedID: 1,
 			Items: []*item.Item{
-				{Id: 1},
+				{ID: 1},
 			},
 		}).Return(assert.AnError)
 		itemService.EXPECT().UpsertItems(&item.UpsertItemsCommand{
-			FeedId: 2,
+			FeedID: 2,
 			Items: []*item.Item{
-				{Id: 2},
+				{ID: 2},
 			},
 		}).Return(nil)
 		j.Execute()

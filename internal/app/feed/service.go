@@ -61,7 +61,7 @@ func (s *ServiceImpl) AddFeed(command *AddFeedCommand) (*Feed, error) {
 		return nil, fmt.Errorf("cannot add feed: %w", err)
 	}
 
-	feed.Id = id
+	feed.ID = id
 
 	return feed, nil
 }
@@ -70,8 +70,8 @@ func (s *ServiceImpl) ListFeeds() ([]*Feed, error) {
 	return s.repository.ListFeeds()
 }
 
-func (s *ServiceImpl) FetchItems(feedId int) ([]*item.Item, error) {
-	feed, err := s.repository.GetFeed(feedId)
+func (s *ServiceImpl) FetchItems(feedID int) ([]*item.Item, error) {
+	feed, err := s.repository.GetFeed(feedID)
 	if err != nil {
 		return nil, fmt.Errorf("cannot get feed: %w", err)
 	}
@@ -99,5 +99,5 @@ func (s *ServiceImpl) FetchItems(feedId int) ([]*item.Item, error) {
 }
 
 func (s *ServiceImpl) DeleteFeed(command *DeleteFeedCommand) error {
-	return s.repository.DeleteFeed(command.FeedId)
+	return s.repository.DeleteFeed(command.FeedID)
 }
