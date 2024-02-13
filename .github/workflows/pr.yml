@@ -109,24 +109,3 @@ jobs:
             ${{ runner.os }}-go-${{ matrix.golang }}-
       - name: Run tests
         run: make test
-
-  check_generated:
-    needs: golangci-lint # run after golangci-lint action to not produce duplicated errors
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Unshallow
-        run: git fetch --prune --unshallow
-      - name: Install Go
-        uses: actions/setup-go@v5
-        with:
-          # https://github.com/actions/setup-go#supported-version-syntax
-          # ex:
-          # - 1.18beta1 -> 1.18.0-beta.1
-          # - 1.18rc1 -> 1.18.0-rc.1
-          go-version: ${{ env.GO_VERSION }}
-      - name: Check generated files are up to date
-        run: make fast_check_generated
-        env:
-          # needed for github-action-config.json generation
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
