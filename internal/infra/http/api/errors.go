@@ -26,7 +26,6 @@ type JSONError struct {
 }
 
 func newJSONError(errorType errorType, details string) JSONError {
-
 	e := JSONError{Code: int(errorType)}
 
 	switch errorType {

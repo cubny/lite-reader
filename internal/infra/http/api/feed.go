@@ -43,7 +43,7 @@ func (h *Router) addFeed(w http.ResponseWriter, r *http.Request, p httprouter.Pa
 		_ = InternalError(w, "cannot encode response")
 	}
 }
-func (h *Router) listFeeds(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+func (h *Router) listFeeds(w http.ResponseWriter, _ *http.Request, _ httprouter.Params) {
 	resp, err := h.feedService.ListFeeds()
 	if err != nil {
 		log.WithError(err).Errorf("listFeeds: service %s", err)
@@ -97,8 +97,8 @@ func (h *Router) fetchFeedNewItems(w http.ResponseWriter, r *http.Request, p htt
 	}
 
 	upsertItemsCommand := &item.UpsertItemsCommand{FeedID: command.FeedID, Items: items}
-	if err := h.itemService.UpsertItems(upsertItemsCommand); err != nil {
-		log.WithError(err).Errorf("fetchFeedNewItems: UpsertItems")
+	if upsertErr := h.itemService.UpsertItems(upsertItemsCommand); upsertErr != nil {
+		log.WithError(upsertErr).Errorf("fetchFeedNewItems: UpsertItems")
 		_ = InternalError(w, "cannot store feed items")
 		return
 	}

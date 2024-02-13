@@ -43,7 +43,10 @@ type App struct {
 	err error
 }
 
-const gracePeriod = 10 * time.Second
+const (
+	gracePeriod       = 10 * time.Second
+	readHeaderTimeout = 5 * time.Second
+)
 
 //go:embed infra/sqlite/migrations/*.sql
 var embedMigrations embed.FS
@@ -167,8 +170,9 @@ func (a *App) initAPIServer() *App {
 			return a
 		}
 		a.apiServer = &http.Server{
-			Addr:    fmt.Sprintf(":%d", a.cfg.HTTP.Port),
-			Handler: handler,
+			Addr:              fmt.Sprintf(":%d", a.cfg.HTTP.Port),
+			Handler:           handler,
+			ReadHeaderTimeout: readHeaderTimeout,
 		}
 
 		go func() {

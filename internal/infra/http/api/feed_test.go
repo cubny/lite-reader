@@ -26,7 +26,8 @@ func TestRouter_addFeed(t *testing.T) {
 			Target:         "/feeds",
 			ReqBody:        `{"url":"http://valid.url"}`,
 			ExpectedStatus: http.StatusCreated,
-			ExpectedBody:   `{"id":1,"title":"title","desc":"description","link":"link","url":"url","updated_at":"` + now.Format(time.RFC3339Nano) + `","lang":"lang","unread_count":0}`,
+			ExpectedBody: `{"id":1,"title":"title","desc":"description","link":"link","url":"url","updated_at":"` +
+				now.Format(time.RFC3339Nano) + `","lang":"lang","unread_count":0}`,
 			MockFn: func(_ *mocks.ItemService, f *mocks.FeedService) {
 				f.EXPECT().AddFeed(gomock.Any()).Return(&feed.Feed{
 					ID:          1,
@@ -97,8 +98,9 @@ func TestRouter_getFeedItems(t *testing.T) {
 			Method:         http.MethodGet,
 			Target:         "/feeds/1/items",
 			ExpectedStatus: http.StatusOK,
-			ExpectedBody:   `[{"id":1,"title":"title","desc":"description","link":"link","is_new":true,"starred":false,"timestamp":"` + now.Format(time.RFC3339Nano) + `"}]`,
-			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
+			ExpectedBody: `[{"id":1,"title":"title","desc":"description","link":"link","is_new":true,"starred":false,"timestamp":"` +
+				now.Format(time.RFC3339Nano) + `"}]`,
+			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService) {
 				i.EXPECT().GetFeedItems(gomock.Any()).Return([]*item.Item{
 					{
 						ID:        1,
@@ -111,7 +113,6 @@ func TestRouter_getFeedItems(t *testing.T) {
 						Timestamp: now,
 					},
 				}, nil)
-
 			},
 		},
 		{
@@ -120,7 +121,7 @@ func TestRouter_getFeedItems(t *testing.T) {
 			Target:         "/feeds/invalid/items",
 			ExpectedStatus: http.StatusUnprocessableEntity,
 			ExpectedBody:   `{"error":{"code":422,"details":"Invalid params - invalid feed id"}}`,
-			MockFn:         func(i *mocks.ItemService, f *mocks.FeedService) {},
+			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService) {},
 		},
 		{
 			Name:           "service returns error",
@@ -128,7 +129,7 @@ func TestRouter_getFeedItems(t *testing.T) {
 			Target:         "/feeds/1/items",
 			ExpectedStatus: http.StatusInternalServerError,
 			ExpectedBody:   `{"error":{"code":500,"details":"Internal error - cannot get feed items"}}`,
-			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
+			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService) {
 				i.EXPECT().GetFeedItems(gomock.Any()).Return(nil, assert.AnError)
 			},
 		},
@@ -151,7 +152,8 @@ func TestRouter_fetchFeedNewItems(t *testing.T) {
 			Method:         http.MethodPut,
 			Target:         "/feeds/1/fetch",
 			ExpectedStatus: http.StatusOK,
-			ExpectedBody:   `[{"id":1,"title":"title","desc":"description","link":"link","is_new":false,"starred":true,"timestamp":"` + now.Format(time.RFC3339Nano) + `"}]`,
+			ExpectedBody: `[{"id":1,"title":"title","desc":"description","link":"link","is_new":false,"starred":true,"timestamp":"` +
+				now.Format(time.RFC3339Nano) + `"}]`,
 			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
 				f.EXPECT().FetchItems(1).Return([]*item.Item{
 					{
@@ -186,7 +188,7 @@ func TestRouter_fetchFeedNewItems(t *testing.T) {
 			Target:         "/feeds/invalid/fetch",
 			ExpectedStatus: http.StatusUnprocessableEntity,
 			ExpectedBody:   `{"error":{"code":422,"details":"Invalid params - invalid feed id"}}`,
-			MockFn:         func(i *mocks.ItemService, f *mocks.FeedService) {},
+			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService) {},
 		},
 		{
 			Name:           "feed service fetch items returns error",
@@ -194,7 +196,7 @@ func TestRouter_fetchFeedNewItems(t *testing.T) {
 			Target:         "/feeds/1/fetch",
 			ExpectedStatus: http.StatusInternalServerError,
 			ExpectedBody:   `{"error":{"code":500,"details":"Internal error - cannot fetch feed items"}}`,
-			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
+			MockFn: func(_ *mocks.ItemService, f *mocks.FeedService) {
 				f.EXPECT().FetchItems(1).Return(nil, assert.AnError)
 			},
 		},
@@ -262,7 +264,7 @@ func TestRouter_readFeedItems(t *testing.T) {
 			Target:         "/feeds/1/read",
 			ExpectedStatus: http.StatusNoContent,
 			ExpectedBody:   ``,
-			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
+			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService) {
 				i.EXPECT().ReadFeedItems(gomock.Any()).Return(nil)
 			},
 		},
@@ -272,7 +274,7 @@ func TestRouter_readFeedItems(t *testing.T) {
 			Target:         "/feeds/invalid/read",
 			ExpectedStatus: http.StatusUnprocessableEntity,
 			ExpectedBody:   `{"error":{"code":422,"details":"Invalid params - invalid feed id"}}`,
-			MockFn:         func(i *mocks.ItemService, f *mocks.FeedService) {},
+			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService) {},
 		},
 		{
 			Name:           "service returns error",
@@ -280,7 +282,7 @@ func TestRouter_readFeedItems(t *testing.T) {
 			Target:         "/feeds/1/read",
 			ExpectedStatus: http.StatusInternalServerError,
 			ExpectedBody:   `{"error":{"code":500,"details":"Internal error - cannot read feed items"}}`,
-			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
+			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService) {
 				i.EXPECT().ReadFeedItems(gomock.Any()).Return(assert.AnError)
 			},
 		},
@@ -303,7 +305,7 @@ func TestRouter_unreadFeedItems(t *testing.T) {
 			Target:         "/feeds/1/unread",
 			ExpectedStatus: http.StatusNoContent,
 			ExpectedBody:   ``,
-			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
+			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService) {
 				i.EXPECT().UnreadFeedItems(gomock.Any()).Return(nil)
 			},
 		},
@@ -313,7 +315,7 @@ func TestRouter_unreadFeedItems(t *testing.T) {
 			Target:         "/feeds/invalid/unread",
 			ExpectedStatus: http.StatusUnprocessableEntity,
 			ExpectedBody:   `{"error":{"code":422,"details":"Invalid params - invalid feed id"}}`,
-			MockFn:         func(i *mocks.ItemService, f *mocks.FeedService) {},
+			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService) {},
 		},
 		{
 			Name:           "service returns error",
@@ -321,7 +323,7 @@ func TestRouter_unreadFeedItems(t *testing.T) {
 			Target:         "/feeds/1/unread",
 			ExpectedStatus: http.StatusInternalServerError,
 			ExpectedBody:   `{"error":{"code":500,"details":"Internal error - cannot unread feed items"}}`,
-			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
+			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService) {
 				i.EXPECT().UnreadFeedItems(gomock.Any()).Return(assert.AnError)
 			},
 		},
@@ -355,7 +357,7 @@ func TestRouter_DeleteFeed(t *testing.T) {
 			Target:         "/feeds/invalid",
 			ExpectedStatus: http.StatusUnprocessableEntity,
 			ExpectedBody:   `{"error":{"code":422,"details":"Invalid params - invalid feed id"}}`,
-			MockFn:         func(i *mocks.ItemService, f *mocks.FeedService) {},
+			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService) {},
 		},
 		{
 			Name:           "item service returns error",
@@ -363,7 +365,7 @@ func TestRouter_DeleteFeed(t *testing.T) {
 			Target:         "/feeds/1",
 			ExpectedStatus: http.StatusInternalServerError,
 			ExpectedBody:   `{"error":{"code":500,"details":"Internal error - cannot delete feed"}}`,
-			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
+			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService) {
 				i.EXPECT().DeleteFeedItems(gomock.Any()).Return(assert.AnError)
 			},
 		},

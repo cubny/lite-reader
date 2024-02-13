@@ -133,7 +133,6 @@ func TestServiceImpl_AddFeed(t *testing.T) {
 		})
 	}
 
-	// finder.EXPECT().FindFeeds(gomock.Any()).Return([]string{"https://example.com/feed", "https://example.com/feed2", "https://example.com/feed3"}, nil)
 	t.Run("parser is called as many times as there are links", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		repoMock := mocks.NewRepository(ctrl)
@@ -205,8 +204,20 @@ func TestServiceImpl_FetchItems(t *testing.T) {
 					FeedLink:    "https://example.com/feed",
 					Language:    "en",
 					Items: []*gofeed.Item{
-						{Title: "Example Item", Description: "Example Description", Link: "https://example.com/item", Published: "2021-01-01T00:00:00Z", PublishedParsed: &samplePublishedParsed},
-						{Title: "Example Item 2", Description: "Example Description 2", Link: "https://example.com/item2", Published: "2021-01-01T00:00:00Z", PublishedParsed: &samplePublishedParsed},
+						{
+							Title:           "Example Item",
+							Description:     "Example Description",
+							Link:            "https://example.com/item",
+							Published:       "2021-01-01T00:00:00Z",
+							PublishedParsed: &samplePublishedParsed,
+						},
+						{
+							Title:           "Example Item 2",
+							Description:     "Example Description 2",
+							Link:            "https://example.com/item2",
+							Published:       "2021-01-01T00:00:00Z",
+							PublishedParsed: &samplePublishedParsed,
+						},
 					},
 				},
 				error:  nil,
@@ -223,8 +234,24 @@ func TestServiceImpl_FetchItems(t *testing.T) {
 				error: nil,
 			},
 			want: []*item.Item{
-				{Title: "Example Item", Desc: "Example Description", Link: "https://example.com/item", Timestamp: samplePublishedParsed, Dir: "Example Description", IsNew: true, Starred: false},
-				{Title: "Example Item 2", Desc: "Example Description 2", Link: "https://example.com/item2", Timestamp: samplePublishedParsed, Dir: "Example Description 2", IsNew: true, Starred: false},
+				{
+					Title:     "Example Item",
+					Desc:      "Example Description",
+					Link:      "https://example.com/item",
+					Timestamp: samplePublishedParsed,
+					Dir:       "Example Description",
+					IsNew:     true,
+					Starred:   false,
+				},
+				{
+					Title:     "Example Item 2",
+					Desc:      "Example Description 2",
+					Link:      "https://example.com/item2",
+					Timestamp: samplePublishedParsed,
+					Dir:       "Example Description 2",
+					IsNew:     true,
+					Starred:   false,
+				},
 			},
 			wantErr: false,
 		},

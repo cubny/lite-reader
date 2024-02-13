@@ -28,9 +28,9 @@ func (s *ServiceImpl) AddFeed(command *AddFeedCommand) (*Feed, error) {
 	parsedFeed, err := s.Parser.ParseURL(command.URL)
 	switch {
 	case errors.Is(err, gofeed.ErrFeedTypeNotDetected):
-		links, err := s.finder.FindFeeds(command.URL)
-		if err != nil {
-			return nil, fmt.Errorf("cannot find feeds: %w", err)
+		links, findErr := s.finder.FindFeeds(command.URL)
+		if findErr != nil {
+			return nil, fmt.Errorf("cannot find feeds: %w", findErr)
 		}
 		for _, link := range links {
 			parsedFeed, err = s.Parser.ParseURL(link)

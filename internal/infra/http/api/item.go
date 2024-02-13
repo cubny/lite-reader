@@ -20,10 +20,9 @@ func (h *Router) updateItem(w http.ResponseWriter, r *http.Request, p httprouter
 	}
 
 	w.WriteHeader(http.StatusNoContent)
-	return
 }
 
-func (h *Router) getStarredItems(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+func (h *Router) getStarredItems(w http.ResponseWriter, _ *http.Request, _ httprouter.Params) {
 	items, err := h.itemService.GetStarredItems()
 	if err != nil {
 		_ = InternalError(w, "cannot get unread items")
@@ -38,7 +37,7 @@ func (h *Router) getStarredItems(w http.ResponseWriter, r *http.Request, p httpr
 	}
 }
 
-func (h *Router) getUnreadItems(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+func (h *Router) getUnreadItems(w http.ResponseWriter, _ *http.Request, _ httprouter.Params) {
 	items, err := h.itemService.GetUnreadItems()
 	if err != nil {
 		_ = InternalError(w, "cannot get unread items")
@@ -53,7 +52,7 @@ func (h *Router) getUnreadItems(w http.ResponseWriter, r *http.Request, p httpro
 	}
 }
 
-func (h *Router) getUnreadItemsCount(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+func (h *Router) getUnreadItemsCount(w http.ResponseWriter, _ *http.Request, _ httprouter.Params) {
 	items, err := h.itemService.GetUnreadItemsCount()
 	if err != nil {
 		_ = InternalError(w, "cannot get unread items")
@@ -68,7 +67,7 @@ func (h *Router) getUnreadItemsCount(w http.ResponseWriter, r *http.Request, p h
 	}
 }
 
-func (h *Router) getStarredItemsCount(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+func (h *Router) getStarredItemsCount(w http.ResponseWriter, _ *http.Request, _ httprouter.Params) {
 	items, err := h.itemService.GetStarredItemsCount()
 	if err != nil {
 		_ = InternalError(w, "cannot get unread items")

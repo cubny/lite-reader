@@ -46,16 +46,16 @@ func toListFeedResponse(feeds []*feed.Feed) *ListFeedResponse {
 	return &resp
 }
 
-func toAddFeedResponse(feed *feed.Feed) *AddFeedResponse {
+func toAddFeedResponse(f *feed.Feed) *AddFeedResponse {
 	return &AddFeedResponse{
-		ID:          feed.ID,
-		Title:       feed.Title,
-		Desc:        feed.Description,
-		Link:        feed.Link,
-		URL:         feed.URL,
-		UpdatedAt:   feed.UpdatedAt,
-		Lang:        feed.Lang,
-		UnreadCount: feed.UnreadCount,
+		ID:          f.ID,
+		Title:       f.Title,
+		Desc:        f.Description,
+		Link:        f.Link,
+		URL:         f.URL,
+		UpdatedAt:   f.UpdatedAt,
+		Lang:        f.Lang,
+		UnreadCount: f.UnreadCount,
 	}
 }
 
@@ -89,7 +89,7 @@ func toGetItemsResponse(items []*item.Item) []*ItemResponse {
 	return resp
 }
 
-func toAddFeedCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*feed.AddFeedCommand, error) {
+func toAddFeedCommand(w http.ResponseWriter, r *http.Request, _ httprouter.Params) (*feed.AddFeedCommand, error) {
 	request := &AddFeedRequest{}
 	if err := json.NewDecoder(r.Body).Decode(request); err != nil {
 		log.WithError(err).Errorf("toAddFeedCommand: decoder %s", err)
@@ -108,7 +108,7 @@ func toAddFeedCommand(w http.ResponseWriter, r *http.Request, p httprouter.Param
 	}, nil
 }
 
-func toGetFeedItemsCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*item.GetFeedItemsCommand, error) {
+func toGetFeedItemsCommand(w http.ResponseWriter, _ *http.Request, p httprouter.Params) (*item.GetFeedItemsCommand, error) {
 	feedIDString := p.ByName("id")
 	feedID, err := strconv.Atoi(feedIDString)
 	if err != nil {
@@ -147,7 +147,7 @@ func toUpdateItemCommand(w http.ResponseWriter, r *http.Request, p httprouter.Pa
 	}, nil
 }
 
-func toFetchFeedNewItemsCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*item.FetchFeedNewItemsCommand, error) {
+func toFetchFeedNewItemsCommand(w http.ResponseWriter, _ *http.Request, p httprouter.Params) (*item.FetchFeedNewItemsCommand, error) {
 	feedIDString := p.ByName("id")
 	feedID, err := strconv.Atoi(feedIDString)
 	if err != nil {
@@ -160,7 +160,7 @@ func toFetchFeedNewItemsCommand(w http.ResponseWriter, r *http.Request, p httpro
 	}, nil
 }
 
-func toReadFeedItemsCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*item.ReadFeedItemsCommand, error) {
+func toReadFeedItemsCommand(w http.ResponseWriter, _ *http.Request, p httprouter.Params) (*item.ReadFeedItemsCommand, error) {
 	feedIDString := p.ByName("id")
 	feedID, err := strconv.Atoi(feedIDString)
 	if err != nil {
@@ -173,7 +173,7 @@ func toReadFeedItemsCommand(w http.ResponseWriter, r *http.Request, p httprouter
 	}, nil
 }
 
-func toUnreadFeedItemCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*item.UnreadFeedItemsCommand, error) {
+func toUnreadFeedItemCommand(w http.ResponseWriter, _ *http.Request, p httprouter.Params) (*item.UnreadFeedItemsCommand, error) {
 	feedIDString := p.ByName("id")
 	feedID, err := strconv.Atoi(feedIDString)
 	if err != nil {
@@ -196,7 +196,7 @@ func toGetItemsCountResponse(count int) *GetItemsCountResponse {
 	}
 }
 
-func toDeleteFeedCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*feed.DeleteFeedCommand, error) {
+func toDeleteFeedCommand(w http.ResponseWriter, _ *http.Request, p httprouter.Params) (*feed.DeleteFeedCommand, error) {
 	feedIDString := p.ByName("id")
 	feedID, err := strconv.Atoi(feedIDString)
 	if err != nil {
@@ -209,7 +209,7 @@ func toDeleteFeedCommand(w http.ResponseWriter, r *http.Request, p httprouter.Pa
 	}, nil
 }
 
-func toDeleteFeedItemsCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*item.DeleteFeedItemsCommand, error) {
+func toDeleteFeedItemsCommand(w http.ResponseWriter, _ *http.Request, p httprouter.Params) (*item.DeleteFeedItemsCommand, error) {
 	feedIDString := p.ByName("id")
 	feedID, err := strconv.Atoi(feedIDString)
 	if err != nil {

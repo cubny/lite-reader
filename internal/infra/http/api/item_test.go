@@ -24,7 +24,7 @@ func TestRouter_updateItem(t *testing.T) {
 			ExpectedBody:   ``,
 			Method:         http.MethodPut,
 			Target:         "/items/1",
-			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
+			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService) {
 				i.EXPECT().UpdateItem(gomock.Any()).Return(nil)
 			},
 		},
@@ -35,11 +35,11 @@ func TestRouter_updateItem(t *testing.T) {
 			ExpectedBody:   `{"error":{"code":422, "details":"Invalid params - invalid item id"}}`,
 			Method:         http.MethodPut,
 			Target:         "/items/a",
-			MockFn:         func(i *mocks.ItemService, f *mocks.FeedService) {},
+			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService) {},
 		},
 		{
 			Name:           "bad request",
-			MockFn:         func(i *mocks.ItemService, f *mocks.FeedService) {},
+			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService) {},
 			ReqBody:        ``,
 			ExpectedStatus: http.StatusBadRequest,
 			ExpectedBody:   `{"error":{"code":400, "details":"Bad Request - cannot decode request body"}}`,
@@ -53,7 +53,7 @@ func TestRouter_updateItem(t *testing.T) {
 			ExpectedBody:   `{"error":{"code":500, "details":"Internal error - cannot update item"}}`,
 			Method:         http.MethodPut,
 			Target:         "/items/1",
-			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
+			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService) {
 				i.EXPECT().UpdateItem(gomock.Any()).Return(assert.AnError)
 			},
 		},
@@ -76,7 +76,7 @@ func TestRouter_getStarredItems(t *testing.T) {
 			ExpectedBody:   `[]`,
 			Method:         http.MethodGet,
 			Target:         "/items/starred",
-			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
+			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService) {
 				i.EXPECT().GetStarredItems().Return([]*item.Item{}, nil)
 			},
 		},
@@ -86,7 +86,7 @@ func TestRouter_getStarredItems(t *testing.T) {
 			ExpectedBody:   `{"error":{"code":500, "details":"Internal error - cannot get unread items"}}`,
 			Method:         http.MethodGet,
 			Target:         "/items/starred",
-			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
+			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService) {
 				i.EXPECT().GetStarredItems().Return(nil, assert.AnError)
 			},
 		},
@@ -109,7 +109,7 @@ func TestRouter_getUnreadItems(t *testing.T) {
 			ExpectedBody:   `[]`,
 			Method:         http.MethodGet,
 			Target:         "/items/unread",
-			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
+			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService) {
 				i.EXPECT().GetUnreadItems().Return([]*item.Item{}, nil)
 			},
 		},
@@ -119,7 +119,7 @@ func TestRouter_getUnreadItems(t *testing.T) {
 			ExpectedBody:   `{"error":{"code":500, "details":"Internal error - cannot get unread items"}}`,
 			Method:         http.MethodGet,
 			Target:         "/items/unread",
-			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
+			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService) {
 				i.EXPECT().GetUnreadItems().Return(nil, assert.AnError)
 			},
 		},
@@ -142,7 +142,7 @@ func TestRouter_getUnreadItemsCount(t *testing.T) {
 			ExpectedBody:   `{"count":0}`,
 			Method:         http.MethodGet,
 			Target:         "/items/unread/count",
-			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
+			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService) {
 				i.EXPECT().GetUnreadItemsCount().Return(0, nil)
 			},
 		},
@@ -152,7 +152,7 @@ func TestRouter_getUnreadItemsCount(t *testing.T) {
 			ExpectedBody:   `{"error":{"code":500, "details":"Internal error - cannot get unread items"}}`,
 			Method:         http.MethodGet,
 			Target:         "/items/unread/count",
-			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
+			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService) {
 				i.EXPECT().GetUnreadItemsCount().Return(0, assert.AnError)
 			},
 		},
@@ -175,7 +175,7 @@ func TestRouter_getStarredItemsCount(t *testing.T) {
 			ExpectedBody:   `{"count":0}`,
 			Method:         http.MethodGet,
 			Target:         "/items/starred/count",
-			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
+			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService) {
 				i.EXPECT().GetStarredItemsCount().Return(0, nil)
 			},
 		},
@@ -185,7 +185,7 @@ func TestRouter_getStarredItemsCount(t *testing.T) {
 			ExpectedBody:   `{"error":{"code":500, "details":"Internal error - cannot get unread items"}}`,
 			Method:         http.MethodGet,
 			Target:         "/items/starred/count",
-			MockFn: func(i *mocks.ItemService, f *mocks.FeedService) {
+			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService) {
 				i.EXPECT().GetStarredItemsCount().Return(0, assert.AnError)
 			},
 		},

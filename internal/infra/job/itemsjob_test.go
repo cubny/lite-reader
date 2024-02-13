@@ -18,7 +18,7 @@ func TestItemsJob_Execute(t *testing.T) {
 	itemService := mocks.NewItemService(ctrl)
 	j := job.NewItemsJob(feedService, itemService)
 
-	t.Run("Success", func(t *testing.T) {
+	t.Run("Success", func(_ *testing.T) {
 		feedService.EXPECT().ListFeeds().Return([]*feed.Feed{
 			{ID: 1},
 			{ID: 2},
@@ -48,13 +48,13 @@ func TestItemsJob_Execute(t *testing.T) {
 		j.Execute()
 	})
 
-	t.Run("FailListFeeds", func(t *testing.T) {
+	t.Run("FailListFeeds", func(_ *testing.T) {
 		feedService.EXPECT().ListFeeds().Return(nil, assert.AnError)
 		itemService.EXPECT().UpsertItems(gomock.Any()).Times(0)
 		j.Execute()
 	})
 
-	t.Run("FailFetchItems", func(t *testing.T) {
+	t.Run("FailFetchItems", func(_ *testing.T) {
 		feedService.EXPECT().ListFeeds().Return([]*feed.Feed{
 			{ID: 1},
 		}, nil)
@@ -63,7 +63,7 @@ func TestItemsJob_Execute(t *testing.T) {
 		j.Execute()
 	})
 
-	t.Run("FailUpsertItems", func(t *testing.T) {
+	t.Run("FailUpsertItems", func(_ *testing.T) {
 		feedService.EXPECT().ListFeeds().Return([]*feed.Feed{
 			{ID: 1},
 			{ID: 2},

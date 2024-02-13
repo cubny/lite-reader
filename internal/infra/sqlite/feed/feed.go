@@ -17,9 +17,9 @@ func NewDB(client *sql.DB) *DB {
 	return &DB{sqliteDB: client}
 }
 
-func (r *DB) AddFeed(feed *feed.Feed) (int, error) {
+func (r *DB) AddFeed(f *feed.Feed) (int, error) {
 	result, err := r.sqliteDB.Exec("INSERT INTO rss (title, desc, link, url, lang, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
-		feed.Title, feed.Description, feed.Link, feed.URL, feed.Lang, feed.UpdatedAt.Format(time.RFC3339))
+		f.Title, f.Description, f.Link, f.URL, f.Lang, f.UpdatedAt.Format(time.RFC3339))
 	if err != nil {
 		return 0, err
 	}
