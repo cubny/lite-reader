@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"syscall"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -15,7 +16,6 @@ import (
 	"github.com/nikhil1raghav/feedfinder"
 	"github.com/pressly/goose/v3"
 	log "github.com/sirupsen/logrus"
-	"golang.org/x/sys/unix"
 
 	"github.com/cubny/lite-reader/internal/app/feed"
 	"github.com/cubny/lite-reader/internal/app/item"
@@ -53,6 +53,7 @@ var embedMigrations embed.FS
 
 func Init(ctx context.Context, runMigration bool) (*App, error) {
 	a := &App{ctx: ctx}
+
 	a.initConfig()
 	a.initSQLClient()
 	if runMigration {
@@ -196,6 +197,6 @@ func (a *App) Stop() error {
 
 func WaitTermination() {
 	sigs := make(chan os.Signal, 1)
-	signal.Notify(sigs, unix.SIGTERM, unix.SIGINT)
+	signal.Notify(sigs, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 	<-sigs
 }
