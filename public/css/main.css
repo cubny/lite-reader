@@ -1,0 +1,369 @@
+body {
+  font-family: Tahoma, sans-serif;
+  font-size: 14px;
+}
+
+a {
+  text-decoration: none;
+}
+
+::selection {
+  background: rgba(0,0,0,0.05);
+}
+
+::-moz-selection {
+  background: rgba(0,0,0,0.05);
+}
+
+#content .ui-layout-north {
+  z-index: 4 !important;
+}
+
+#toolbar {
+  /*font-size: .7em;*/
+  padding: 10px;
+  height: 30px;
+  clear: both;
+  overflow: hidden;
+  background-color: #f6f6f6;
+  border-bottom: 1px solid #ddd;
+}
+
+#toolbar div {
+  float: left;
+}
+
+#urlToAdd {
+  float: right;
+  border: 1px solid #ccc;
+  padding: 6px;
+  color: #666;
+  width:170px;
+}
+
+.add {
+  font-weight:bold;
+  color: #456445;
+  display: block;
+  float: left;
+  padding-right: 5px;
+}
+
+li.button input {
+  float: left;
+  width: 150px;
+  margin: 5px 8px 5px 5px;
+  border: 1px solid #ccc;
+}
+
+.ui-layout-pane {
+/* all 'panes' */
+  background: #FFF;
+  overflow: auto;
+}
+
+.ui-layout-resizer {
+/* all 'resizer-bars' */
+  background: #eee;
+  width: 4px !important;
+}
+
+.ui-layout-toggler {
+/* all 'toggler-buttons' */
+  background: #AAA;
+}
+
+#items, #feeds ul {
+  list-style: none;
+  font-size: 13px;
+  padding: 0;
+  margin: 0;
+  transition: all .2s ease-in-out; 
+}
+
+#items > li {
+  color: #888;
+  border: 1px solid #e5e5e5;
+  transition: all .2s ease-in-out;
+  background: #f4f4f4;
+  margin: 10px;
+  border-radius: 5px;
+}
+
+#feeds ul li {
+  cursor: pointer;
+  /*color: #888;*/
+  border-bottom: 1px solid #ddd;
+  transition: all .2s ease-in-out;
+  padding: 10px;
+  overflow: auto;
+  transition: all .2s ease-in-out; 
+}
+.btn {
+  cursor: pointer;
+  float:right;
+  padding:5px 8px;
+  border-radius: 4px;
+  margin:2px;
+  transition: all .2s ease-in-out;
+}
+.btn:hover {  background-color: #000; }
+.btn-small {
+  padding:2px;
+  border-radius: 2px;
+  margin:2px;
+}
+.btn-purple {  background-color: #585A6B;  color:white;}
+.btn-green {  background-color: #6C8A46;  color:white;}
+
+#items li .title:hover {
+  background-color: #eee !important;
+}
+
+#items li.new .title:hover {
+  background-color: #F5ECDE !important;
+  color: #6F5B3D;
+}
+
+#items li.selected .title:hover {
+background-color: #F5ECDE !important;
+}
+
+#items .selected {
+  background-color: #FFFCF7 !important;
+  border-bottom: 2px solid rgba(0,0,0,0.1);
+  border: 1px solid #DBD4C8;
+}
+
+#items .new {
+  color: #000;
+  font-weight: bold;
+  background: #fff;
+}
+
+#items li .title {
+  padding: 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all .1s ease-in-out; 
+}
+
+#items li .desc {
+  margin-top: 5px;
+  padding: 5px 0;
+  text-align: justify;
+}
+
+#items li .title span.timestamp {
+  float:right;
+  font-size:8px;
+  font-weight:normal;
+}
+#items li.rtl .title span.timestamp {
+  float:left;
+}
+
+#items li.selected .title {
+  color: #000;
+  font-size: 14px;
+  border-bottom: 2px solid rgba(0,0,0,0.1);
+  padding: 20px 20px;
+  background: #F5ECDE;
+  border-radius: 5px 5px 0 0;
+}
+
+#items li.selected .desc {
+  color: rgba(0,0,0,0.65);
+  margin-top: 0px;
+  padding: 20px 30px;
+  line-height: 24px;
+  font-size: 14px;
+  text-shadow: 0 1px #fff;
+  width: 70%;
+  margin: auto;
+}
+
+#items li.selected .desc img {
+  clear: both;
+  text-align: center;
+  border: 1px solid #ccc;
+  margin: auto;
+  /*display: block;*/
+  padding: 4px;
+  max-width: 100%;
+}
+
+#feeds li.feed i,
+#feeds li.feed img {
+  float: left;
+  width: 16px;
+  padding: 0 -15px;
+  margin: -29px 9px 0 0
+}
+
+#feeds .feedtitle {
+  float: left;
+  max-width: 75%;
+  padding-right: 2px;
+  overflow: hidden;
+  display: inline;
+  white-space: nowrap;
+  line-height: 20px;
+}
+
+#feeds li.selected {
+  background-color: #f9f9f9 !important;
+  border-bottom: 1px solid #ccc; 
+}
+
+#feeds ul li:hover {
+  background-color: #f3f3f3 !important;
+}
+
+#feeds ul li#feeds-actions{
+  cursor: default;
+  padding:5px;
+  font-size: 10px;
+}
+#feeds ul li#feeds-actions:hover{
+  background-color:inherit !important;
+}
+.ui-layout-north {
+  overflow: hidden;
+  background: #fafafa;
+  border-bottom: 3px solid #eee;
+}
+
+#feedbar {
+  height: 65px;
+  width: 100%;
+  font-size: 30px;
+  overflow: hidden;
+  font-family: arial;
+}
+
+#feedbar #title {
+  color: #000;
+  float: left;
+  line-height: 60px;
+  letter-spacing: -2px;
+  padding: 5px 10px 0 30px;
+}
+
+#feedbar .markread,
+#feedbar .update
+{
+  float: left;
+  overflow: hidden;
+  font-size: 12px;
+  margin: 25px 10px;
+  text-align: center;
+  color: #FFF;
+  cursor: pointer;
+  display: none; 
+  padding: 5px 8px;
+  border-radius: 4px;
+  background-color: rgba(0,0,0,0.3);
+  transition: all .2s ease-in-out;
+}
+#feedbar .markread{
+  margin-left:0px;
+}
+#feedbar .markread:hover,
+#feedbar .update:hover {
+  background-color: #000;
+}
+
+#feedbar .remove {
+  float: right;
+  overflow: hidden;
+  background-color: #ab1111;
+  font-size: 12px;
+  margin: 25px 30px;
+  text-align: center;
+  color: #FFF;
+  cursor: pointer;
+  display: none;
+  padding: 5px 8px;
+  border-radius: 4px;
+  transition: all .2s ease-in-out;
+}
+
+#feedbar .remove:hover {
+  background-color: red;
+}
+
+#feeds {
+  height: 20px;
+}
+
+#feeds .count span{
+  float: left;
+  position: absolute;
+  right: 2px;
+  background: #666;
+  border-radius: 5px;
+  color: #fff;
+  padding: 3px;
+  font-size: 10px;
+  margin: 0 5px;
+}
+
+#feeds .new {
+  background-color: #6C8A46;
+}
+
+#msg {
+  position: absolute;
+  float: left;
+  z-index: 3;
+  top: -20px;
+  right: 50%;
+  color: #FFF;
+  font-size: 16px;
+  border-radius: 10px;
+  padding: 20px 20px 10px 15px;
+  background: #6C8A46 url(../images/loading1.gif) no-repeat 95% 70%;
+}
+
+#south.ui-layout-south {
+  font-size: 20px;
+}
+
+#items li .title a.item-action {
+  font-size:10px;
+  font-weight:bold;
+  display:inline-block;
+  margin-left:2px;
+  cursor: pointer;
+  padding: 3px 5px;
+  border-radius: 2px;
+  display:none;
+}
+#items li .title a.item-action.item-link {
+  background-color: #659165;
+  color: #FFF;
+}
+#items li .title a.item-action.item-read,
+#items li .title a.item-action.item-star {
+  background-color: none;
+  display:inline;
+  margin:0;
+  padding:0;
+  font-size:14px;
+  color:#666;
+}
+#items li .title a.item-action.item-read:hover,
+#items li .title a.item-action.item-star:hover {
+  color:#333;
+}
+#items li .title a.item-action.item-read {
+  font-size:13px;
+  padding-bottom:2px;
+  margin:0 5px 0 2px;
+}
+
+.rtl {
+  direction : rtl;
+  text-align: right;
+}

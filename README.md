@@ -10,15 +10,14 @@ Screenshot
 Requirements
 ---------------
 - SQLite3
-- PHP 5.3
+- Golang 
 
 INSTALL
 --------
 1. git clone or download
-2. make public/cache writable for the webserver
-3. make var writable for the webserver
-4. rename .htaccess.sample to .htaccess
-5. modify RewriteBase in .htaccess according to your web directory
+2. run `go get` to install all dependencies
+3. run `go build` to build the application
+4. run `./lite-reader` to start the application
 
 that's it, enjoy a very lite and minimal feed aggregator: the lite-reader
 
@@ -29,3 +28,9 @@ Want to Contribute?
 - share your ideas (https://github.com/cubny/lite-reader/issues/new)
 - view our roadmap (https://trello.com/b/ekJbxyCL/lite-reader)
 - fork and make changes
+
+
+Legacy Lite Reader
+------------------
+The legacy version of Lite Reader is available at [legacy-lite-reader
+(https://github.com/cubny/legacy-lite-reader) repository. It is written in PHP and uses MySQL as the database. It is no longer maintained and is not recommended for use.
