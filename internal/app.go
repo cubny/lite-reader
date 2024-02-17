@@ -11,11 +11,11 @@ import (
 	"syscall"
 	"time"
 
-	_ "github.com/mattn/go-sqlite3"
 	"github.com/mmcdole/gofeed"
 	"github.com/nikhil1raghav/feedfinder"
 	"github.com/pressly/goose/v3"
 	log "github.com/sirupsen/logrus"
+	_ "modernc.org/sqlite"
 
 	"github.com/cubny/lite-reader/internal/app/feed"
 	"github.com/cubny/lite-reader/internal/app/item"
@@ -76,7 +76,7 @@ func (a *App) ifNoError(fn func() *App) *App {
 func (a *App) initSQLClient() *App {
 	return a.ifNoError(func() *App {
 		var sqlClient *sql.DB
-		if sqlClient, a.err = sql.Open("sqlite3", a.cfg.DB.Path); a.err != nil {
+		if sqlClient, a.err = sql.Open("sqlite", a.cfg.DB.Path); a.err != nil {
 			a.err = fmt.Errorf("failed to open db: %w", a.err)
 			return a
 		}
@@ -112,7 +112,7 @@ func (a *App) migrate() *App {
 	return a.ifNoError(func() *App {
 		goose.SetBaseFS(embedMigrations)
 
-		if err := goose.SetDialect("sqlite3"); err != nil {
+		if err := goose.SetDialect("sqlite"); err != nil {
 			a.err = fmt.Errorf("failed to set dialect: %w", err)
 			return a
 		}
