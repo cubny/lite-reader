@@ -8,28 +8,49 @@ permissions:
     packages: write
 
 jobs:
-  releases-matrix:
-    name: Release Go Binary
+  create_release:
+    name: Create release
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        # build and publish in parallel: linux/386, linux/amd64, linux/arm64, windows/386, windows/amd64, darwin/amd64, darwin/arm64
-        goos: [linux, windows, darwin]
-        goarch: ["386", amd64, arm64]
-        exclude:
-          - goarch: "386"
-            goos: darwin
-          - goarch: arm64
-            goos: windows
+    # Note this. We are going to use that in further jobs.
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
-    - uses: actions/checkout@v4
-    - uses: wangyoucao577/go-release-action@v1
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        goos: ${{ matrix.goos }}
-        goarch: ${{ matrix.goarch }}
-        goversion: "https://go.dev/dl/go1.22.0.linux-amd64.tar.gz"
-        pre_command: export CGO_ENABLED=1
-        project_path: "./cmd"
-        binary_name: "lite-reader"
-        extra_files: README.md public
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+  release_assets:
+    name: Release assets
+    needs: create_release # we need to know the upload URL
+    runs-on: ${{ matrix.config.os }} # we run many different builds
+    strategy:
+      # just an example matrix
+      matrix:
+        config:
+          - os: ubuntu-latest
+          - os: macos-latest
+          - os: windows-latest
+    steps:
+      # checkout of cource
+      - name: Checkout code
+        uses: actions/checkout@v4
+      # ... whatever build and packaging steps you need here
+      # and finally do an upload!
+      - name: Upload release assets
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          # This is how it will be named on the release page. Put hatever name
+          # you like, remember that they need to be different for each platform.
+          # You can choose any build matrix parameters. For Rust I use the
+          # target triple.
+          asset_name: lite-reader-${{ matrix.config.os }}
+          asset_path: ./public
