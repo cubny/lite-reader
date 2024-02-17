@@ -24,9 +24,14 @@ builds:
       - "-s -w -X main.version=v{{ .Version }}"
 
 archives:
-  - format: binary
+  - format: zip 
     name_template: >-
       {{ .ProjectName }}_{{- tolower .Os }}_{{- if eq .Arch "amd64" }}x86_64{{- else }}{{ .Arch }}{{ end }}
+    wrap_in_directory: true
+    files:
+      - LINCESE
+      - README.md
+      - public
 checksum:
   name_template: "checksums.txt"
 snapshot:
