@@ -82,11 +82,8 @@ func (a *App) initDBFile() *App {
 		if _, err := os.Stat(a.cfg.DB.Path); os.IsNotExist(err) {
 			_, b, _, _ := runtime.Caller(0)
 			basePath := filepath.Dir(filepath.Dir(b))
-			log.Infof("base path: %s", basePath)
 			dbPath := filepath.Join(basePath, a.cfg.DB.Path)
-			log.Infof("db path: %s", dbPath)
 			dirName := filepath.Dir(dbPath)
-			log.Infof("dir name: %s", dirName)
 			if _, statErr := os.Stat(dirName); os.IsNotExist(statErr) {
 				mkdirErr := os.MkdirAll(dirName, os.ModePerm)
 				if mkdirErr != nil {
@@ -94,7 +91,7 @@ func (a *App) initDBFile() *App {
 					return a
 				}
 			}
-			_, createErr := os.Create(a.cfg.DB.Path)
+			_, createErr := os.Create(dbPath)
 			if createErr != nil {
 				a.err = fmt.Errorf("failed to create db file: %w", createErr)
 				return a
