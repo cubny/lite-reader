@@ -43,4 +43,4 @@ Want to Contribute?
 
 Legacy Lite Reader
 ------------------
-The legacy version of Lite Reader is available at [legacy-lite-reader](https://github.com/cubny/legacy-lite-reader) repository. It is written in PHP and uses MySQL as the database. It is no longer maintained and is not recommended for use.
+The legacy version of Lite Reader is available at [legacy-lite-reader](https://github.com/cubny/legacy-lite-reader) repository. It is written in PHP and uses SQLite as the database. It is no longer maintained and is not recommended for use.
