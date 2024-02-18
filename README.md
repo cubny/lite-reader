@@ -7,8 +7,19 @@ Screenshot
 ----------
 ![ScreenShot](https://raw.github.com/cubny/lite-reader/master/public/images/screenshot.png)
 
-Requirements
----------------
+Requirements to run
+-------------------
+- None, just download the binary from the releases page and run it.
+
+Migration from legacy Lite Reader
+---------------------------------
+If you are using the legacy Lite Reader, you can migrate your data to the new Lite Reader.
+1. Download the latest release of Lite Reader
+2. Copy the data folder consisting of the agg.db file from the legacy Lite Reader to the new Lite Reader folder
+3. Run the new Lite Reader
+
+Requirements to build
+---------------------
 - SQLite3
 - Golang 
 
