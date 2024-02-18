@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
+	"runtime"
 	"syscall"
 	"time"
 
@@ -55,6 +57,7 @@ func Init(ctx context.Context, runMigration bool) (*App, error) {
 	a := &App{ctx: ctx}
 
 	a.initConfig()
+	a.initDBFile()
 	a.initSQLClient()
 	if runMigration {
 		a.migrate()
@@ -73,6 +76,31 @@ func (a *App) ifNoError(fn func() *App) *App {
 	}
 	return fn()
 }
+
+func (a *App) initDBFile() *App {
+	return a.ifNoError(func() *App {
+		if _, err := os.Stat(a.cfg.DB.Path); os.IsNotExist(err) {
+			_, b, _, _ := runtime.Caller(0)
+			basePath := filepath.Dir(filepath.Dir(b))
+			dbPath := filepath.Join(basePath, a.cfg.DB.Path)
+			dirName := filepath.Dir(dbPath)
+			if _, statErr := os.Stat(dirName); os.IsNotExist(statErr) {
+				mkdirErr := os.MkdirAll(dirName, os.ModePerm)
+				if mkdirErr != nil {
+					a.err = fmt.Errorf("failed to create db directory: %w", mkdirErr)
+					return a
+				}
+			}
+			_, createErr := os.Create(dbPath)
+			if createErr != nil {
+				a.err = fmt.Errorf("failed to create db file: %w", createErr)
+				return a
+			}
+		}
+		return a
+	})
+}
+
 func (a *App) initSQLClient() *App {
 	return a.ifNoError(func() *App {
 		var sqlClient *sql.DB
