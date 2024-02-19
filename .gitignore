@@ -1,7 +1,5 @@
 .DS_Store
-app/db/agg.db
+data/agg.db
 public/cache/*.gzip
 public/cache/*.spc
 public/cache/images/*
-.htaccess
-var/*.*
