@@ -1,4 +1,4 @@
-Lite-Reader
+lite reaser
 ===========
 Read your feeds on your own machine with a simple and lite application.
 
