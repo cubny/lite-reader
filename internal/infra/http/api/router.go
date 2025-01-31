@@ -1,7 +1,6 @@
 // Package api lite-reader
 //
 // Documentation of the lite-reader service.
-// It is a service to schedule webhooks.
 //
 //	Schemes: http
 //	BasePath: /
@@ -23,6 +22,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
 
+	"github.com/cubny/lite-reader/internal/app/auth"
 	"github.com/cubny/lite-reader/internal/app/feed"
 	"github.com/cubny/lite-reader/internal/app/item"
 	"github.com/cubny/lite-reader/internal/infra/http/api/middleware"
@@ -48,18 +48,24 @@ type ItemService interface {
 	DeleteFeedItems(*item.DeleteFeedItemsCommand) error
 }
 
+type AuthService interface {
+	Login(command *auth.LoginCommand) (string, error)
+}
+
 // Router handles http requests
 type Router struct {
 	http.Handler
 	feedService FeedService
 	itemService ItemService
+	authService AuthService
 }
 
 // New creates a new handler to handle http requests
-func New(itemService ItemService, feedService FeedService) (*Router, error) {
+func New(itemService ItemService, feedService FeedService, authService AuthService) (*Router, error) {
 	h := &Router{
 		itemService: itemService,
 		feedService: feedService,
+		authService: authService,
 	}
 	router := httprouter.New()
 
@@ -82,6 +88,7 @@ func New(itemService ItemService, feedService FeedService) (*Router, error) {
 	router.GET("/items/unread/count", chain.Wrap(h.getUnreadItemsCount))
 	router.GET("/items/starred/count", chain.Wrap(h.getStarredItemsCount))
 
+	router.POST("/login", chain.Wrap(h.login))
 	// serve static files for GET /
 	router.NotFound = http.FileServer(http.Dir("public"))
 

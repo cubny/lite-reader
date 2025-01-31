@@ -1,6 +1,6 @@
 module github.com/cubny/lite-reader
 
-go 1.21.6
+go 1.21
 
 require (
 	github.com/julienschmidt/httprouter v1.3.0
@@ -11,6 +11,7 @@ require (
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.8.4
 	go.uber.org/mock v0.4.0
+	golang.org/x/crypto v0.18.0
 	modernc.org/sqlite v1.29.1
 )
 

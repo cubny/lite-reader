@@ -19,6 +19,11 @@ type HTTP struct {
 	Port int `env:"HTTP_PORT, default=3000"`
 }
 
+type Auth struct {
+	Email    string `env:"AUTH_EMAIL"`
+	Password string `env:"AUTH_PASSWORD"`
+}
+
 // New constructs the config.
 // variables are populated using the envars and default values.
 func New(ctx context.Context) (*Config, error) {
