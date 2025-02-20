@@ -5,7 +5,7 @@ import "github.com/mmcdole/gofeed"
 type Repository interface {
 	AddFeed(feed *Feed) (int, error)
 	GetFeed(id int) (*Feed, error)
-	ListFeeds() ([]*Feed, error)
+	ListFeeds(userID int64) ([]*Feed, error)
 	DeleteFeed(id int) error
 }
 

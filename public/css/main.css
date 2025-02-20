@@ -198,7 +198,7 @@ background-color: #F5ECDE !important;
   float: left;
   width: 16px;
   padding: 0 -15px;
-  margin: -29px 9px 0 0
+  margin: 5px;
 }
 
 #feeds .feedtitle {
@@ -279,7 +279,7 @@ background-color: #F5ECDE !important;
   overflow: hidden;
   background-color: #ab1111;
   font-size: 12px;
-  margin: 25px 30px;
+  margin: 25px 0px;
   text-align: center;
   color: #FFF;
   cursor: pointer;
@@ -291,6 +291,21 @@ background-color: #F5ECDE !important;
 
 #feedbar .remove:hover {
   background-color: red;
+}
+
+#feedbar .logout {
+  float: right;
+  overflow: hidden;
+  background-color: #6C8A46;
+  font-size: 12px;
+  margin: 25px 10px 25px 5px;
+  text-align: center;
+  color: #FFF;
+  cursor: pointer;
+  display: none;
+  padding: 5px 8px;
+  border-radius: 4px;
+  transition: all .2s ease-in-out;
 }
 
 #feeds {

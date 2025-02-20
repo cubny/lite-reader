@@ -30,7 +30,7 @@ import (
 
 type FeedService interface {
 	AddFeed(command *feed.AddFeedCommand) (*feed.Feed, error)
-	ListFeeds() ([]*feed.Feed, error)
+	ListFeeds(UserID int64) ([]*feed.Feed, error)
 	FetchItems(int) ([]*item.Item, error)
 	DeleteFeed(command *feed.DeleteFeedCommand) error
 }
@@ -49,7 +49,10 @@ type ItemService interface {
 }
 
 type AuthService interface {
-	Login(command *auth.LoginCommand) (string, error)
+	Login(command *auth.LoginCommand) (*auth.LoginResponse, error)
+	Signup(command *auth.SignupCommand) error
+	GetSession(token string) (*auth.Session, error)
+	GetAllUsers() ([]*auth.User, error)
 }
 
 // Router handles http requests
@@ -69,7 +72,7 @@ func New(itemService ItemService, feedService FeedService, authService AuthServi
 	}
 	router := httprouter.New()
 
-	chain := middleware.NewChain(middleware.ContentTypeJSON)
+	chain := middleware.NewChain(middleware.ContentTypeJSON, middleware.AuthMiddleware(h.authService))
 
 	router.GET("/health", h.health)
 
@@ -89,6 +92,7 @@ func New(itemService ItemService, feedService FeedService, authService AuthServi
 	router.GET("/items/starred/count", chain.Wrap(h.getStarredItemsCount))
 
 	router.POST("/login", chain.Wrap(h.login))
+	router.POST("/signup", chain.Wrap(h.signup))
 	// serve static files for GET /
 	router.NotFound = http.FileServer(http.Dir("public"))
 

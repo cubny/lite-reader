@@ -15,6 +15,10 @@ $(document).ready(function () {
     $('.remove').click(function(){
       feeds.del(this.id);
       });
+    $('.logout').click(function(){
+      clearAuthToken();
+      window.location = '/';
+    });
     feeds.init();
 
     if(feeds.container.find('>li').length < 2){
@@ -35,36 +39,35 @@ $(document).ready(function () {
     });
 });
 
-function addFeed(url){
-  var aInput=$("#urlToAdd");
-  var af=$('#addfeed .add');
-  af.find("span").text('Adding Feed...');
-  af.find("i").removeClass("icon-plus");
-  af.find("i").addClass("icon-spin icon-spinner");
-  $.ajax({
-      url:'feeds',
-      type:"POST",
-      data: JSON.stringify({url:url}),
-      dataType:"json",
-      success:function(data){
-        af.find("span").text('Feed');
-        if(!data.error){
-            feeds.add(data);
-        }else{
-            console.log(data);
+// Update the existing addFeed function
+function addFeed(url) {
+    var aInput = $("#urlToAdd");
+    var af = $('#addfeed .add');
+    af.find("span").text('Adding Feed...');
+    af.find("i").removeClass("icon-plus");
+    af.find("i").addClass("icon-spin icon-spinner");
+    
+    $.ajax({
+        url: 'feeds',
+        type: "POST",
+        data: JSON.stringify({url: url}),
+        dataType: "json",
+        success: function(data) {
+            af.find("span").text('Feed');
+            if (!data.error) {
+                feeds.add(data);
+            } else {
+                console.log(data);
+            }
+        },
+        complete: function() {
+            af.find("span").text('Feed');
+            af.find("i").removeClass("icon-spin icon-spinner");
+            af.find("i").addClass("icon-plus");
+            aInput.val("");
+            hideAddFeed();
         }
-      },
-      error:function(data){
-          console.log(data);
-      },
-      complete:function(data){
-          af.find("span").text('Feed');
-          af.find("i").removeClass("icon-spin icon-spinner");
-          af.find("i").addClass("icon-plus");
-          aInput.val("");
-          hideAddFeed();
-      },
-  });
+    });
 }
 
 function showAddFeed(e){

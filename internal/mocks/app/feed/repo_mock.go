@@ -12,15 +12,15 @@ package mocks
 import (
 	reflect "reflect"
 
-	gomock "go.uber.org/mock/gomock"
-
 	feed "github.com/cubny/lite-reader/internal/app/feed"
+	gomock "go.uber.org/mock/gomock"
 )
 
 // Repository is a mock of Repository interface.
 type Repository struct {
 	ctrl     *gomock.Controller
 	recorder *RepositoryMockRecorder
+	isgomock struct{}
 }
 
 // RepositoryMockRecorder is the mock recorder for Repository.
@@ -41,60 +41,60 @@ func (m *Repository) EXPECT() *RepositoryMockRecorder {
 }
 
 // AddFeed mocks base method.
-func (m *Repository) AddFeed(arg0 *feed.Feed) (int, error) {
+func (m *Repository) AddFeed(feed *feed.Feed) (int, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddFeed", arg0)
+	ret := m.ctrl.Call(m, "AddFeed", feed)
 	ret0, _ := ret[0].(int)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // AddFeed indicates an expected call of AddFeed.
-func (mr *RepositoryMockRecorder) AddFeed(arg0 any) *gomock.Call {
+func (mr *RepositoryMockRecorder) AddFeed(feed any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddFeed", reflect.TypeOf((*Repository)(nil).AddFeed), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddFeed", reflect.TypeOf((*Repository)(nil).AddFeed), feed)
 }
 
 // DeleteFeed mocks base method.
-func (m *Repository) DeleteFeed(arg0 int) error {
+func (m *Repository) DeleteFeed(id int) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteFeed", arg0)
+	ret := m.ctrl.Call(m, "DeleteFeed", id)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // DeleteFeed indicates an expected call of DeleteFeed.
-func (mr *RepositoryMockRecorder) DeleteFeed(arg0 any) *gomock.Call {
+func (mr *RepositoryMockRecorder) DeleteFeed(id any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteFeed", reflect.TypeOf((*Repository)(nil).DeleteFeed), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteFeed", reflect.TypeOf((*Repository)(nil).DeleteFeed), id)
 }
 
 // GetFeed mocks base method.
-func (m *Repository) GetFeed(arg0 int) (*feed.Feed, error) {
+func (m *Repository) GetFeed(id int) (*feed.Feed, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetFeed", arg0)
+	ret := m.ctrl.Call(m, "GetFeed", id)
 	ret0, _ := ret[0].(*feed.Feed)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetFeed indicates an expected call of GetFeed.
-func (mr *RepositoryMockRecorder) GetFeed(arg0 any) *gomock.Call {
+func (mr *RepositoryMockRecorder) GetFeed(id any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFeed", reflect.TypeOf((*Repository)(nil).GetFeed), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFeed", reflect.TypeOf((*Repository)(nil).GetFeed), id)
 }
 
 // ListFeeds mocks base method.
-func (m *Repository) ListFeeds() ([]*feed.Feed, error) {
+func (m *Repository) ListFeeds(userID int64) ([]*feed.Feed, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListFeeds")
+	ret := m.ctrl.Call(m, "ListFeeds", userID)
 	ret0, _ := ret[0].([]*feed.Feed)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // ListFeeds indicates an expected call of ListFeeds.
-func (mr *RepositoryMockRecorder) ListFeeds() *gomock.Call {
+func (mr *RepositoryMockRecorder) ListFeeds(userID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListFeeds", reflect.TypeOf((*Repository)(nil).ListFeeds))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListFeeds", reflect.TypeOf((*Repository)(nil).ListFeeds), userID)
 }

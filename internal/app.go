@@ -180,7 +180,7 @@ func (a *App) initScheduler() *App {
 		a.scheduler = job.NewScheduler(1 * time.Hour)
 		a.scheduler.Start()
 
-		j := job.NewItemsJob(a.jobFeedService, a.jobItemService)
+		j := job.NewItemsJob(a.jobFeedService, a.jobItemService, a.authService)
 		a.scheduler.Queue <- j
 		return a
 	})

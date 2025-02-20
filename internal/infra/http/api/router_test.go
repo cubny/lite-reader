@@ -20,13 +20,14 @@ type spec struct {
 	ExpectedBody   string
 	Method         string
 	Target         string
-	MockFn         func(i *mocks.ItemService, f *mocks.FeedService)
+	MockFn         func(i *mocks.ItemService, f *mocks.FeedService, a *mocks.AuthService)
 }
 
-func (s *spec) execHTTPTestCases(i *mocks.ItemService, f *mocks.FeedService) func(t *testing.T) {
+func (s *spec) execHTTPTestCases(i *mocks.ItemService, f *mocks.FeedService, a *mocks.AuthService) func(t *testing.T) {
 	return func(t *testing.T) {
-		s.MockFn(i, f)
-		handler, err := api.New(i, f)
+		a := &mocks.AuthService{}
+		s.MockFn(i, f, a)
+		handler, err := api.New(i, f, a)
 		assert.Nil(t, err)
 		s.HandlerTest(t, handler)
 	}

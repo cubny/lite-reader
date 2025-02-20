@@ -26,13 +26,12 @@ func (h *Router) login(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 		return
 	}
 
-	token, err := h.authService.Login(command)
+	response, err := h.authService.Login(command)
 	if err != nil {
 		_ = BadRequest(w, err.Error())
 		return
 	}
 
-	// Return token in response
 	w.WriteHeader(http.StatusOK)
-	_ = json.NewEncoder(w).Encode(map[string]string{"token": token})
+	_ = json.NewEncoder(w).Encode(response)
 }

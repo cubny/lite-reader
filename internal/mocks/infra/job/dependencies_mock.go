@@ -12,16 +12,16 @@ package mocks
 import (
 	reflect "reflect"
 
-	gomock "go.uber.org/mock/gomock"
-
 	feed "github.com/cubny/lite-reader/internal/app/feed"
 	item "github.com/cubny/lite-reader/internal/app/item"
+	gomock "go.uber.org/mock/gomock"
 )
 
 // FeedService is a mock of FeedService interface.
 type FeedService struct {
 	ctrl     *gomock.Controller
 	recorder *FeedServiceMockRecorder
+	isgomock struct{}
 }
 
 // FeedServiceMockRecorder is the mock recorder for FeedService.
@@ -42,39 +42,40 @@ func (m *FeedService) EXPECT() *FeedServiceMockRecorder {
 }
 
 // FetchItems mocks base method.
-func (m *FeedService) FetchItems(arg0 int) ([]*item.Item, error) {
+func (m *FeedService) FetchItems(feedID int) ([]*item.Item, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FetchItems", arg0)
+	ret := m.ctrl.Call(m, "FetchItems", feedID)
 	ret0, _ := ret[0].([]*item.Item)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // FetchItems indicates an expected call of FetchItems.
-func (mr *FeedServiceMockRecorder) FetchItems(arg0 any) *gomock.Call {
+func (mr *FeedServiceMockRecorder) FetchItems(feedID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FetchItems", reflect.TypeOf((*FeedService)(nil).FetchItems), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FetchItems", reflect.TypeOf((*FeedService)(nil).FetchItems), feedID)
 }
 
 // ListFeeds mocks base method.
-func (m *FeedService) ListFeeds() ([]*feed.Feed, error) {
+func (m *FeedService) ListFeeds(userID int64) ([]*feed.Feed, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListFeeds")
+	ret := m.ctrl.Call(m, "ListFeeds", userID)
 	ret0, _ := ret[0].([]*feed.Feed)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // ListFeeds indicates an expected call of ListFeeds.
-func (mr *FeedServiceMockRecorder) ListFeeds() *gomock.Call {
+func (mr *FeedServiceMockRecorder) ListFeeds(userID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListFeeds", reflect.TypeOf((*FeedService)(nil).ListFeeds))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListFeeds", reflect.TypeOf((*FeedService)(nil).ListFeeds), userID)
 }
 
 // ItemService is a mock of ItemService interface.
 type ItemService struct {
 	ctrl     *gomock.Controller
 	recorder *ItemServiceMockRecorder
+	isgomock struct{}
 }
 
 // ItemServiceMockRecorder is the mock recorder for ItemService.
@@ -95,15 +96,15 @@ func (m *ItemService) EXPECT() *ItemServiceMockRecorder {
 }
 
 // UpsertItems mocks base method.
-func (m *ItemService) UpsertItems(arg0 *item.UpsertItemsCommand) error {
+func (m *ItemService) UpsertItems(command *item.UpsertItemsCommand) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpsertItems", arg0)
+	ret := m.ctrl.Call(m, "UpsertItems", command)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // UpsertItems indicates an expected call of UpsertItems.
-func (mr *ItemServiceMockRecorder) UpsertItems(arg0 any) *gomock.Call {
+func (mr *ItemServiceMockRecorder) UpsertItems(command any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpsertItems", reflect.TypeOf((*ItemService)(nil).UpsertItems), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpsertItems", reflect.TypeOf((*ItemService)(nil).UpsertItems), command)
 }

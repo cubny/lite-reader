@@ -46,7 +46,7 @@ gomod:
 	@go mod vendor
 
 $(GOBIN)/mockgen:
-	@go install github.com/golang/mock/mockgen@v1.6.0
+	@go install go.uber.org/mock/mockgen@latest
 	@$(MAKE) gomod
 
 update-mocks: | $(GOBIN)/mockgen

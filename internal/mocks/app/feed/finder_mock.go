@@ -19,6 +19,7 @@ import (
 type Finder struct {
 	ctrl     *gomock.Controller
 	recorder *FinderMockRecorder
+	isgomock struct{}
 }
 
 // FinderMockRecorder is the mock recorder for Finder.
@@ -39,16 +40,16 @@ func (m *Finder) EXPECT() *FinderMockRecorder {
 }
 
 // FindFeeds mocks base method.
-func (m *Finder) FindFeeds(arg0 string) ([]string, error) {
+func (m *Finder) FindFeeds(url string) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindFeeds", arg0)
+	ret := m.ctrl.Call(m, "FindFeeds", url)
 	ret0, _ := ret[0].([]string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // FindFeeds indicates an expected call of FindFeeds.
-func (mr *FinderMockRecorder) FindFeeds(arg0 any) *gomock.Call {
+func (mr *FinderMockRecorder) FindFeeds(url any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindFeeds", reflect.TypeOf((*Finder)(nil).FindFeeds), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindFeeds", reflect.TypeOf((*Finder)(nil).FindFeeds), url)
 }

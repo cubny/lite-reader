@@ -97,7 +97,7 @@ func (r *DB) UpsertItems(feedID int, items []*item.Item) error {
 
 func (r *DB) UpsertItem(feedID int, i *item.Item) (int, error) {
 	// first find if item exists
-	result, err := r.sqliteDB.Query("SELECT id FROM item WHERE link = ?", i.Link)
+	result, err := r.sqliteDB.Query("SELECT id FROM item WHERE link = ? AND rss_id = ?", i.Link, feedID)
 	if err != nil {
 		return 0, err
 	}

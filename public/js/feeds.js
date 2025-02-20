@@ -57,7 +57,7 @@ var feeds = {
       .addClass("feed")
       .attr("id", opts.id)
       .html(
-        $("<img/>").attr("src", "http://api.byi.pw/favicon?url=" + opts.link),
+        $("<img/>").attr("src", "https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=" + opts.link),
       )
       .append($("<div/>").addClass("feedtitle").html(opts.title))
       .append(
@@ -67,6 +67,8 @@ var feeds = {
       );
     feeds.container.append($item);
     feeds.blink(opts);
+    // now fetch the feed
+    feeds.update(opts.id);
     $("#feeds-actions").show();
   },
   del: function (id) {

@@ -53,16 +53,18 @@ $(document).ready(function () {
                 email: $('#email').val().trim(),
                 password: $('#password').val()
             };
-            console.log('Sending login request:', data);
             $.ajax({
                 url: '/login',
                 type: 'POST',
                 data: JSON.stringify(data),     
+                dataType: 'json',
                 contentType: 'application/json',
                 success: function(response) {
+                    setAuthToken(response.access_token);
                     window.location.href = '/';
                 },
                 error: function(xhr) {
+                    console.log(xhr);
                     login.showError($('#email'), 'Invalid email or password');
                 }
             });

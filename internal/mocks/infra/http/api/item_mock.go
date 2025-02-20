@@ -12,15 +12,15 @@ package mocks
 import (
 	reflect "reflect"
 
-	gomock "go.uber.org/mock/gomock"
-
 	item "github.com/cubny/lite-reader/internal/app/item"
+	gomock "go.uber.org/mock/gomock"
 )
 
 // ItemService is a mock of ItemService interface.
 type ItemService struct {
 	ctrl     *gomock.Controller
 	recorder *ItemServiceMockRecorder
+	isgomock struct{}
 }
 
 // ItemServiceMockRecorder is the mock recorder for ItemService.
@@ -172,15 +172,15 @@ func (mr *ItemServiceMockRecorder) UpdateItem(arg0 any) *gomock.Call {
 }
 
 // UpsertItems mocks base method.
-func (m *ItemService) UpsertItems(arg0 *item.UpsertItemsCommand) error {
+func (m *ItemService) UpsertItems(command *item.UpsertItemsCommand) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpsertItems", arg0)
+	ret := m.ctrl.Call(m, "UpsertItems", command)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // UpsertItems indicates an expected call of UpsertItems.
-func (mr *ItemServiceMockRecorder) UpsertItems(arg0 any) *gomock.Call {
+func (mr *ItemServiceMockRecorder) UpsertItems(command any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpsertItems", reflect.TypeOf((*ItemService)(nil).UpsertItems), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpsertItems", reflect.TypeOf((*ItemService)(nil).UpsertItems), command)
 }
