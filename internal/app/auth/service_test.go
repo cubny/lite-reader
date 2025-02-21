@@ -82,7 +82,6 @@ func TestService_Signup(t *testing.T) {
 }
 
 func TestService_Login(t *testing.T) {
-	ctrl := gomock.NewController(t)
 	tests := []struct {
 		name      string
 		command   *auth.LoginCommand
@@ -148,6 +147,7 @@ func TestService_Login(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			ctrl := gomock.NewController(t)
 			repo := mocks.NewRepository(ctrl)
 			tt.mockSetup(repo)
 
