@@ -11,5 +11,5 @@ type Feed struct {
 	Lang        string
 	UpdatedAt   time.Time
 	UnreadCount int
-	UserID      int64
+	UserID      int
 }

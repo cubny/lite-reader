@@ -5,6 +5,11 @@ $(document).ready(function () {
         
         init: function() {
             console.log(this.form);
+            var success = sessionStorage.getItem('signupSuccess');
+            if (success === 'true') {
+                sessionStorage.removeItem('signupSuccess');
+                $('#signup-successful').removeClass('hidden');
+            }
             this.form.submit(function(e) {
                 e.preventDefault();
                 login.validate();

@@ -70,7 +70,9 @@ $(document).ready(function () {
                 }),
                 contentType: 'application/json',
                 success: function(response) {
-                    window.location.href = '/';
+                    sessionStorage.setItem('signupSuccess', 'true');
+                    window.location.href = '/login.html';
+
                 },
                 error: function(xhr) {
                     signup.showError($('#email'), 'Error creating account. Email may already be registered.');

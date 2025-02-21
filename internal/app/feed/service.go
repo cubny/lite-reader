@@ -68,7 +68,7 @@ func (s *ServiceImpl) AddFeed(command *AddFeedCommand) (*Feed, error) {
 	return feed, nil
 }
 
-func (s *ServiceImpl) ListFeeds(userID int64) ([]*Feed, error) {
+func (s *ServiceImpl) ListFeeds(userID int) ([]*Feed, error) {
 	return s.repository.ListFeeds(userID)
 }
 

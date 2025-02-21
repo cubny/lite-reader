@@ -1,10 +1,10 @@
 package auth
 
 import (
+	"crypto/rand"
 	"database/sql"
 	"encoding/hex"
 	"errors"
-	"math/rand"
 	"time"
 
 	"github.com/google/uuid"
@@ -71,7 +71,7 @@ func (r *DB) Login(f *auth.LoginCommand) error {
 	return nil
 }
 
-func (r *DB) CreateSession(userID int64) (*auth.Session, error) {
+func (r *DB) CreateSession(userID int) (*auth.Session, error) {
 	session := &auth.Session{
 		ID:           uuid.New().String(),
 		UserID:       userID,
@@ -106,7 +106,7 @@ func (r *DB) GetSessionByToken(token string) (*auth.Session, error) {
 func generateSecureToken() string {
 	b := make([]byte, 32)
 	if _, err := rand.Read(b); err != nil {
-		panic(err)
+		return "" // Return empty string in case of error instead of panic
 	}
 	return hex.EncodeToString(b)
 }

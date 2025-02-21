@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 
+	"github.com/cubny/lite-reader/internal/app/auth"
 	"github.com/cubny/lite-reader/internal/app/feed"
 	"github.com/cubny/lite-reader/internal/app/item"
 	"github.com/cubny/lite-reader/internal/infra/job"
@@ -16,10 +17,14 @@ func TestItemsJob_Execute(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	feedService := mocks.NewFeedService(ctrl)
 	itemService := mocks.NewItemService(ctrl)
-	j := job.NewItemsJob(feedService, itemService)
+	userService := mocks.NewUserService(ctrl)
+	j := job.NewItemsJob(feedService, itemService, userService)
 
 	t.Run("Success", func(_ *testing.T) {
-		feedService.EXPECT().ListFeeds().Return([]*feed.Feed{
+		userService.EXPECT().GetAllUsers().Return([]*auth.User{
+			{ID: 1},
+		}, nil)
+		feedService.EXPECT().ListFeeds(1).Return([]*feed.Feed{
 			{ID: 1},
 			{ID: 2},
 		}, nil)
@@ -48,14 +53,27 @@ func TestItemsJob_Execute(t *testing.T) {
 		j.Execute()
 	})
 
+	t.Run("FailGetAllUsers", func(_ *testing.T) {
+		userService.EXPECT().GetAllUsers().Return(nil, assert.AnError)
+		feedService.EXPECT().ListFeeds(gomock.Any()).Times(0)
+		itemService.EXPECT().UpsertItems(gomock.Any()).Times(0)
+		j.Execute()
+	})
+
 	t.Run("FailListFeeds", func(_ *testing.T) {
-		feedService.EXPECT().ListFeeds().Return(nil, assert.AnError)
+		userService.EXPECT().GetAllUsers().Return([]*auth.User{
+			{ID: 1},
+		}, nil)
+		feedService.EXPECT().ListFeeds(1).Return(nil, assert.AnError)
 		itemService.EXPECT().UpsertItems(gomock.Any()).Times(0)
 		j.Execute()
 	})
 
 	t.Run("FailFetchItems", func(_ *testing.T) {
-		feedService.EXPECT().ListFeeds().Return([]*feed.Feed{
+		userService.EXPECT().GetAllUsers().Return([]*auth.User{
+			{ID: 1},
+		}, nil)
+		feedService.EXPECT().ListFeeds(1).Return([]*feed.Feed{
 			{ID: 1},
 		}, nil)
 		feedService.EXPECT().FetchItems(1).Return(nil, assert.AnError)
@@ -64,7 +82,10 @@ func TestItemsJob_Execute(t *testing.T) {
 	})
 
 	t.Run("FailUpsertItems", func(_ *testing.T) {
-		feedService.EXPECT().ListFeeds().Return([]*feed.Feed{
+		userService.EXPECT().GetAllUsers().Return([]*auth.User{
+			{ID: 1},
+		}, nil)
+		feedService.EXPECT().ListFeeds(1).Return([]*feed.Feed{
 			{ID: 1},
 			{ID: 2},
 		}, nil)

@@ -7,7 +7,7 @@ import (
 )
 
 type FeedService interface {
-	ListFeeds(userID int64) ([]*feed.Feed, error)
+	ListFeeds(userID int) ([]*feed.Feed, error)
 	FetchItems(feedID int) ([]*item.Item, error)
 }
 type ItemService interface {

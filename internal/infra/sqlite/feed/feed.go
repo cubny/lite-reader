@@ -49,7 +49,7 @@ func (r *DB) GetFeed(id int) (*feed.Feed, error) {
 	return nil, nil
 }
 
-func (r *DB) ListFeeds(userID int64) ([]*feed.Feed, error) {
+func (r *DB) ListFeeds(userID int) ([]*feed.Feed, error) {
 	query := "SELECT " +
 		"id, title, desc, link, url, lang, updated_at, " +
 		"(SELECT COUNT(*) FROM item WHERE rss_id = rss.id AND is_new = 1) AS unread_count FROM rss " +

@@ -1,5 +1,5 @@
 package cxutil
 
-type contextKey int64
+type contextKey int
 
 const UserIDKey contextKey = 1

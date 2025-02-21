@@ -25,7 +25,7 @@ func (j *ItemsJob) Execute() {
 
 	for _, u := range users {
 		log.Printf("Processing user %d", u.ID)
-		feeds, err := j.feedService.ListFeeds(int64(u.ID))
+		feeds, err := j.feedService.ListFeeds(u.ID)
 		if err != nil {
 			return
 		}

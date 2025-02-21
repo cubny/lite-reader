@@ -392,6 +392,17 @@ background-color: #F5ECDE !important;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
+.login-container .alert {
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+
+.login-container .alert-success {
+  background-color: #DFF0D8;
+  color: #3C763D;
+}
+
 .login-container h1 {
   text-align: center;
   color: #333;
@@ -435,3 +446,17 @@ background-color: #F5ECDE !important;
 .login-form .btn-primary:hover {
   background-color: #597238;
 }
+
+.hidden {
+  display: none;
+}
+
+.error-message {
+    color: #a94442;
+    background-color: #f2dede;
+    border: 1px solid #ebccd1;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+

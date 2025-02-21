@@ -2,7 +2,7 @@ package feed
 
 type AddFeedCommand struct {
 	URL    string
-	UserID int64
+	UserID int
 }
 
 type DeleteFeedCommand struct {

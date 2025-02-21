@@ -108,7 +108,7 @@ func toAddFeedCommand(w http.ResponseWriter, r *http.Request, _ httprouter.Param
 
 	return &feed.AddFeedCommand{
 		URL:    request.URL,
-		UserID: r.Context().Value(cxutil.UserIDKey).(int64),
+		UserID: r.Context().Value(cxutil.UserIDKey).(int),
 	}, nil
 }
 

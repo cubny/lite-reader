@@ -12,9 +12,10 @@ package mocks
 import (
 	reflect "reflect"
 
+	gomock "go.uber.org/mock/gomock"
+
 	feed "github.com/cubny/lite-reader/internal/app/feed"
 	item "github.com/cubny/lite-reader/internal/app/item"
-	gomock "go.uber.org/mock/gomock"
 )
 
 // FeedService is a mock of FeedService interface.
@@ -86,7 +87,7 @@ func (mr *FeedServiceMockRecorder) FetchItems(arg0 any) *gomock.Call {
 }
 
 // ListFeeds mocks base method.
-func (m *FeedService) ListFeeds(UserID int64) ([]*feed.Feed, error) {
+func (m *FeedService) ListFeeds(UserID int) ([]*feed.Feed, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListFeeds", UserID)
 	ret0, _ := ret[0].([]*feed.Feed)

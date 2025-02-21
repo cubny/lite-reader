@@ -2,6 +2,7 @@ package auth
 
 import (
 	"errors"
+	"strings"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
@@ -53,7 +54,15 @@ func (s *Service) Signup(command *SignupCommand) error {
 		return err
 	}
 
-	return s.repo.CreateUser(command.Email, string(hashedPassword))
+	err = s.repo.CreateUser(command.Email, string(hashedPassword))
+	switch {
+	case err == nil:
+		return nil
+	case strings.Contains(err.Error(), "UNIQUE constraint failed"):
+		return errors.New("email already registered")
+	default:
+		return err
+	}
 }
 
 func (s *Service) GetSession(token string) (*Session, error) {

@@ -20,13 +20,14 @@ type spec struct {
 	ExpectedBody   string
 	Method         string
 	Target         string
+	AuthToken      string
 	MockFn         func(i *mocks.ItemService, f *mocks.FeedService, a *mocks.AuthService)
 }
 
 func (s *spec) execHTTPTestCases(i *mocks.ItemService, f *mocks.FeedService, a *mocks.AuthService) func(t *testing.T) {
 	return func(t *testing.T) {
-		a := &mocks.AuthService{}
 		s.MockFn(i, f, a)
+		s.AuthToken = "test"
 		handler, err := api.New(i, f, a)
 		assert.Nil(t, err)
 		s.HandlerTest(t, handler)
@@ -38,6 +39,9 @@ func (s *spec) HandlerTest(t *testing.T, h *api.Router) {
 	t.Helper()
 
 	req := httptest.NewRequest(s.Method, s.Target, strings.NewReader(s.ReqBody))
+	if s.AuthToken != "" {
+		req.Header.Set("Authorization", "Bearer "+s.AuthToken)
+	}
 
 	rec := httptest.NewRecorder()
 	h.ServeHTTP(rec, req)
@@ -57,7 +61,6 @@ func (s *spec) HandlerTest(t *testing.T, h *api.Router) {
 
 	assert.Equal(t, s.ExpectedStatus, resp.StatusCode)
 }
-
 func isJSON(str string) bool {
 	var js json.RawMessage
 	return json.Unmarshal([]byte(str), &js) == nil

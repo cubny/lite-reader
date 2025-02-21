@@ -7,10 +7,10 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/julienschmidt/httprouter"
+
 	"github.com/cubny/lite-reader/internal/app/auth"
 	"github.com/cubny/lite-reader/internal/infra/http/api/cxutil"
-
-	"github.com/julienschmidt/httprouter"
 )
 
 type AuthService interface {

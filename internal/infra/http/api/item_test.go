@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 
+	"github.com/cubny/lite-reader/internal/app/auth"
 	"github.com/cubny/lite-reader/internal/app/item"
 	mocks "github.com/cubny/lite-reader/internal/mocks/infra/http/api"
 )
@@ -16,6 +17,7 @@ func TestRouter_updateItem(t *testing.T) {
 	feedService := mocks.NewFeedService(ctrl)
 	itemService := mocks.NewItemService(ctrl)
 	authService := mocks.NewAuthService(ctrl)
+	authService.EXPECT().GetSession(gomock.Any()).Return(&auth.Session{}, nil).AnyTimes()
 
 	specs := []spec{
 		{
@@ -70,6 +72,7 @@ func TestRouter_getStarredItems(t *testing.T) {
 	feedService := mocks.NewFeedService(ctrl)
 	itemService := mocks.NewItemService(ctrl)
 	authService := mocks.NewAuthService(ctrl)
+	authService.EXPECT().GetSession(gomock.Any()).Return(&auth.Session{}, nil).AnyTimes()
 
 	specs := []spec{
 		{
@@ -104,6 +107,7 @@ func TestRouter_getUnreadItems(t *testing.T) {
 	feedService := mocks.NewFeedService(ctrl)
 	itemService := mocks.NewItemService(ctrl)
 	authService := mocks.NewAuthService(ctrl)
+	authService.EXPECT().GetSession(gomock.Any()).Return(&auth.Session{}, nil).AnyTimes()
 
 	specs := []spec{
 		{
@@ -138,6 +142,7 @@ func TestRouter_getUnreadItemsCount(t *testing.T) {
 	feedService := mocks.NewFeedService(ctrl)
 	itemService := mocks.NewItemService(ctrl)
 	authService := mocks.NewAuthService(ctrl)
+	authService.EXPECT().GetSession(gomock.Any()).Return(&auth.Session{}, nil).AnyTimes()
 
 	specs := []spec{
 		{
@@ -172,6 +177,7 @@ func TestRouter_getStarredItemsCount(t *testing.T) {
 	feedService := mocks.NewFeedService(ctrl)
 	itemService := mocks.NewItemService(ctrl)
 	authService := mocks.NewAuthService(ctrl)
+	authService.EXPECT().GetSession(gomock.Any()).Return(&auth.Session{}, nil).AnyTimes()
 
 	specs := []spec{
 		{

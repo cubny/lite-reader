@@ -3,7 +3,7 @@ package auth
 import "time"
 
 type User struct {
-	ID       int64  `json:"id"`
+	ID       int    `json:"id"`
 	Email    string `json:"email"`
 	Password string `json:"-"` // bcrypt hashed
 }
@@ -15,7 +15,7 @@ type Login struct {
 
 type Session struct {
 	ID           string    `json:"id"`
-	UserID       int64     `json:"user_id"`
+	UserID       int       `json:"user_id"`
 	AccessToken  string    `json:"access_token"`
 	RefreshToken string    `json:"refresh_token"`
 	ExpiresAt    time.Time `json:"expires_at"`

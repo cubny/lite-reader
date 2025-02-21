@@ -45,7 +45,7 @@ func (h *Router) addFeed(w http.ResponseWriter, r *http.Request, p httprouter.Pa
 	}
 }
 func (h *Router) listFeeds(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	userID := r.Context().Value(cxutil.UserIDKey).(int64)
+	userID := r.Context().Value(cxutil.UserIDKey).(int)
 	log.Infof("listFeeds: userID %d", userID)
 	resp, err := h.feedService.ListFeeds(userID)
 	if err != nil {

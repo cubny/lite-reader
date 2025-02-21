@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 
+	"github.com/cubny/lite-reader/internal/app/auth"
 	"github.com/cubny/lite-reader/internal/app/feed"
 	"github.com/cubny/lite-reader/internal/app/item"
 	mocks "github.com/cubny/lite-reader/internal/mocks/infra/http/api"
@@ -18,6 +19,7 @@ func TestRouter_addFeed(t *testing.T) {
 	feedService := mocks.NewFeedService(ctrl)
 	itemService := mocks.NewItemService(ctrl)
 	authService := mocks.NewAuthService(ctrl)
+	authService.EXPECT().GetSession(gomock.Any()).Return(&auth.Session{}, nil).AnyTimes()
 	now := time.Now()
 
 	specs := []spec{
@@ -92,6 +94,7 @@ func TestRouter_getFeedItems(t *testing.T) {
 	itemService := mocks.NewItemService(ctrl)
 	feedService := mocks.NewFeedService(ctrl)
 	authService := mocks.NewAuthService(ctrl)
+	authService.EXPECT().GetSession(gomock.Any()).Return(&auth.Session{}, nil).AnyTimes()
 	now := time.Now()
 
 	specs := []spec{
@@ -147,6 +150,7 @@ func TestRouter_fetchFeedNewItems(t *testing.T) {
 	itemService := mocks.NewItemService(ctrl)
 	feedService := mocks.NewFeedService(ctrl)
 	authService := mocks.NewAuthService(ctrl)
+	authService.EXPECT().GetSession(gomock.Any()).Return(&auth.Session{}, nil).AnyTimes()
 	now := time.Now()
 
 	specs := []spec{
@@ -260,6 +264,7 @@ func TestRouter_readFeedItems(t *testing.T) {
 	itemService := mocks.NewItemService(ctrl)
 	feedService := mocks.NewFeedService(ctrl)
 	authService := mocks.NewAuthService(ctrl)
+	authService.EXPECT().GetSession(gomock.Any()).Return(&auth.Session{}, nil).AnyTimes()
 
 	specs := []spec{
 		{
@@ -302,6 +307,7 @@ func TestRouter_unreadFeedItems(t *testing.T) {
 	itemService := mocks.NewItemService(ctrl)
 	feedService := mocks.NewFeedService(ctrl)
 	authService := mocks.NewAuthService(ctrl)
+	authService.EXPECT().GetSession(gomock.Any()).Return(&auth.Session{}, nil).AnyTimes()
 
 	specs := []spec{
 		{
@@ -344,6 +350,7 @@ func TestRouter_DeleteFeed(t *testing.T) {
 	itemService := mocks.NewItemService(ctrl)
 	feedService := mocks.NewFeedService(ctrl)
 	authService := mocks.NewAuthService(ctrl)
+	authService.EXPECT().GetSession(gomock.Any()).Return(&auth.Session{}, nil).AnyTimes()
 
 	specs := []spec{
 		{
