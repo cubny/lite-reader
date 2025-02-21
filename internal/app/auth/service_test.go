@@ -76,6 +76,7 @@ func TestService_Signup(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 			}
+			ctrl.Finish()
 		})
 	}
 }
@@ -166,6 +167,7 @@ func TestService_Login(t *testing.T) {
 				assert.NotEmpty(t, got.RefreshToken)
 				assert.Greater(t, got.ExpiresIn, float64(0))
 			}
+			ctrl.Finish()
 		})
 	}
 }
@@ -217,6 +219,7 @@ func TestService_GetSession(t *testing.T) {
 				assert.NoError(t, err)
 				assert.NotNil(t, got)
 			}
+			ctrl.Finish()
 		})
 	}
 }
@@ -264,6 +267,7 @@ func TestService_GetAllUsers(t *testing.T) {
 				assert.NoError(t, err)
 				assert.NotNil(t, got)
 			}
+			ctrl.Finish()
 		})
 	}
 }
