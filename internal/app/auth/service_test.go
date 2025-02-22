@@ -2,6 +2,7 @@ package auth_test
 
 import (
 	"errors"
+	"golang.org/x/crypto/bcrypt"
 	"testing"
 	"time"
 
@@ -13,7 +14,6 @@ import (
 )
 
 func TestService_Signup(t *testing.T) {
-	ctrl := gomock.NewController(t)
 	tests := []struct {
 		name      string
 		command   *auth.SignupCommand
@@ -62,6 +62,7 @@ func TestService_Signup(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			ctrl := gomock.NewController(t)
 			repo := mocks.NewRepository(ctrl)
 			tt.mockSetup(repo)
 
@@ -97,11 +98,11 @@ func TestService_Login(t *testing.T) {
 				Password: "password123",
 			},
 			mockSetup: func(r *mocks.Repository) {
-				hashedPassword := "$2a$10$abcdefghijklmnopqrstuvwxyz" // pre-hashed "password123"
+				hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("password123"), bcrypt.DefaultCost)
 				user := &auth.User{
 					ID:       1,
 					Email:    "test@example.com",
-					Password: hashedPassword,
+					Password: string(hashedPassword),
 				}
 				session := &auth.Session{
 					AccessToken:  "access-token",
