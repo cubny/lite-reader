@@ -203,7 +203,7 @@ func TestRouter_fetchFeedNewItems(t *testing.T) {
 			Target:         "/feeds/1/fetch",
 			ExpectedStatus: http.StatusInternalServerError,
 			ExpectedBody:   `{"error":{"code":500,"details":"Internal error - cannot fetch feed items"}}`,
-			MockFn: func(i *mocks.ItemService, f *mocks.FeedService, _ *mocks.AuthService) {
+			MockFn: func(_ *mocks.ItemService, f *mocks.FeedService, _ *mocks.AuthService) {
 				f.EXPECT().FetchItems(1).Return(nil, assert.AnError)
 			},
 		},
