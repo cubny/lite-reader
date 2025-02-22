@@ -18,6 +18,9 @@ Read your feeds on your own machine with a simple and lite application.
 - Lightweight and minimal feed aggregator
 - Easy to install and use
 - Supports data migration from legacy Lite Reader
+- **New:** Multi-user support with individual user feeds
+- Feed management: add, update, delete feeds
+- Item management: read, star, mark as read/unread
 
 ## Requirements
 - None, just download the binary from the releases page and run it.
