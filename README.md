@@ -23,7 +23,7 @@ Read your feeds on your own machine with a simple and lite application.
 - None, just download the binary from the releases page and run it.
 
 ## Installation
-1. Download the latest release from the [releases page](link).
+1. Download the latest release from the [releases page](https://github.com/cubny/lite-reader/releases).
 2. Run the binary:
    ```sh
    ./lite-reader
