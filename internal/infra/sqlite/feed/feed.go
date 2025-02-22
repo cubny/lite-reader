@@ -18,8 +18,8 @@ func NewDB(client *sql.DB) *DB {
 }
 
 func (r *DB) AddFeed(f *feed.Feed) (int, error) {
-	result, err := r.sqliteDB.Exec("INSERT INTO rss (title, desc, link, url, lang, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
-		f.Title, f.Description, f.Link, f.URL, f.Lang, f.UpdatedAt.Format(time.RFC3339))
+	result, err := r.sqliteDB.Exec("INSERT INTO rss (title, desc, link, url, lang, user_id, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		f.Title, f.Description, f.Link, f.URL, f.Lang, f.UserID, f.UpdatedAt.Format(time.RFC3339))
 	if err != nil {
 		return 0, err
 	}
@@ -49,20 +49,21 @@ func (r *DB) GetFeed(id int) (*feed.Feed, error) {
 	return nil, nil
 }
 
-func (r *DB) ListFeeds() ([]*feed.Feed, error) {
+func (r *DB) ListFeeds(userID int) ([]*feed.Feed, error) {
 	query := "SELECT " +
 		"id, title, desc, link, url, lang, updated_at, " +
-		"(SELECT COUNT(*) FROM item WHERE rss_id = rss.id AND is_new = 1) AS unread_count FROM rss"
-	result, err := r.sqliteDB.Query(query)
+		"(SELECT COUNT(*) FROM item WHERE rss_id = rss.id AND is_new = 1) AS unread_count FROM rss " +
+		"WHERE user_id = ?"
+	rows, err := r.sqliteDB.Query(query, userID)
 	if err != nil {
 		return nil, err
 	}
 	defer func() {
-		if err = result.Close(); err != nil {
+		if err = rows.Close(); err != nil {
 			panic(err)
 		}
 	}()
-	return resultToFeeds(result)
+	return resultToFeeds(rows)
 }
 
 func (r *DB) DeleteFeed(id int) error {

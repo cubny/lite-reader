@@ -163,13 +163,13 @@ func TestServiceImpl_AddFeed(t *testing.T) {
 func TestServiceImpl_ListFeeds(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	repoMock := mocks.NewRepository(ctrl)
-	repoMock.EXPECT().ListFeeds().Return([]*feed.Feed{}, nil)
+	repoMock.EXPECT().ListFeeds(1).Return([]*feed.Feed{}, nil)
 
 	parserMock := mocks.NewParser(ctrl)
 	finderMock := mocks.NewFinder(ctrl)
 
 	s := feed.NewService(repoMock, parserMock, finderMock)
-	_, err := s.ListFeeds()
+	_, err := s.ListFeeds(1)
 	assert.NoError(t, err)
 }
 

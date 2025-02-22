@@ -46,7 +46,7 @@ gomod:
 	@go mod vendor
 
 $(GOBIN)/mockgen:
-	@go install github.com/golang/mock/mockgen@v1.6.0
+	@go install go.uber.org/mock/mockgen@latest
 	@$(MAKE) gomod
 
 update-mocks: | $(GOBIN)/mockgen
@@ -75,7 +75,7 @@ gci: | $(GOBIN)/gci
 	@gci write --Section Standard --Section Default --Section "Prefix(github.com/cubny/lite-reader)"  $(shell ls  -d $(PWD)/*/ | grep -v vendor)
 
 $(GOBIN)/golangci-lint:
-	@curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(shell go env GOPATH)/bin v1.56.1
+	@curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(shell go env GOPATH)/bin v1.64.5
 
 .PHONY: lint
 lint: | $(GOBIN)/golangci-lint

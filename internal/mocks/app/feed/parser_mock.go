@@ -20,6 +20,7 @@ import (
 type Parser struct {
 	ctrl     *gomock.Controller
 	recorder *ParserMockRecorder
+	isgomock struct{}
 }
 
 // ParserMockRecorder is the mock recorder for Parser.
@@ -40,16 +41,16 @@ func (m *Parser) EXPECT() *ParserMockRecorder {
 }
 
 // ParseURL mocks base method.
-func (m *Parser) ParseURL(arg0 string) (*gofeed.Feed, error) {
+func (m *Parser) ParseURL(url string) (*gofeed.Feed, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ParseURL", arg0)
+	ret := m.ctrl.Call(m, "ParseURL", url)
 	ret0, _ := ret[0].(*gofeed.Feed)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // ParseURL indicates an expected call of ParseURL.
-func (mr *ParserMockRecorder) ParseURL(arg0 any) *gomock.Call {
+func (mr *ParserMockRecorder) ParseURL(url any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ParseURL", reflect.TypeOf((*Parser)(nil).ParseURL), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ParseURL", reflect.TypeOf((*Parser)(nil).ParseURL), url)
 }

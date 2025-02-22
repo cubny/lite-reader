@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -10,8 +11,10 @@ import (
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
 
+	"github.com/cubny/lite-reader/internal/app/auth"
 	"github.com/cubny/lite-reader/internal/app/feed"
 	"github.com/cubny/lite-reader/internal/app/item"
+	"github.com/cubny/lite-reader/internal/infra/http/api/cxutil"
 )
 
 type AddFeedRequest struct {
@@ -104,7 +107,8 @@ func toAddFeedCommand(w http.ResponseWriter, r *http.Request, _ httprouter.Param
 	}
 
 	return &feed.AddFeedCommand{
-		URL: request.URL,
+		URL:    request.URL,
+		UserID: r.Context().Value(cxutil.UserIDKey).(int),
 	}, nil
 }
 
@@ -219,5 +223,69 @@ func toDeleteFeedItemsCommand(w http.ResponseWriter, _ *http.Request, p httprout
 
 	return &item.DeleteFeedItemsCommand{
 		FeedID: feedID,
+	}, nil
+}
+
+type LoginRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+func (r *LoginRequest) Validate() error {
+	if r.Email == "" || r.Password == "" {
+		return errors.New("email and password are required")
+	}
+	return nil
+}
+
+func toLoginCommand(w http.ResponseWriter, r *http.Request, _ httprouter.Params) (*auth.LoginCommand, error) {
+	request := &LoginRequest{}
+	if err := json.NewDecoder(r.Body).Decode(request); err != nil {
+		log.WithError(err).Error("login: failed to decode request body")
+		_ = BadRequest(w, "invalid request body")
+		return nil, err
+	}
+
+	if err := request.Validate(); err != nil {
+		log.WithError(err).Error("login: invalid request body")
+		_ = BadRequest(w, "invalid request body")
+		return nil, err
+	}
+
+	return &auth.LoginCommand{
+		Email:    request.Email,
+		Password: request.Password,
+	}, nil
+}
+
+type SignupRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+func (r *SignupRequest) Validate() error {
+	if r.Email == "" || r.Password == "" {
+		return errors.New("email and password are required")
+	}
+	return nil
+}
+
+func toSignupCommand(w http.ResponseWriter, r *http.Request, _ httprouter.Params) (*auth.SignupCommand, error) {
+	request := &SignupRequest{}
+	if err := json.NewDecoder(r.Body).Decode(request); err != nil {
+		log.WithError(err).Error("signup: failed to decode request body")
+		_ = BadRequest(w, "invalid request body")
+		return nil, err
+	}
+
+	if err := request.Validate(); err != nil {
+		log.WithError(err).Error("signup: invalid request body")
+		_ = BadRequest(w, "invalid request body")
+		return nil, err
+	}
+
+	return &auth.SignupCommand{
+		Email:    request.Email,
+		Password: request.Password,
 	}, nil
 }

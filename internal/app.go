@@ -19,11 +19,13 @@ import (
 	log "github.com/sirupsen/logrus"
 	_ "modernc.org/sqlite"
 
+	"github.com/cubny/lite-reader/internal/app/auth"
 	"github.com/cubny/lite-reader/internal/app/feed"
 	"github.com/cubny/lite-reader/internal/app/item"
 	"github.com/cubny/lite-reader/internal/config"
 	"github.com/cubny/lite-reader/internal/infra/http/api"
 	"github.com/cubny/lite-reader/internal/infra/job"
+	authRepo "github.com/cubny/lite-reader/internal/infra/sqlite/auth"
 	feedRepo "github.com/cubny/lite-reader/internal/infra/sqlite/feed"
 	itemRepo "github.com/cubny/lite-reader/internal/infra/sqlite/item"
 )
@@ -36,10 +38,12 @@ type App struct {
 	jobFeedService job.FeedService
 	itemService    api.ItemService
 	jobItemService job.ItemService
+	authService    api.AuthService
 	apiServer      *http.Server
 	sqlClient      *sql.DB
 	feedRepository feed.Repository
 	itemRepository item.Repository
+	authRepository auth.Repository
 	scheduler      *job.Scheduler
 
 	err error
@@ -118,7 +122,7 @@ func (a *App) initRepo() *App {
 	return a.ifNoError(func() *App {
 		a.feedRepository = feedRepo.NewDB(a.sqlClient)
 		a.itemRepository = itemRepo.NewDB(a.sqlClient)
-
+		a.authRepository = authRepo.NewDB(a.sqlClient)
 		return a
 	})
 }
@@ -161,6 +165,9 @@ func (a *App) initServices() *App {
 		a.feedService = feedService
 		a.jobFeedService = feedService
 
+		authService := auth.NewService(a.authRepository)
+		a.authService = authService
+
 		itemService := item.NewService(a.itemRepository)
 		a.itemService = itemService
 		a.jobItemService = itemService
@@ -173,7 +180,7 @@ func (a *App) initScheduler() *App {
 		a.scheduler = job.NewScheduler(1 * time.Hour)
 		a.scheduler.Start()
 
-		j := job.NewItemsJob(a.jobFeedService, a.jobItemService)
+		j := job.NewItemsJob(a.jobFeedService, a.jobItemService, a.authService)
 		a.scheduler.Queue <- j
 		return a
 	})
@@ -193,7 +200,7 @@ func (a *App) stopAPIServer() *App {
 
 func (a *App) initAPIServer() *App {
 	return a.ifNoError(func() *App {
-		handler, err := api.New(a.itemService, a.feedService)
+		handler, err := api.New(a.itemService, a.feedService, a.authService)
 		if err != nil {
 			a.err = fmt.Errorf("cannot create handler, %w", err)
 			return a

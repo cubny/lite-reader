@@ -8,6 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/cubny/lite-reader/internal/app/item"
+	"github.com/cubny/lite-reader/internal/infra/http/api/cxutil"
 )
 
 // addFeed is the handler for
@@ -43,8 +44,10 @@ func (h *Router) addFeed(w http.ResponseWriter, r *http.Request, p httprouter.Pa
 		_ = InternalError(w, "cannot encode response")
 	}
 }
-func (h *Router) listFeeds(w http.ResponseWriter, _ *http.Request, _ httprouter.Params) {
-	resp, err := h.feedService.ListFeeds()
+func (h *Router) listFeeds(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	userID := r.Context().Value(cxutil.UserIDKey).(int)
+	log.Infof("listFeeds: userID %d", userID)
+	resp, err := h.feedService.ListFeeds(userID)
 	if err != nil {
 		log.WithError(err).Errorf("listFeeds: service %s", err)
 		_ = InternalError(w, "cannot list feeds")

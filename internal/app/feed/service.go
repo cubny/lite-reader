@@ -3,6 +3,7 @@ package feed
 import (
 	"errors"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/mmcdole/gofeed"
@@ -54,6 +55,7 @@ func (s *ServiceImpl) AddFeed(command *AddFeedCommand) (*Feed, error) {
 		Lang:        parsedFeed.Language,
 		UpdatedAt:   time.Now(),
 		UnreadCount: len(parsedFeed.Items),
+		UserID:      command.UserID,
 	}
 
 	id, err := s.repository.AddFeed(feed)
@@ -66,8 +68,8 @@ func (s *ServiceImpl) AddFeed(command *AddFeedCommand) (*Feed, error) {
 	return feed, nil
 }
 
-func (s *ServiceImpl) ListFeeds() ([]*Feed, error) {
-	return s.repository.ListFeeds()
+func (s *ServiceImpl) ListFeeds(userID int) ([]*Feed, error) {
+	return s.repository.ListFeeds(userID)
 }
 
 func (s *ServiceImpl) FetchItems(feedID int) ([]*item.Item, error) {
@@ -83,6 +85,7 @@ func (s *ServiceImpl) FetchItems(feedID int) ([]*item.Item, error) {
 
 	items := make([]*item.Item, 0)
 	for _, t := range parsedFeed.Items {
+		log.Printf("Processing item %s", t.Title)
 		timestamp := t.PublishedParsed
 		items = append(items, &item.Item{
 			Title:     t.Title,

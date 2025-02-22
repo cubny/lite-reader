@@ -20,13 +20,15 @@ type spec struct {
 	ExpectedBody   string
 	Method         string
 	Target         string
-	MockFn         func(i *mocks.ItemService, f *mocks.FeedService)
+	AuthToken      string
+	MockFn         func(i *mocks.ItemService, f *mocks.FeedService, a *mocks.AuthService)
 }
 
-func (s *spec) execHTTPTestCases(i *mocks.ItemService, f *mocks.FeedService) func(t *testing.T) {
+func (s *spec) execHTTPTestCases(i *mocks.ItemService, f *mocks.FeedService, a *mocks.AuthService) func(t *testing.T) {
 	return func(t *testing.T) {
-		s.MockFn(i, f)
-		handler, err := api.New(i, f)
+		s.MockFn(i, f, a)
+		s.AuthToken = "test"
+		handler, err := api.New(i, f, a)
 		assert.Nil(t, err)
 		s.HandlerTest(t, handler)
 	}
@@ -37,12 +39,18 @@ func (s *spec) HandlerTest(t *testing.T, h *api.Router) {
 	t.Helper()
 
 	req := httptest.NewRequest(s.Method, s.Target, strings.NewReader(s.ReqBody))
+	if s.AuthToken != "" {
+		req.Header.Set("Authorization", "Bearer "+s.AuthToken)
+	}
 
 	rec := httptest.NewRecorder()
 	h.ServeHTTP(rec, req)
 
 	resp := rec.Result()
-	defer resp.Body.Close()
+	defer func() {
+		err := resp.Body.Close()
+		assert.Nil(t, err)
+	}()
 
 	body, err := io.ReadAll(resp.Body)
 	assert.Nil(t, err)
@@ -56,7 +64,6 @@ func (s *spec) HandlerTest(t *testing.T, h *api.Router) {
 
 	assert.Equal(t, s.ExpectedStatus, resp.StatusCode)
 }
-
 func isJSON(str string) bool {
 	var js json.RawMessage
 	return json.Unmarshal([]byte(str), &js) == nil

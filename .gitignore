@@ -1,4 +1,7 @@
 .DS_Store
+.cursor
+.vscode
+.idea
 data/agg.db
 public/cache/*.gzip
 public/cache/*.spc
