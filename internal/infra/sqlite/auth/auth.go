@@ -8,9 +8,15 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	log "github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/cubny/lite-reader/internal/app/auth"
+)
+
+const (
+	dayInHours        = 24 * time.Hour
+	secureTokenLength = 32
 )
 
 type DB struct {
@@ -35,12 +41,17 @@ func (d *DB) CreateUser(email, password string) error {
 	return err
 }
 
-func (r *DB) GetAllUsers() ([]*auth.User, error) {
-	rows, err := r.sqliteDB.Query("SELECT id, email, password FROM users")
+func (d *DB) GetAllUsers() ([]*auth.User, error) {
+	rows, err := d.sqliteDB.Query("SELECT id, email, password FROM users")
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
+	defer func() {
+		err := rows.Close()
+		if err != nil {
+			log.Error(err)
+		}
+	}()
 
 	users := make([]*auth.User, 0)
 	for rows.Next() {
@@ -54,10 +65,10 @@ func (r *DB) GetAllUsers() ([]*auth.User, error) {
 	return users, nil
 }
 
-func (r *DB) Login(f *auth.LoginCommand) error {
-	user, err := r.GetUserByEmail(f.Email)
+func (d *DB) Login(f *auth.LoginCommand) error {
+	user, err := d.GetUserByEmail(f.Email)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(sql.ErrNoRows, err) {
 			return errors.New("invalid credentials")
 		}
 		return err
@@ -71,18 +82,18 @@ func (r *DB) Login(f *auth.LoginCommand) error {
 	return nil
 }
 
-func (r *DB) CreateSession(userID int) (*auth.Session, error) {
+func (d *DB) CreateSession(userID int) (*auth.Session, error) {
 	session := &auth.Session{
 		ID:           uuid.New().String(),
 		UserID:       userID,
 		AccessToken:  generateSecureToken(),
 		RefreshToken: generateSecureToken(),
-		ExpiresAt:    time.Now().Add(24 * time.Hour), // Access token expires in 24 hours
+		ExpiresAt:    time.Now().Add(dayInHours), // Access token expires in 24 hours
 		CreatedAt:    time.Now(),
 	}
 
 	// Store session in database
-	_, err := r.sqliteDB.Exec(`
+	_, err := d.sqliteDB.Exec(`
         INSERT INTO sessions (id, user_id, access_token, refresh_token, expires_at, created_at)
         VALUES (?, ?, ?, ?, ?, ?)
     `, session.ID, session.UserID, session.AccessToken, session.RefreshToken, session.ExpiresAt, session.CreatedAt)
@@ -94,9 +105,14 @@ func (r *DB) CreateSession(userID int) (*auth.Session, error) {
 	return session, nil
 }
 
-func (r *DB) GetSessionByToken(token string) (*auth.Session, error) {
+func (d *DB) GetSessionByToken(token string) (*auth.Session, error) {
 	var session auth.Session
-	err := r.sqliteDB.QueryRow("SELECT id, user_id, access_token, refresh_token, expires_at, created_at FROM sessions WHERE access_token = ?", token).Scan(&session.ID, &session.UserID, &session.AccessToken, &session.RefreshToken, &session.ExpiresAt, &session.CreatedAt)
+	err := d.sqliteDB.QueryRow(`
+	    SELECT id, user_id, access_token, refresh_token, expires_at, created_at 
+	    FROM sessions 
+	    WHERE access_token = ?`, token).Scan(
+		&session.ID, &session.UserID, &session.AccessToken,
+		&session.RefreshToken, &session.ExpiresAt, &session.CreatedAt)
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +120,7 @@ func (r *DB) GetSessionByToken(token string) (*auth.Session, error) {
 }
 
 func generateSecureToken() string {
-	b := make([]byte, 32)
+	b := make([]byte, secureTokenLength)
 	if _, err := rand.Read(b); err != nil {
 		return "" // Return empty string in case of error instead of panic
 	}

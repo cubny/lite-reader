@@ -47,7 +47,10 @@ func (s *spec) HandlerTest(t *testing.T, h *api.Router) {
 	h.ServeHTTP(rec, req)
 
 	resp := rec.Result()
-	defer resp.Body.Close()
+	defer func() {
+		err := resp.Body.Close()
+		assert.Nil(t, err)
+	}()
 
 	body, err := io.ReadAll(resp.Body)
 	assert.Nil(t, err)

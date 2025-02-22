@@ -2,12 +2,12 @@ package auth_test
 
 import (
 	"errors"
-	"golang.org/x/crypto/bcrypt"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/cubny/lite-reader/internal/app/auth"
 	mocks "github.com/cubny/lite-reader/internal/mocks/app/auth"

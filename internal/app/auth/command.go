@@ -4,6 +4,8 @@ import (
 	"errors"
 )
 
+const minPasswordLength = 8
+
 type LoginCommand struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
@@ -29,7 +31,7 @@ func (c *SignupCommand) Validate() error {
 	if c.Password != c.ConfirmPassword {
 		return errors.New("password and confirm password do not match")
 	}
-	if len(c.Password) < 8 {
+	if len(c.Password) < minPasswordLength {
 		return errors.New("password must be at least 8 characters")
 	}
 	return nil

@@ -22,7 +22,7 @@ func (s *Service) Login(command *LoginCommand) (*LoginResponse, error) {
 		return nil, errors.New("invalid email or password")
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(command.Password)); err != nil {
+	if bErr := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(command.Password)); bErr != nil {
 		return nil, errors.New("invalid email or password")
 	}
 
@@ -38,7 +38,6 @@ func (s *Service) Login(command *LoginCommand) (*LoginResponse, error) {
 		RefreshToken: session.RefreshToken,
 		ExpiresIn:    time.Until(session.ExpiresAt).Seconds(),
 	}, nil
-
 }
 
 func (s *Service) Signup(command *SignupCommand) error {

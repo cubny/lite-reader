@@ -4,10 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"log"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/cubny/lite-reader/internal/app/auth"
 	"github.com/cubny/lite-reader/internal/infra/http/api/cxutil"
@@ -59,7 +59,6 @@ func ContentTypeJSON(next httprouter.Handle) httprouter.Handle {
 func AuthMiddleware(authService AuthService) HandleFunc {
 	return func(next httprouter.Handle) httprouter.Handle {
 		return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-
 			w.Header().Set("Content-Type", "application/json")
 			log.Printf("Request path: %s", r.URL.Path)
 
@@ -106,10 +105,14 @@ func extractBearerToken(r *http.Request) (string, error) {
 
 func writeUnauthorizedResponse(w http.ResponseWriter, details string) {
 	w.WriteHeader(http.StatusUnauthorized)
-	json.NewEncoder(w).Encode(map[string]interface{}{
-		"error": map[string]interface{}{
+	err := json.NewEncoder(w).Encode(map[string]any{
+		"error": map[string]any{
 			"code":    http.StatusUnauthorized,
 			"details": "unauthorized - " + details,
 		},
 	})
+	if err != nil {
+		log.WithError(err).Error("failed to write response")
+		w.WriteHeader(http.StatusInternalServerError)
+	}
 }
