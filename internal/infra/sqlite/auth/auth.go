@@ -68,7 +68,7 @@ func (d *DB) GetAllUsers() ([]*auth.User, error) {
 func (d *DB) Login(f *auth.LoginCommand) error {
 	user, err := d.GetUserByEmail(f.Email)
 	if err != nil {
-		if errors.Is(sql.ErrNoRows, err) {
+		if errors.Is(err, sql.ErrNoRows) {
 			return errors.New("invalid credentials")
 		}
 		return err
