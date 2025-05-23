@@ -25,9 +25,17 @@ func (h *Router) signup(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 	}
 
 	if err := h.authService.Signup(command); err != nil {
-		_ = BadRequest(w, err.Error())
+		// As authService.Signup now always returns an error,
+		// we expect this path to be taken.
+		// The error message is "public registration is disabled".
+		// We'll return a StatusForbidden.
+		_ = Forbidden(w, err.Error())
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
+	// This part should ideally not be reached if authService.Signup always errors.
+	// However, to be safe and handle any unexpected success,
+	// we can log a warning and return a generic server error.
+	log.Warn("signup: authService.Signup unexpectedly succeeded")
+	_ = InternalServerError(w, "unexpected server behavior")
 }

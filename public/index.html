@@ -18,6 +18,11 @@
                     </a>
                     <input type="text" id="urlToAdd" style="display: none" />
                 </div>
+                <div id="adduser">
+                    <a class="add btn btn-purple" href="#">
+                        <i class="icon-user"></i> <span>User</span>
+                    </a>
+                </div>
             </div>
             <ul>
                 <li id="unread" class="feed">
@@ -87,4 +92,20 @@
     <script type="text/javascript" src="js/stage.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
     <script type="text/javascript" src="js/auth.js"></script>
+    <script type="text/javascript" src="js/user_management.js"></script>
+
+    <div id="addUserModal" title="Create New User" style="display:none;">
+        <form id="addUserForm">
+            <fieldset>
+                <label for="newUserEmail">Email</label>
+                <input type="email" name="newUserEmail" id="newUserEmail" class="text ui-widget-content ui-corner-all">
+                <label for="newUserPassword">Password</label>
+                <input type="password" name="newUserPassword" id="newUserPassword" class="text ui-widget-content ui-corner-all">
+                <label for="confirmNewUserPassword">Confirm Password</label>
+                <input type="password" name="confirmNewUserPassword" id="confirmNewUserPassword" class="text ui-widget-content ui-corner-all">
+                <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+            </fieldset>
+        </form>
+        <div id="addUserMessage" style="margin-top:10px;"></div>
+    </div>
 </html>

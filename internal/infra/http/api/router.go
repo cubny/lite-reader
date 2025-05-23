@@ -93,6 +93,7 @@ func New(itemService ItemService, feedService FeedService, authService AuthServi
 
 	router.POST("/login", chain.Wrap(h.login))
 	router.POST("/signup", chain.Wrap(h.signup))
+	router.POST("/api/users", chain.Wrap(h.createUser)) // New route for creating users
 	// serve static files for GET /
 	router.NotFound = http.FileServer(http.Dir("public"))
 

@@ -18,6 +18,21 @@ func (c *LoginCommand) Validate() error {
 	return nil
 }
 
+type CreateUserCommand struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+func (c *CreateUserCommand) Validate() error {
+	if c.Email == "" || c.Password == "" {
+		return errors.New("email and password are required")
+	}
+	if len(c.Password) < minPasswordLength {
+		return errors.New("password must be at least 8 characters")
+	}
+	return nil
+}
+
 type SignupCommand struct {
 	Email           string `json:"email"`
 	Password        string `json:"password"`

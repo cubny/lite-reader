@@ -13,17 +13,17 @@ import (
 	mocks "github.com/cubny/lite-reader/internal/mocks/app/auth"
 )
 
-func TestService_Signup(t *testing.T) {
+func TestService_CreateUser(t *testing.T) {
 	tests := []struct {
 		name      string
-		command   *auth.SignupCommand
+		command   *auth.CreateUserCommand // Changed from SignupCommand
 		mockSetup func(*mocks.Repository)
 		wantErr   bool
 		errMsg    string
 	}{
 		{
 			name: "success",
-			command: &auth.SignupCommand{
+			command: &auth.CreateUserCommand{ // Changed from SignupCommand
 				Email:    "test@example.com",
 				Password: "password123",
 			},
@@ -35,7 +35,7 @@ func TestService_Signup(t *testing.T) {
 		},
 		{
 			name: "error - email already exists",
-			command: &auth.SignupCommand{
+			command: &auth.CreateUserCommand{ // Changed from SignupCommand
 				Email:    "existing@example.com",
 				Password: "password123",
 			},
@@ -47,7 +47,7 @@ func TestService_Signup(t *testing.T) {
 		},
 		{
 			name: "error - create user fails",
-			command: &auth.SignupCommand{
+			command: &auth.CreateUserCommand{ // Changed from SignupCommand
 				Email:    "test@example.com",
 				Password: "password123",
 			},
@@ -67,7 +67,7 @@ func TestService_Signup(t *testing.T) {
 			tt.mockSetup(repo)
 
 			s := auth.NewService(repo)
-			err := s.Signup(tt.command)
+			err := s.CreateUser(tt.command) // Changed from s.Signup
 
 			if tt.wantErr {
 				assert.Error(t, err)
@@ -80,6 +80,27 @@ func TestService_Signup(t *testing.T) {
 			ctrl.Finish()
 		})
 	}
+}
+
+func TestService_Signup(t *testing.T) {
+	t.Run("public registration is disabled", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		repo := mocks.NewRepository(ctrl)
+		s := auth.NewService(repo)
+
+		command := &auth.SignupCommand{
+			Email:           "test@example.com",
+			Password:        "password123",
+			ConfirmPassword: "password123",
+		}
+
+		err := s.Signup(command)
+
+		assert.Error(t, err)
+		assert.EqualError(t, err, "public registration is disabled")
+	})
 }
 
 func TestService_Login(t *testing.T) {

@@ -18,14 +18,14 @@ func TestRouter_signup(t *testing.T) {
 
 	specs := []spec{
 		{
-			Name:           "ok",
+			Name:           "public registration disabled", // Renamed from "ok"
 			Method:         http.MethodPost,
 			Target:         "/signup",
-			ReqBody:        `{"email":"test@example.com","password":"password123"}`,
-			ExpectedStatus: http.StatusCreated,
-			ExpectedBody:   ``,
+			ReqBody:        `{"email":"test@example.com","password":"password123","confirm_password":"password123"}`, // Valid SignupCommand
+			ExpectedStatus: http.StatusForbidden,
+			ExpectedBody:   `{"error":{"code":403,"details":"Forbidden - public registration is disabled"}}`,
 			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService) {
-				a.EXPECT().Signup(gomock.Any()).Return(nil)
+				a.EXPECT().Signup(gomock.Any()).Return(fmt.Errorf("public registration is disabled"))
 			},
 		},
 		{
@@ -41,22 +41,19 @@ func TestRouter_signup(t *testing.T) {
 			Name:           "missing required fields",
 			Method:         http.MethodPost,
 			Target:         "/signup",
-			ReqBody:        `{"email":"","password":""}`,
+			ReqBody:        `{"email":"","password":"","confirm_password":""}`, // For SignupCommand
 			ExpectedStatus: http.StatusBadRequest,
-			ExpectedBody:   `{"error":{"code":400,"details":"Bad Request - invalid request body"}}`,
-			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {},
+			// The actual error from command.Validate() for SignupCommand would be "email and password are required"
+			// or specific field errors. The current test expects a generic "invalid request body".
+			// This might be because toSignupCommand sends a generic error if validation fails.
+			// For now, keeping the existing ExpectedBody as per the test's original behavior for parsing/validation failures.
+			ExpectedBody: `{"error":{"code":400,"details":"Bad Request - invalid request body"}}`,
+			MockFn:       func(_ *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {},
 		},
-		{
-			Name:           "service returns error",
-			Method:         http.MethodPost,
-			Target:         "/signup",
-			ReqBody:        `{"email":"test@example.com","password":"password123"}`,
-			ExpectedStatus: http.StatusBadRequest,
-			ExpectedBody:   `{"error":{"code":400,"details":"Bad Request - user already exists"}}`,
-			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService) {
-				a.EXPECT().Signup(gomock.Any()).Return(fmt.Errorf("user already exists"))
-			},
-		},
+		// Removing the old "service returns error" test as the "public registration disabled"
+		// case now covers the scenario where the service is called and returns an error.
+		// The other error cases (invalid payload, missing fields, empty body) cover scenarios
+		// where the service's Signup method is not even called due to request parsing/validation failures.
 		{
 			Name:           "empty body",
 			Method:         http.MethodPost,

@@ -40,7 +40,7 @@ func (s *Service) Login(command *LoginCommand) (*LoginResponse, error) {
 	}, nil
 }
 
-func (s *Service) Signup(command *SignupCommand) error {
+func (s *Service) CreateUser(command *CreateUserCommand) error {
 	// Check if user already exists
 	_, err := s.repo.GetUserByEmail(command.Email)
 	if err == nil {
@@ -62,6 +62,10 @@ func (s *Service) Signup(command *SignupCommand) error {
 	default:
 		return err
 	}
+}
+
+func (s *Service) Signup(command *SignupCommand) error {
+	return errors.New("public registration is disabled")
 }
 
 func (s *Service) GetSession(token string) (*Session, error) {
