@@ -19,11 +19,11 @@ func NewService(repo Repository) *Service {
 func (s *Service) Login(command *LoginCommand) (*LoginResponse, error) {
 	user, err := s.repo.GetUserByEmail(command.Email)
 	if err != nil {
-		return nil, errors.New("invalid email")
+		return nil, errors.New("invalid email or password")
 	}
 
 	if bErr := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(command.Password)); bErr != nil {
-		return nil, errors.New("invalid password")
+		return nil, errors.New("invalid email or password")
 	}
 
 	// Generate session token
