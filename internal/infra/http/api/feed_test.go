@@ -103,7 +103,7 @@ func TestRouter_getFeedItems(t *testing.T) {
 			Method:         http.MethodGet,
 			Target:         "/feeds/1/items",
 			ExpectedStatus: http.StatusOK,
-			ExpectedBody: `[{"id":1,"title":"title","desc":"description","link":"link","is_new":true,"starred":false,"timestamp":"` +
+			ExpectedBody: `[{"id":1,"title":"title","dir":"dir","desc":"description","link":"link","is_new":true,"starred":false,"timestamp":"` +
 				now.Format(time.RFC3339Nano) + `"}]`,
 			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {
 				i.EXPECT().GetFeedItems(gomock.Any()).Return([]*item.Item{
@@ -159,7 +159,7 @@ func TestRouter_fetchFeedNewItems(t *testing.T) {
 			Method:         http.MethodPut,
 			Target:         "/feeds/1/fetch",
 			ExpectedStatus: http.StatusOK,
-			ExpectedBody: `[{"id":1,"title":"title","desc":"description","link":"link","is_new":false,"starred":true,"timestamp":"` +
+			ExpectedBody: `[{"id":1,"title":"title","dir":"dir","desc":"description","link":"link","is_new":false,"starred":true,"timestamp":"` +
 				now.Format(time.RFC3339Nano) + `"}]`,
 			MockFn: func(i *mocks.ItemService, f *mocks.FeedService, _ *mocks.AuthService) {
 				f.EXPECT().FetchItems(1).Return([]*item.Item{
