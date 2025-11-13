@@ -13,11 +13,13 @@ const items = {
         items.read(id);
 
         $this.find('.desc').toggle();
+        $this.find('.dir').toggle();
         $(this).find('.item-link').toggle();
         $this.toggleClass('selected');
 
         if(items.current && items.current_id && items.current_id !== id){
             items.current.find('.item-link').hide();
+            items.current.find('.dir').hide();
             items.current.find('.desc').hide();
             items.current.removeClass('selected');
         }
@@ -47,11 +49,13 @@ const items = {
                 item.link,
                 item.is_new ? "icon-circle":"icon-circle-blank",
                 item.starred?"icon-star":"icon-star-empty",
-                moment(item.timestamp || new Date(),"YYYY-MM-DD HH:ii:SS").calendar().format('LL')
+                moment(item.timestamp || new Date(),"YYYY-MM-DD HH:ii:SS").calendar().format('LL'),
+                item.dir,
             ));
             if(r.test(item.title)){
                 $li.addClass("rtl");
             }
+            $li.find('.dir').hide();
             $li.find('.desc').hide();
             if(item.is_new){
                 $li.addClass("new");

@@ -65,6 +65,7 @@ func toAddFeedResponse(f *feed.Feed) *AddFeedResponse {
 type ItemResponse struct {
 	ID        int       `json:"id"`
 	Title     string    `json:"title"`
+	Dir       string    `json:"dir"`
 	Desc      string    `json:"desc"`
 	Link      string    `json:"link"`
 	IsNew     bool      `json:"is_new"`
@@ -82,6 +83,7 @@ func toGetItemsResponse(items []*item.Item) []*ItemResponse {
 		resp = append(resp, &ItemResponse{
 			ID:        i.ID,
 			Title:     i.Title,
+			Dir:       i.Dir,
 			Desc:      i.Desc,
 			Link:      i.Link,
 			IsNew:     i.IsNew,

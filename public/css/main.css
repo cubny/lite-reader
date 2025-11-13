@@ -154,6 +154,12 @@ background-color: #F5ECDE !important;
   text-align: justify;
 }
 
+#items li .dir {
+  margin: 5px;
+  padding: 5px;
+  text-align: justify;
+}
+
 #items li .title span.timestamp {
   float:right;
   font-size:8px;
