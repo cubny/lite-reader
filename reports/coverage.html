@@ -1,0 +1,3303 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>cmd: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/cubny/lite-reader/cmd/main.go (0.0%)</option>
+				
+				<option value="file1">github.com/cubny/lite-reader/internal/app.go (76.0%)</option>
+				
+				<option value="file2">github.com/cubny/lite-reader/internal/app/auth/command.go (0.0%)</option>
+				
+				<option value="file3">github.com/cubny/lite-reader/internal/app/auth/service.go (88.5%)</option>
+				
+				<option value="file4">github.com/cubny/lite-reader/internal/app/feed/service.go (100.0%)</option>
+				
+				<option value="file5">github.com/cubny/lite-reader/internal/app/item/service.go (100.0%)</option>
+				
+				<option value="file6">github.com/cubny/lite-reader/internal/config/config.go (75.0%)</option>
+				
+				<option value="file7">github.com/cubny/lite-reader/internal/infra/http/api/errors.go (89.5%)</option>
+				
+				<option value="file8">github.com/cubny/lite-reader/internal/infra/http/api/feed.go (76.9%)</option>
+				
+				<option value="file9">github.com/cubny/lite-reader/internal/infra/http/api/item.go (72.1%)</option>
+				
+				<option value="file10">github.com/cubny/lite-reader/internal/infra/http/api/login.go (0.0%)</option>
+				
+				<option value="file11">github.com/cubny/lite-reader/internal/infra/http/api/middleware/middleware.go (0.0%)</option>
+				
+				<option value="file12">github.com/cubny/lite-reader/internal/infra/http/api/model.go (80.2%)</option>
+				
+				<option value="file13">github.com/cubny/lite-reader/internal/infra/http/api/router.go (84.0%)</option>
+				
+				<option value="file14">github.com/cubny/lite-reader/internal/infra/http/api/signup.go (78.6%)</option>
+				
+				<option value="file15">github.com/cubny/lite-reader/internal/infra/job/itemsjob.go (100.0%)</option>
+				
+				<option value="file16">github.com/cubny/lite-reader/internal/infra/job/scheduler.go (0.0%)</option>
+				
+				<option value="file17">github.com/cubny/lite-reader/internal/infra/sqlite/auth/auth.go (0.0%)</option>
+				
+				<option value="file18">github.com/cubny/lite-reader/internal/infra/sqlite/feed/feed.go (0.0%)</option>
+				
+				<option value="file19">github.com/cubny/lite-reader/internal/infra/sqlite/item/item.go (0.0%)</option>
+				
+				<option value="file20">github.com/cubny/lite-reader/internal/mocks/app/auth/repo_mock.go (0.0%)</option>
+				
+				<option value="file21">github.com/cubny/lite-reader/internal/mocks/app/feed/finder_mock.go (0.0%)</option>
+				
+				<option value="file22">github.com/cubny/lite-reader/internal/mocks/app/feed/parser_mock.go (0.0%)</option>
+				
+				<option value="file23">github.com/cubny/lite-reader/internal/mocks/app/feed/repo_mock.go (0.0%)</option>
+				
+				<option value="file24">github.com/cubny/lite-reader/internal/mocks/app/item/repo_mock.go (0.0%)</option>
+				
+				<option value="file25">github.com/cubny/lite-reader/internal/mocks/infra/http/api/auth_mock.go (0.0%)</option>
+				
+				<option value="file26">github.com/cubny/lite-reader/internal/mocks/infra/http/api/feed_mock.go (0.0%)</option>
+				
+				<option value="file27">github.com/cubny/lite-reader/internal/mocks/infra/http/api/item_mock.go (0.0%)</option>
+				
+				<option value="file28">github.com/cubny/lite-reader/internal/mocks/infra/job/dependencies_mock.go (0.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">no coverage</span>
+				<span class="cov1">low coverage</span>
+				<span class="cov2">*</span>
+				<span class="cov3">*</span>
+				<span class="cov4">*</span>
+				<span class="cov5">*</span>
+				<span class="cov6">*</span>
+				<span class="cov7">*</span>
+				<span class="cov8">*</span>
+				<span class="cov9">*</span>
+				<span class="cov10">high coverage</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package main
+
+import (
+        "context"
+        "os"
+
+        log "github.com/sirupsen/logrus"
+
+        "github.com/cubny/lite-reader/internal"
+)
+
+func main() <span class="cov0" title="0">{
+        log.SetOutput(os.Stdout)
+        log.SetLevel(log.DebugLevel)
+        log.SetFormatter(&amp;log.JSONFormatter{})
+
+        ctx, cancel := context.WithCancel(context.Background())
+
+        runMigration := true
+        app, err := internal.Init(ctx, runMigration)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatalf("failed to initiate App, %v", err)
+        }</span>
+
+        <span class="cov0" title="0">internal.WaitTermination()
+        cancel()
+
+        if err = app.Stop(); err != nil </span><span class="cov0" title="0">{
+                log.Errorf("failed to stop the app gracefully, %v", err)
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package internal
+
+import (
+        "context"
+        "database/sql"
+        "embed"
+        "fmt"
+        "net/http"
+        "os"
+        "os/signal"
+        "path/filepath"
+        "runtime"
+        "syscall"
+        "time"
+
+        "github.com/mmcdole/gofeed"
+        "github.com/nikhil1raghav/feedfinder"
+        "github.com/pressly/goose/v3"
+        log "github.com/sirupsen/logrus"
+        _ "modernc.org/sqlite"
+
+        "github.com/cubny/lite-reader/internal/app/auth"
+        "github.com/cubny/lite-reader/internal/app/feed"
+        "github.com/cubny/lite-reader/internal/app/item"
+        "github.com/cubny/lite-reader/internal/config"
+        "github.com/cubny/lite-reader/internal/infra/http/api"
+        "github.com/cubny/lite-reader/internal/infra/job"
+        authRepo "github.com/cubny/lite-reader/internal/infra/sqlite/auth"
+        feedRepo "github.com/cubny/lite-reader/internal/infra/sqlite/feed"
+        itemRepo "github.com/cubny/lite-reader/internal/infra/sqlite/item"
+)
+
+type App struct {
+        ctx context.Context
+        cfg *config.Config
+
+        feedService    api.FeedService
+        jobFeedService job.FeedService
+        itemService    api.ItemService
+        jobItemService job.ItemService
+        authService    api.AuthService
+        apiServer      *http.Server
+        sqlClient      *sql.DB
+        feedRepository feed.Repository
+        itemRepository item.Repository
+        authRepository auth.Repository
+        scheduler      *job.Scheduler
+
+        err error
+}
+
+const (
+        gracePeriod       = 10 * time.Second
+        readHeaderTimeout = 5 * time.Second
+)
+
+//go:embed infra/sqlite/migrations/*.sql
+var embedMigrations embed.FS
+
+func Init(ctx context.Context, runMigration bool) (*App, error) <span class="cov1" title="1">{
+        a := &amp;App{ctx: ctx}
+
+        a.initConfig()
+        a.initDBFile()
+        a.initSQLClient()
+        if runMigration </span><span class="cov0" title="0">{
+                a.migrate()
+        }</span>
+        <span class="cov1" title="1">a.initRepo()
+        a.initServices()
+        a.initScheduler()
+        a.initAPIServer()
+
+        return a, a.err</span>
+}
+
+func (a *App) ifNoError(fn func() *App) *App <span class="cov10" title="15">{
+        if a.err != nil </span><span class="cov7" title="8">{
+                return a
+        }</span>
+        <span class="cov7" title="7">return fn()</span>
+}
+
+func (a *App) initDBFile() *App <span class="cov3" title="2">{
+        return a.ifNoError(func() *App </span><span class="cov1" title="1">{
+                if _, err := os.Stat(a.cfg.DB.Path); os.IsNotExist(err) </span><span class="cov1" title="1">{
+                        _, b, _, _ := runtime.Caller(0)
+                        basePath := filepath.Dir(filepath.Dir(b))
+                        dbPath := filepath.Join(basePath, a.cfg.DB.Path)
+                        dirName := filepath.Dir(dbPath)
+                        if _, statErr := os.Stat(dirName); os.IsNotExist(statErr) </span><span class="cov0" title="0">{
+                                mkdirErr := os.MkdirAll(dirName, os.ModePerm)
+                                if mkdirErr != nil </span><span class="cov0" title="0">{
+                                        a.err = fmt.Errorf("failed to create db directory: %w", mkdirErr)
+                                        return a
+                                }</span>
+                        }
+                        <span class="cov1" title="1">_, createErr := os.Create(dbPath)
+                        if createErr != nil </span><span class="cov0" title="0">{
+                                a.err = fmt.Errorf("failed to create db file: %w", createErr)
+                                return a
+                        }</span>
+                }
+                <span class="cov1" title="1">return a</span>
+        })
+}
+
+func (a *App) initSQLClient() *App <span class="cov3" title="2">{
+        return a.ifNoError(func() *App </span><span class="cov1" title="1">{
+                var sqlClient *sql.DB
+                if sqlClient, a.err = sql.Open("sqlite", a.cfg.DB.Path); a.err != nil </span><span class="cov0" title="0">{
+                        a.err = fmt.Errorf("failed to open db: %w", a.err)
+                        return a
+                }</span>
+                <span class="cov1" title="1">a.sqlClient = sqlClient
+
+                return a</span>
+        })
+}
+
+func (a *App) initRepo() *App <span class="cov3" title="2">{
+        return a.ifNoError(func() *App </span><span class="cov1" title="1">{
+                a.feedRepository = feedRepo.NewDB(a.sqlClient)
+                a.itemRepository = itemRepo.NewDB(a.sqlClient)
+                a.authRepository = authRepo.NewDB(a.sqlClient)
+                return a
+        }</span>)
+}
+func (a *App) initConfig() *App <span class="cov3" title="2">{
+        return a.ifNoError(
+                func() *App </span><span class="cov1" title="1">{
+                        cfg, err := config.New(a.ctx)
+                        if err != nil </span><span class="cov0" title="0">{
+                                log.Fatalf("failed to initiate config: %v", err)
+                        }</span>
+
+                        <span class="cov1" title="1">a.cfg = cfg
+                        return a</span>
+                },
+        )
+}
+
+func (a *App) migrate() *App <span class="cov1" title="1">{
+        return a.ifNoError(func() *App </span><span class="cov0" title="0">{
+                goose.SetBaseFS(embedMigrations)
+
+                if err := goose.SetDialect("sqlite"); err != nil </span><span class="cov0" title="0">{
+                        a.err = fmt.Errorf("failed to set dialect: %w", err)
+                        return a
+                }</span>
+
+                <span class="cov0" title="0">if err := goose.Up(a.sqlClient, "infra/sqlite/migrations"); err != nil </span><span class="cov0" title="0">{
+                        a.err = fmt.Errorf("failed to migrate: %w", err)
+                }</span>
+
+                <span class="cov0" title="0">return a</span>
+        })
+}
+
+func (a *App) initServices() *App <span class="cov3" title="2">{
+        return a.ifNoError(func() *App </span><span class="cov1" title="1">{
+                finder := feedfinder.NewFeedFinder()
+                parser := gofeed.NewParser()
+                feedService := feed.NewService(a.feedRepository, parser, finder)
+                a.feedService = feedService
+                a.jobFeedService = feedService
+
+                authService := auth.NewService(a.authRepository)
+                a.authService = authService
+
+                itemService := item.NewService(a.itemRepository)
+                a.itemService = itemService
+                a.jobItemService = itemService
+                return a
+        }</span>)
+}
+
+func (a *App) initScheduler() *App <span class="cov3" title="2">{
+        return a.ifNoError(func() *App </span><span class="cov1" title="1">{
+                a.scheduler = job.NewScheduler(1 * time.Hour)
+                a.scheduler.Start()
+
+                j := job.NewItemsJob(a.jobFeedService, a.jobItemService, a.authService)
+                a.scheduler.Queue &lt;- j
+                return a
+        }</span>)
+}
+
+func (a *App) stopAPIServer() *App <span class="cov1" title="1">{
+        log.Info("shutting down HTTP component")
+        tctx, cancel := context.WithTimeout(context.Background(), gracePeriod)
+        defer cancel()
+        if err := a.apiServer.Shutdown(tctx); err != nil </span><span class="cov0" title="0">{
+                a.err = fmt.Errorf("failed to shut down api server, %w", err)
+                return a
+        }</span>
+        <span class="cov1" title="1">log.Infof("api server shut down successfully")
+        return a</span>
+}
+
+func (a *App) initAPIServer() *App <span class="cov3" title="2">{
+        return a.ifNoError(func() *App </span><span class="cov1" title="1">{
+                handler, err := api.New(a.itemService, a.feedService, a.authService)
+                if err != nil </span><span class="cov0" title="0">{
+                        a.err = fmt.Errorf("cannot create handler, %w", err)
+                        return a
+                }</span>
+                <span class="cov1" title="1">a.apiServer = &amp;http.Server{
+                        Addr:              fmt.Sprintf(":%d", a.cfg.HTTP.Port),
+                        Handler:           handler,
+                        ReadHeaderTimeout: readHeaderTimeout,
+                }
+
+                go func() </span><span class="cov1" title="1">{
+                        log.Infof("starting API server %d", a.cfg.HTTP.Port)
+                        if err = a.apiServer.ListenAndServe(); err != nil </span><span class="cov1" title="1">{
+                                a.err = err
+                        }</span>
+                }()
+
+                <span class="cov1" title="1">return a</span>
+        })
+}
+
+func (a *App) Stop() error <span class="cov3" title="2">{
+        a.err = a.ctx.Err()
+        if a.apiServer != nil </span><span class="cov1" title="1">{
+                a.stopAPIServer()
+        }</span>
+        <span class="cov3" title="2">return nil</span>
+}
+
+func WaitTermination() <span class="cov0" title="0">{
+        sigs := make(chan os.Signal, 1)
+        signal.Notify(sigs, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+        &lt;-sigs
+}</span>
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package auth
+
+import (
+        "errors"
+)
+
+const minPasswordLength = 8
+
+type LoginCommand struct {
+        Email    string `json:"email"`
+        Password string `json:"password"`
+}
+
+func (c *LoginCommand) Validate() error <span class="cov0" title="0">{
+        if c.Email == "" || c.Password == "" </span><span class="cov0" title="0">{
+                return errors.New("email and password are required")
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+
+type SignupCommand struct {
+        Email           string `json:"email"`
+        Password        string `json:"password"`
+        ConfirmPassword string `json:"confirm_password"`
+}
+
+func (c *SignupCommand) Validate() error <span class="cov0" title="0">{
+        if c.Email == "" || c.Password == "" || c.ConfirmPassword == "" </span><span class="cov0" title="0">{
+                return errors.New("email and password are required")
+        }</span>
+        <span class="cov0" title="0">if c.Password != c.ConfirmPassword </span><span class="cov0" title="0">{
+                return errors.New("password and confirm password do not match")
+        }</span>
+        <span class="cov0" title="0">if len(c.Password) &lt; minPasswordLength </span><span class="cov0" title="0">{
+                return errors.New("password must be at least 8 characters")
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package auth
+
+import (
+        "errors"
+        "strings"
+        "time"
+
+        "golang.org/x/crypto/bcrypt"
+)
+
+type Service struct {
+        repo Repository
+}
+
+func NewService(repo Repository) *Service <span class="cov10" title="10">{
+        return &amp;Service{repo: repo}
+}</span>
+
+func (s *Service) Login(command *LoginCommand) (*LoginResponse, error) <span class="cov5" title="3">{
+        user, err := s.repo.GetUserByEmail(command.Email)
+        if err != nil </span><span class="cov1" title="1">{
+                return nil, errors.New("invalid email or password")
+        }</span>
+
+        <span class="cov3" title="2">if bErr := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(command.Password)); bErr != nil </span><span class="cov1" title="1">{
+                return nil, errors.New("invalid email or password")
+        }</span>
+
+        // Generate session token
+        <span class="cov1" title="1">session, err := s.repo.CreateSession(user.ID)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, errors.New("failed to create session")
+        }</span>
+
+        <span class="cov1" title="1">return &amp;LoginResponse{
+                User:         *user,
+                AccessToken:  session.AccessToken,
+                RefreshToken: session.RefreshToken,
+                ExpiresIn:    time.Until(session.ExpiresAt).Seconds(),
+        }, nil</span>
+}
+
+func (s *Service) Signup(command *SignupCommand) error <span class="cov5" title="3">{
+        // Check if user already exists
+        _, err := s.repo.GetUserByEmail(command.Email)
+        if err == nil </span><span class="cov1" title="1">{
+                return errors.New("email already registered")
+        }</span>
+
+        // Hash password
+        <span class="cov3" title="2">hashedPassword, err := bcrypt.GenerateFromPassword([]byte(command.Password), bcrypt.DefaultCost)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov3" title="2">err = s.repo.CreateUser(command.Email, string(hashedPassword))
+        switch </span>{
+        case err == nil:<span class="cov1" title="1">
+                return nil</span>
+        case strings.Contains(err.Error(), "UNIQUE constraint failed"):<span class="cov0" title="0">
+                return errors.New("email already registered")</span>
+        default:<span class="cov1" title="1">
+                return err</span>
+        }
+}
+
+func (s *Service) GetSession(token string) (*Session, error) <span class="cov3" title="2">{
+        session, err := s.repo.GetSessionByToken(token)
+        if err != nil </span><span class="cov1" title="1">{
+                return nil, err
+        }</span>
+
+        <span class="cov1" title="1">return session, nil</span>
+}
+
+func (s *Service) GetAllUsers() ([]*User, error) <span class="cov3" title="2">{
+        return s.repo.GetAllUsers()
+}</span>
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package feed
+
+import (
+        "errors"
+        "fmt"
+        "log"
+        "time"
+
+        "github.com/mmcdole/gofeed"
+
+        "github.com/cubny/lite-reader/internal/app/item"
+)
+
+type ServiceImpl struct {
+        repository Repository
+        Parser     Parser
+        finder     Finder
+}
+
+func NewService(repository Repository, parser Parser, finder Finder) *ServiceImpl <span class="cov10" title="11">{
+        return &amp;ServiceImpl{
+                repository: repository,
+                Parser:     parser,
+                finder:     finder,
+        }
+}</span>
+
+func (s *ServiceImpl) AddFeed(command *AddFeedCommand) (*Feed, error) <span class="cov7" title="6">{
+        parsedFeed, err := s.Parser.ParseURL(command.URL)
+        switch </span>{
+        case errors.Is(err, gofeed.ErrFeedTypeNotDetected):<span class="cov5" title="3">
+                links, findErr := s.finder.FindFeeds(command.URL)
+                if findErr != nil </span><span class="cov1" title="1">{
+                        return nil, fmt.Errorf("cannot find feeds: %w", findErr)
+                }</span>
+                <span class="cov3" title="2">for _, link := range links </span><span class="cov3" title="2">{
+                        parsedFeed, err = s.Parser.ParseURL(link)
+                        if err == nil </span><span class="cov1" title="1">{
+                                break</span>
+                        }
+                }
+        case err != nil:<span class="cov1" title="1">
+                return nil, fmt.Errorf("cannot parse feed: %w", err)</span>
+        }
+
+        <span class="cov6" title="4">if parsedFeed == nil </span><span class="cov1" title="1">{
+                return nil, fmt.Errorf("cannot parse feed: %w", err)
+        }</span>
+
+        <span class="cov5" title="3">feed := &amp;Feed{
+                Title:       parsedFeed.Title,
+                Description: parsedFeed.Description,
+                Link:        parsedFeed.Link,
+                URL:         parsedFeed.FeedLink,
+                Lang:        parsedFeed.Language,
+                UpdatedAt:   time.Now(),
+                UnreadCount: len(parsedFeed.Items),
+                UserID:      command.UserID,
+        }
+
+        id, err := s.repository.AddFeed(feed)
+        if err != nil </span><span class="cov1" title="1">{
+                return nil, fmt.Errorf("cannot add feed: %w", err)
+        }</span>
+
+        <span class="cov3" title="2">feed.ID = id
+
+        return feed, nil</span>
+}
+
+func (s *ServiceImpl) ListFeeds(userID int) ([]*Feed, error) <span class="cov1" title="1">{
+        return s.repository.ListFeeds(userID)
+}</span>
+
+func (s *ServiceImpl) FetchItems(feedID int) ([]*item.Item, error) <span class="cov5" title="3">{
+        feed, err := s.repository.GetFeed(feedID)
+        if err != nil </span><span class="cov1" title="1">{
+                return nil, fmt.Errorf("cannot get feed: %w", err)
+        }</span>
+
+        <span class="cov3" title="2">parsedFeed, err := s.Parser.ParseURL(feed.URL)
+        if err != nil </span><span class="cov1" title="1">{
+                return nil, fmt.Errorf("cannot parse feed: %w", err)
+        }</span>
+
+        <span class="cov1" title="1">items := make([]*item.Item, 0)
+        for _, t := range parsedFeed.Items </span><span class="cov3" title="2">{
+                log.Printf("Processing item %s", t.Title)
+                timestamp := t.PublishedParsed
+                items = append(items, &amp;item.Item{
+                        Title:     t.Title,
+                        Desc:      t.Content,
+                        Link:      t.Link,
+                        Timestamp: *timestamp,
+                        Dir:       t.Description,
+                        IsNew:     true,
+                        Starred:   false,
+                })
+        }</span>
+
+        <span class="cov1" title="1">return items, nil</span>
+}
+
+func (s *ServiceImpl) DeleteFeed(command *DeleteFeedCommand) error <span class="cov1" title="1">{
+        return s.repository.DeleteFeed(command.FeedID)
+}</span>
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package item
+
+type ServiceImpl struct {
+        repository Repository
+}
+
+func NewService(repository Repository) *ServiceImpl <span class="cov10" title="20">{
+        return &amp;ServiceImpl{repository: repository}
+}</span>
+
+func (s *ServiceImpl) GetUnreadItems() ([]*Item, error) <span class="cov3" title="2">{
+        return s.repository.GetUnreadItems()
+}</span>
+
+func (s *ServiceImpl) GetStarredItems() ([]*Item, error) <span class="cov3" title="2">{
+        return s.repository.GetStarredItems()
+}</span>
+
+func (s *ServiceImpl) GetFeedItems(command *GetFeedItemsCommand) ([]*Item, error) <span class="cov3" title="2">{
+        return s.repository.GetFeedItems(command.FeedID)
+}</span>
+
+func (s *ServiceImpl) UpsertItems(command *UpsertItemsCommand) error <span class="cov3" title="2">{
+        return s.repository.UpsertItems(command.FeedID, command.Items)
+}</span>
+
+func (s *ServiceImpl) UpdateItem(command *UpdateItemCommand) error <span class="cov3" title="2">{
+        return s.repository.UpdateItem(command.ID, command.Starred, command.IsNew)
+}</span>
+
+func (s *ServiceImpl) ReadFeedItems(command *ReadFeedItemsCommand) error <span class="cov3" title="2">{
+        return s.repository.ReadFeedItems(command.FeedID)
+}</span>
+
+func (s *ServiceImpl) UnreadFeedItems(command *UnreadFeedItemsCommand) error <span class="cov3" title="2">{
+        return s.repository.UnreadFeedItems(command.FeedID)
+}</span>
+
+func (s *ServiceImpl) GetStarredItemsCount() (int, error) <span class="cov3" title="2">{
+        return s.repository.GetStarredItemsCount()
+}</span>
+
+func (s *ServiceImpl) GetUnreadItemsCount() (int, error) <span class="cov3" title="2">{
+        return s.repository.GetUnreadItemsCount()
+}</span>
+
+func (s *ServiceImpl) DeleteFeedItems(command *DeleteFeedItemsCommand) error <span class="cov3" title="2">{
+        return s.repository.DeleteFeedItems(command.FeedID)
+}</span>
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package config
+
+import (
+        "context"
+
+        "github.com/sethvargo/go-envconfig"
+)
+
+type Config struct {
+        HTTP HTTP
+        DB   DB
+}
+
+type DB struct {
+        Path string `env:"DB_PATH, default=data/agg.db"`
+}
+
+type HTTP struct {
+        Port int `env:"HTTP_PORT, default=3000"`
+}
+
+type Auth struct {
+        Email    string `env:"AUTH_EMAIL"`
+        Password string `env:"AUTH_PASSWORD"`
+}
+
+// New constructs the config.
+// variables are populated using the envars and default values.
+func New(ctx context.Context) (*Config, error) <span class="cov8" title="1">{
+        cfg := &amp;Config{}
+        if err := envconfig.Process(ctx, cfg); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">return cfg, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package api
+
+import (
+        "encoding/json"
+        "fmt"
+        "net/http"
+)
+
+// errorType is used for error codes
+type errorType int
+
+var (
+        // List of API error types.
+        errInternalError errorType = 500
+        errBadRequest    errorType = 400
+        errInvalidParams errorType = 422
+        errNotFound      errorType = 404
+)
+
+// JSONError is used to return http errors encoded in json
+type JSONError struct {
+        // Code of the error
+        Code int `json:"code"`
+        // Details of the error
+        Details string `json:"details"`
+}
+
+func newJSONError(errorType errorType, details string) JSONError <span class="cov10" title="32">{
+        e := JSONError{Code: int(errorType)}
+
+        switch errorType </span>{
+        case errInternalError:<span class="cov8" title="15">
+                e.Details = "Internal error"</span>
+        case errBadRequest:<span class="cov6" title="8">
+                e.Details = "Bad Request"</span>
+        case errInvalidParams:<span class="cov6" title="8">
+                e.Details = "Invalid params"</span>
+        case errNotFound:<span class="cov1" title="1">
+                e.Details = "Not found"</span>
+        default:<span class="cov0" title="0">
+                e.Code = 100999
+                e.Details = "Unknown error"</span>
+        }
+
+        <span class="cov10" title="32">if details != "" </span><span class="cov10" title="32">{
+                e.Details = fmt.Sprintf("%s - %s", e.Details, details)
+        }</span>
+
+        <span class="cov10" title="32">return e</span>
+}
+
+func (e JSONError) write(w http.ResponseWriter, statusCode int) error <span class="cov10" title="32">{
+        w.Header().Set("Content-Type", "application/json")
+        w.WriteHeader(statusCode)
+
+        resp := struct {
+                Err JSONError `json:"error"`
+        }{
+                Err: e,
+        }
+
+        return json.NewEncoder(w).Encode(resp)
+}</span>
+
+// InternalError writes the error details in json with the provided details
+func InternalError(w http.ResponseWriter, details string) error <span class="cov8" title="15">{
+        return newJSONError(errInternalError, details).write(w, http.StatusInternalServerError)
+}</span>
+
+// BadRequest writes the BadRequest error details in json with the provided details
+func BadRequest(w http.ResponseWriter, details string) error <span class="cov6" title="8">{
+        return newJSONError(errBadRequest, details).write(w, http.StatusBadRequest)
+}</span>
+
+// InvalidParams writes the UnprocessableEntity error details in json with the provided details
+func InvalidParams(w http.ResponseWriter, details string) error <span class="cov6" title="8">{
+        return newJSONError(errInvalidParams, details).write(w, http.StatusUnprocessableEntity)
+}</span>
+
+// NotFound writes the NotFound error details in json with the provided details
+func NotFound(w http.ResponseWriter, details string) error <span class="cov1" title="1">{
+        return newJSONError(errNotFound, details).write(w, http.StatusNotFound)
+}</span>
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package api
+
+import (
+        "encoding/json"
+        "net/http"
+
+        "github.com/julienschmidt/httprouter"
+        log "github.com/sirupsen/logrus"
+
+        "github.com/cubny/lite-reader/internal/app/item"
+        "github.com/cubny/lite-reader/internal/infra/http/api/cxutil"
+)
+
+// addFeed is the handler for
+// swagger:route POST /feeds AddFeedResponse
+//
+// Schedule a new feed.
+//
+// Responses:
+//
+//        201: setFeeds
+//        400: invalidRequestBody
+//        404: notFoundError
+//        422: invalidParams
+//        500: serverError
+func (h *Router) addFeed(w http.ResponseWriter, r *http.Request, p httprouter.Params) <span class="cov10" title="5">{
+        command, err := toAddFeedCommand(w, r, p)
+        if err != nil </span><span class="cov7" title="3">{
+                return
+        }</span>
+
+        <span class="cov4" title="2">log.Infof("addFeed: command %v", command)
+        // define t as a new uuid
+        t, err := h.feedService.AddFeed(command)
+        if err != nil </span><span class="cov1" title="1">{
+                log.WithError(err).Errorf("addFeed: service %s", err)
+                _ = InternalError(w, "failed to add feed due to server internal error")
+                return
+        }</span>
+
+        <span class="cov1" title="1">w.WriteHeader(http.StatusCreated)
+        if err := json.NewEncoder(w).Encode(toAddFeedResponse(t)); err != nil </span><span class="cov0" title="0">{
+                log.WithError(err).Errorf("setFeed: encoder %s", err)
+                _ = InternalError(w, "cannot encode response")
+        }</span>
+}
+func (h *Router) listFeeds(w http.ResponseWriter, r *http.Request, _ httprouter.Params) <span class="cov0" title="0">{
+        userID := r.Context().Value(cxutil.UserIDKey).(int)
+        log.Infof("listFeeds: userID %d", userID)
+        resp, err := h.feedService.ListFeeds(userID)
+        if err != nil </span><span class="cov0" title="0">{
+                log.WithError(err).Errorf("listFeeds: service %s", err)
+                _ = InternalError(w, "cannot list feeds")
+                return
+        }</span>
+
+        <span class="cov0" title="0">w.WriteHeader(http.StatusOK)
+        if err := json.NewEncoder(w).Encode(toListFeedResponse(resp)); err != nil </span><span class="cov0" title="0">{
+                log.WithError(err).Errorf("listFeeds: encoder %s", err)
+                _ = InternalError(w, "cannot encode response")
+                return
+        }</span>
+}
+
+func (h *Router) getFeedItems(w http.ResponseWriter, r *http.Request, p httprouter.Params) <span class="cov7" title="3">{
+        command, err := toGetFeedItemsCommand(w, r, p)
+        if err != nil </span><span class="cov1" title="1">{
+                return
+        }</span>
+
+        <span class="cov4" title="2">items, err := h.itemService.GetFeedItems(command)
+        if err != nil </span><span class="cov1" title="1">{
+                _ = InternalError(w, "cannot get feed items")
+                return
+        }</span>
+
+        <span class="cov1" title="1">resp := toGetItemsResponse(items)
+        log.Infof("getFeedItems: resp %v", resp)
+
+        w.WriteHeader(http.StatusOK)
+        if err := json.NewEncoder(w).Encode(resp); err != nil </span><span class="cov0" title="0">{
+                log.WithError(err).Errorf("getFeedItems: encoder %s", err)
+                _ = InternalError(w, "cannot encode response")
+                return
+        }</span>
+}
+
+func (h *Router) fetchFeedNewItems(w http.ResponseWriter, r *http.Request, p httprouter.Params) <span class="cov10" title="5">{
+        command, err := toFetchFeedNewItemsCommand(w, r, p)
+        if err != nil </span><span class="cov1" title="1">{
+                log.WithError(err).Errorf("fetchFeedNewItems: toFetchFeedNewItemsCommand")
+                return
+        }</span>
+
+        <span class="cov8" title="4">items, err := h.feedService.FetchItems(command.FeedID)
+        if err != nil </span><span class="cov1" title="1">{
+                log.WithError(err).Errorf("fetchFeedNewItems: FetchItems")
+                _ = InternalError(w, "cannot fetch feed items")
+                return
+        }</span>
+
+        <span class="cov7" title="3">upsertItemsCommand := &amp;item.UpsertItemsCommand{FeedID: command.FeedID, Items: items}
+        if upsertErr := h.itemService.UpsertItems(upsertItemsCommand); upsertErr != nil </span><span class="cov1" title="1">{
+                log.WithError(upsertErr).Errorf("fetchFeedNewItems: UpsertItems")
+                _ = InternalError(w, "cannot store feed items")
+                return
+        }</span>
+
+        <span class="cov4" title="2">getFeedItemsCommand := &amp;item.GetFeedItemsCommand{FeedID: command.FeedID}
+        items, err = h.itemService.GetFeedItems(getFeedItemsCommand)
+        if err != nil </span><span class="cov1" title="1">{
+                log.WithError(err).Errorf("fetchFeedNewItems: GetFeedItems")
+                _ = InternalError(w, "cannot get feed items")
+                return
+        }</span>
+
+        <span class="cov1" title="1">w.WriteHeader(http.StatusOK)
+        if err := json.NewEncoder(w).Encode(toGetItemsResponse(items)); err != nil </span><span class="cov0" title="0">{
+                log.WithError(err).Errorf("fetchFeedNewItems: encoder %s", err)
+                _ = InternalError(w, "cannot encode response")
+                return
+        }</span>
+}
+
+func (h *Router) readFeedItems(w http.ResponseWriter, r *http.Request, p httprouter.Params) <span class="cov7" title="3">{
+        command, err := toReadFeedItemsCommand(w, r, p)
+        if err != nil </span><span class="cov1" title="1">{
+                return
+        }</span>
+
+        <span class="cov4" title="2">if err := h.itemService.ReadFeedItems(command); err != nil </span><span class="cov1" title="1">{
+                _ = InternalError(w, "cannot read feed items")
+                return
+        }</span>
+
+        <span class="cov1" title="1">w.WriteHeader(http.StatusNoContent)</span>
+}
+
+func (h *Router) unreadFeedItems(w http.ResponseWriter, r *http.Request, p httprouter.Params) <span class="cov7" title="3">{
+        command, err := toUnreadFeedItemCommand(w, r, p)
+        if err != nil </span><span class="cov1" title="1">{
+                return
+        }</span>
+
+        <span class="cov4" title="2">if err := h.itemService.UnreadFeedItems(command); err != nil </span><span class="cov1" title="1">{
+                _ = InternalError(w, "cannot unread feed items")
+                return
+        }</span>
+
+        <span class="cov1" title="1">w.WriteHeader(http.StatusNoContent)</span>
+}
+
+func (h *Router) deleteFeed(w http.ResponseWriter, r *http.Request, p httprouter.Params) <span class="cov8" title="4">{
+        command, err := toDeleteFeedCommand(w, r, p)
+        if err != nil </span><span class="cov1" title="1">{
+                return
+        }</span>
+
+        <span class="cov7" title="3">cmdDeleteFeedItems, err := toDeleteFeedItemsCommand(w, r, p)
+        if err != nil </span><span class="cov0" title="0">{
+                return
+        }</span>
+
+        <span class="cov7" title="3">if err := h.itemService.DeleteFeedItems(cmdDeleteFeedItems); err != nil </span><span class="cov1" title="1">{
+                _ = InternalError(w, "cannot delete feed")
+                return
+        }</span>
+
+        <span class="cov4" title="2">if err := h.feedService.DeleteFeed(command); err != nil </span><span class="cov1" title="1">{
+                _ = InternalError(w, "cannot delete feed")
+                return
+        }</span>
+
+        <span class="cov1" title="1">w.WriteHeader(http.StatusNoContent)</span>
+}
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">package api
+
+import (
+        "encoding/json"
+        "net/http"
+
+        "github.com/julienschmidt/httprouter"
+        log "github.com/sirupsen/logrus"
+)
+
+func (h *Router) updateItem(w http.ResponseWriter, r *http.Request, p httprouter.Params) <span class="cov10" title="4">{
+        command, err := toUpdateItemCommand(w, r, p)
+        if err != nil </span><span class="cov5" title="2">{
+                return
+        }</span>
+
+        <span class="cov5" title="2">if err := h.itemService.UpdateItem(command); err != nil </span><span class="cov1" title="1">{
+                _ = InternalError(w, "cannot update item")
+                return
+        }</span>
+
+        <span class="cov1" title="1">w.WriteHeader(http.StatusNoContent)</span>
+}
+
+func (h *Router) getStarredItems(w http.ResponseWriter, _ *http.Request, _ httprouter.Params) <span class="cov5" title="2">{
+        items, err := h.itemService.GetStarredItems()
+        if err != nil </span><span class="cov1" title="1">{
+                _ = InternalError(w, "cannot get unread items")
+                return
+        }</span>
+
+        <span class="cov1" title="1">w.WriteHeader(http.StatusOK)
+        if err := json.NewEncoder(w).Encode(toGetItemsResponse(items)); err != nil </span><span class="cov0" title="0">{
+                log.WithError(err).Errorf("getStarredItems: encoder %s", err)
+                _ = InternalError(w, "cannot encode response")
+                return
+        }</span>
+}
+
+func (h *Router) getUnreadItems(w http.ResponseWriter, _ *http.Request, _ httprouter.Params) <span class="cov5" title="2">{
+        items, err := h.itemService.GetUnreadItems()
+        if err != nil </span><span class="cov1" title="1">{
+                _ = InternalError(w, "cannot get unread items")
+                return
+        }</span>
+
+        <span class="cov1" title="1">w.WriteHeader(http.StatusOK)
+        if err := json.NewEncoder(w).Encode(toGetItemsResponse(items)); err != nil </span><span class="cov0" title="0">{
+                log.WithError(err).Errorf("getUnreadItems: encoder %s", err)
+                _ = InternalError(w, "cannot encode response")
+                return
+        }</span>
+}
+
+func (h *Router) getUnreadItemsCount(w http.ResponseWriter, _ *http.Request, _ httprouter.Params) <span class="cov5" title="2">{
+        items, err := h.itemService.GetUnreadItemsCount()
+        if err != nil </span><span class="cov1" title="1">{
+                _ = InternalError(w, "cannot get unread items")
+                return
+        }</span>
+
+        <span class="cov1" title="1">w.WriteHeader(http.StatusOK)
+        if err := json.NewEncoder(w).Encode(toGetItemsCountResponse(items)); err != nil </span><span class="cov0" title="0">{
+                log.WithError(err).Errorf("getUnreadItemsCount: encoder %s", err)
+                _ = InternalError(w, "cannot encode response")
+                return
+        }</span>
+}
+
+func (h *Router) getStarredItemsCount(w http.ResponseWriter, _ *http.Request, _ httprouter.Params) <span class="cov5" title="2">{
+        items, err := h.itemService.GetStarredItemsCount()
+        if err != nil </span><span class="cov1" title="1">{
+                _ = InternalError(w, "cannot get unread items")
+                return
+        }</span>
+
+        <span class="cov1" title="1">w.WriteHeader(http.StatusOK)
+        if err := json.NewEncoder(w).Encode(toGetItemsCountResponse(items)); err != nil </span><span class="cov0" title="0">{
+                log.WithError(err).Errorf("getStarredItemsCount: encoder %s", err)
+                _ = InternalError(w, "cannot encode response")
+                return
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file10" style="display: none">package api
+
+import (
+        "bytes"
+        "encoding/json"
+        "io"
+        "net/http"
+
+        "github.com/julienschmidt/httprouter"
+        log "github.com/sirupsen/logrus"
+)
+
+func (h *Router) login(w http.ResponseWriter, r *http.Request, _ httprouter.Params) <span class="cov0" title="0">{
+        body, err := io.ReadAll(r.Body)
+        if err != nil </span><span class="cov0" title="0">{
+                log.WithError(err).Error("login: failed to read request body")
+                _ = BadRequest(w, "invalid request body")
+                return
+        }</span>
+        // Restore the body for later use by toLoginCommand
+        <span class="cov0" title="0">r.Body = io.NopCloser(bytes.NewBuffer(body))
+
+        log.WithField("body", string(body)).Info("login: received request")
+        command, err := toLoginCommand(w, r, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return
+        }</span>
+
+        <span class="cov0" title="0">response, err := h.authService.Login(command)
+        if err != nil </span><span class="cov0" title="0">{
+                _ = BadRequest(w, err.Error())
+                return
+        }</span>
+
+        <span class="cov0" title="0">w.WriteHeader(http.StatusOK)
+        _ = json.NewEncoder(w).Encode(response)</span>
+}
+</pre>
+		
+		<pre class="file" id="file11" style="display: none">package middleware
+
+import (
+        "context"
+        "encoding/json"
+        "errors"
+        "net/http"
+
+        "github.com/julienschmidt/httprouter"
+        log "github.com/sirupsen/logrus"
+
+        "github.com/cubny/lite-reader/internal/app/auth"
+        "github.com/cubny/lite-reader/internal/infra/http/api/cxutil"
+)
+
+type AuthService interface {
+        GetSession(token string) (*auth.Session, error)
+}
+
+// HandleFunc is a method type that represents Middleware HandleFunc function.
+type HandleFunc func(httprouter.Handle) httprouter.Handle
+
+// Chain represents helper struct that is able to wrap httprouter.Handle with chain.
+type Chain struct {
+        middlewares []HandleFunc
+}
+
+// NewChain create a chain out of middlewares.
+func NewChain(middlewares ...HandleFunc) Chain <span class="cov0" title="0">{
+        return Chain{middlewares: middlewares}
+}</span>
+
+// Wrap the handler with Chain.
+func (chain Chain) Wrap(handler httprouter.Handle) httprouter.Handle <span class="cov0" title="0">{
+        result := handler
+
+        for i := len(chain.middlewares) - 1; i &gt;= 0; i-- </span><span class="cov0" title="0">{
+                middleware := chain.middlewares[i]
+
+                if result == nil </span><span class="cov0" title="0">{
+                        result = middleware(handler)
+                        continue</span>
+                }
+
+                <span class="cov0" title="0">result = middleware(result)</span>
+        }
+
+        <span class="cov0" title="0">return result</span>
+}
+
+// ContentTypeJSON for the HTTP response.
+func ContentTypeJSON(next httprouter.Handle) httprouter.Handle <span class="cov0" title="0">{
+        return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) </span><span class="cov0" title="0">{
+                w.Header().Set("Content-Type", "application/json")
+                next(w, r, ps)
+        }</span>
+}
+
+func AuthMiddleware(authService AuthService) HandleFunc <span class="cov0" title="0">{
+        return func(next httprouter.Handle) httprouter.Handle </span><span class="cov0" title="0">{
+                return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) </span><span class="cov0" title="0">{
+                        w.Header().Set("Content-Type", "application/json")
+                        log.Printf("Request path: %s", r.URL.Path)
+
+                        // Skip auth check for login and signup endpoints
+                        if r.URL.Path == "/login" || r.URL.Path == "/signup" </span><span class="cov0" title="0">{
+                                next(w, r, ps)
+                                return
+                        }</span>
+
+                        // For all other endpoints, require auth
+                        <span class="cov0" title="0">token, err := extractBearerToken(r)
+                        if err != nil </span><span class="cov0" title="0">{
+                                writeUnauthorizedResponse(w, err.Error())
+                                return
+                        }</span>
+
+                        <span class="cov0" title="0">session, err := authService.GetSession(token)
+                        if err != nil || session == nil </span><span class="cov0" title="0">{
+                                writeUnauthorizedResponse(w, "Unauthorized - Invalid token")
+                                return
+                        }</span>
+
+                        // Add userID to context
+                        <span class="cov0" title="0">ctx := context.WithValue(r.Context(), cxutil.UserIDKey, session.UserID)
+                        r = r.WithContext(ctx)
+
+                        next(w, r, ps)</span>
+                }
+        }
+}
+
+func extractBearerToken(r *http.Request) (string, error) <span class="cov0" title="0">{
+        authHeader := r.Header.Get("Authorization")
+        if authHeader == "" </span><span class="cov0" title="0">{
+                return "", errors.New("no token provided")
+        }</span>
+
+        <span class="cov0" title="0">if len(authHeader) &lt; 7 || authHeader[:7] != "Bearer " </span><span class="cov0" title="0">{
+                return "", errors.New("invalid token format")
+        }</span>
+
+        <span class="cov0" title="0">return authHeader[7:], nil</span>
+}
+
+func writeUnauthorizedResponse(w http.ResponseWriter, details string) <span class="cov0" title="0">{
+        w.WriteHeader(http.StatusUnauthorized)
+        err := json.NewEncoder(w).Encode(map[string]any{
+                "error": map[string]any{
+                        "code":    http.StatusUnauthorized,
+                        "details": "unauthorized - " + details,
+                },
+        })
+        if err != nil </span><span class="cov0" title="0">{
+                log.WithError(err).Error("failed to write response")
+                w.WriteHeader(http.StatusInternalServerError)
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file12" style="display: none">package api
+
+import (
+        "encoding/json"
+        "errors"
+        "net/http"
+        "net/url"
+        "strconv"
+        "time"
+
+        "github.com/julienschmidt/httprouter"
+        log "github.com/sirupsen/logrus"
+
+        "github.com/cubny/lite-reader/internal/app/auth"
+        "github.com/cubny/lite-reader/internal/app/feed"
+        "github.com/cubny/lite-reader/internal/app/item"
+        "github.com/cubny/lite-reader/internal/infra/http/api/cxutil"
+)
+
+type AddFeedRequest struct {
+        URL string `json:"url"`
+}
+
+func (r *AddFeedRequest) Validate() error <span class="cov7" title="3">{
+        if _, err := url.ParseRequestURI(r.URL); err != nil </span><span class="cov1" title="1">{
+                return err
+        }</span>
+        <span class="cov4" title="2">return nil</span>
+}
+
+type AddFeedResponse struct {
+        ID          int       `json:"id"`
+        Title       string    `json:"title"`
+        Desc        string    `json:"desc"`
+        Link        string    `json:"link"`
+        URL         string    `json:"url"`
+        UpdatedAt   time.Time `json:"updated_at"`
+        Lang        string    `json:"lang"`
+        UnreadCount int       `json:"unread_count"`
+}
+
+type ListFeedResponse []*AddFeedResponse
+
+func toListFeedResponse(feeds []*feed.Feed) *ListFeedResponse <span class="cov0" title="0">{
+        resp := make(ListFeedResponse, 0)
+        for _, f := range feeds </span><span class="cov0" title="0">{
+                resp = append(resp, toAddFeedResponse(f))
+        }</span>
+        <span class="cov0" title="0">return &amp;resp</span>
+}
+
+func toAddFeedResponse(f *feed.Feed) *AddFeedResponse <span class="cov1" title="1">{
+        return &amp;AddFeedResponse{
+                ID:          f.ID,
+                Title:       f.Title,
+                Desc:        f.Description,
+                Link:        f.Link,
+                URL:         f.URL,
+                UpdatedAt:   f.UpdatedAt,
+                Lang:        f.Lang,
+                UnreadCount: f.UnreadCount,
+        }
+}</span>
+
+type ItemResponse struct {
+        ID        int       `json:"id"`
+        Title     string    `json:"title"`
+        Dir       string    `json:"dir"`
+        Desc      string    `json:"desc"`
+        Link      string    `json:"link"`
+        IsNew     bool      `json:"is_new"`
+        Starred   bool      `json:"starred"`
+        Timestamp time.Time `json:"timestamp"`
+}
+
+type GetUnreadItemsResponse struct {
+        Items []*ItemResponse `json:"items"`
+}
+
+func toGetItemsResponse(items []*item.Item) []*ItemResponse <span class="cov8" title="4">{
+        resp := make([]*ItemResponse, 0)
+        for _, i := range items </span><span class="cov4" title="2">{
+                resp = append(resp, &amp;ItemResponse{
+                        ID:        i.ID,
+                        Title:     i.Title,
+                        Dir:       i.Dir,
+                        Desc:      i.Desc,
+                        Link:      i.Link,
+                        IsNew:     i.IsNew,
+                        Starred:   i.Starred,
+                        Timestamp: i.Timestamp,
+                })
+        }</span>
+        <span class="cov8" title="4">return resp</span>
+}
+
+func toAddFeedCommand(w http.ResponseWriter, r *http.Request, _ httprouter.Params) (*feed.AddFeedCommand, error) <span class="cov10" title="5">{
+        request := &amp;AddFeedRequest{}
+        if err := json.NewDecoder(r.Body).Decode(request); err != nil </span><span class="cov4" title="2">{
+                log.WithError(err).Errorf("toAddFeedCommand: decoder %s", err)
+                _ = BadRequest(w, "cannot decode request body")
+                return nil, err
+        }</span>
+
+        <span class="cov7" title="3">if err := request.Validate(); err != nil </span><span class="cov1" title="1">{
+                log.WithError(err).Errorf("toAddFeedCommand: validator %s", err)
+                _ = InvalidParams(w, "invalid params")
+                return nil, err
+        }</span>
+
+        <span class="cov4" title="2">return &amp;feed.AddFeedCommand{
+                URL:    request.URL,
+                UserID: r.Context().Value(cxutil.UserIDKey).(int),
+        }, nil</span>
+}
+
+func toGetFeedItemsCommand(w http.ResponseWriter, _ *http.Request, p httprouter.Params) (*item.GetFeedItemsCommand, error) <span class="cov7" title="3">{
+        feedIDString := p.ByName("id")
+        feedID, err := strconv.Atoi(feedIDString)
+        if err != nil </span><span class="cov1" title="1">{
+                _ = InvalidParams(w, "invalid feed id")
+                return nil, err
+        }</span>
+        <span class="cov4" title="2">return &amp;item.GetFeedItemsCommand{
+                FeedID: feedID,
+        }, nil</span>
+}
+
+type UpdateItemRequest struct {
+        Starred bool `json:"starred"`
+        IsNew   bool `json:"is_new"`
+}
+
+func toUpdateItemCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*item.UpdateItemCommand, error) <span class="cov8" title="4">{
+        itemIDString := p.ByName("id")
+        itemID, err := strconv.Atoi(itemIDString)
+        if err != nil </span><span class="cov1" title="1">{
+                _ = InvalidParams(w, "invalid item id")
+                return nil, err
+        }</span>
+
+        <span class="cov7" title="3">request := &amp;UpdateItemRequest{}
+        if err := json.NewDecoder(r.Body).Decode(request); err != nil </span><span class="cov1" title="1">{
+                log.WithError(err).Errorf("toUpdateItemCommand: decoder %s", err)
+                _ = BadRequest(w, "cannot decode request body")
+                return nil, err
+        }</span>
+
+        <span class="cov4" title="2">return &amp;item.UpdateItemCommand{
+                ID:      itemID,
+                Starred: request.Starred,
+                IsNew:   request.IsNew,
+        }, nil</span>
+}
+
+func toFetchFeedNewItemsCommand(w http.ResponseWriter, _ *http.Request, p httprouter.Params) (*item.FetchFeedNewItemsCommand, error) <span class="cov10" title="5">{
+        feedIDString := p.ByName("id")
+        feedID, err := strconv.Atoi(feedIDString)
+        if err != nil </span><span class="cov1" title="1">{
+                _ = InvalidParams(w, "invalid feed id")
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="4">return &amp;item.FetchFeedNewItemsCommand{
+                FeedID: feedID,
+        }, nil</span>
+}
+
+func toReadFeedItemsCommand(w http.ResponseWriter, _ *http.Request, p httprouter.Params) (*item.ReadFeedItemsCommand, error) <span class="cov7" title="3">{
+        feedIDString := p.ByName("id")
+        feedID, err := strconv.Atoi(feedIDString)
+        if err != nil </span><span class="cov1" title="1">{
+                _ = InvalidParams(w, "invalid feed id")
+                return nil, err
+        }</span>
+
+        <span class="cov4" title="2">return &amp;item.ReadFeedItemsCommand{
+                FeedID: feedID,
+        }, nil</span>
+}
+
+func toUnreadFeedItemCommand(w http.ResponseWriter, _ *http.Request, p httprouter.Params) (*item.UnreadFeedItemsCommand, error) <span class="cov7" title="3">{
+        feedIDString := p.ByName("id")
+        feedID, err := strconv.Atoi(feedIDString)
+        if err != nil </span><span class="cov1" title="1">{
+                _ = InvalidParams(w, "invalid feed id")
+                return nil, err
+        }</span>
+
+        <span class="cov4" title="2">return &amp;item.UnreadFeedItemsCommand{
+                FeedID: feedID,
+        }, nil</span>
+}
+
+type GetItemsCountResponse struct {
+        Count int `json:"count"`
+}
+
+func toGetItemsCountResponse(count int) *GetItemsCountResponse <span class="cov4" title="2">{
+        return &amp;GetItemsCountResponse{
+                Count: count,
+        }
+}</span>
+
+func toDeleteFeedCommand(w http.ResponseWriter, _ *http.Request, p httprouter.Params) (*feed.DeleteFeedCommand, error) <span class="cov8" title="4">{
+        feedIDString := p.ByName("id")
+        feedID, err := strconv.Atoi(feedIDString)
+        if err != nil </span><span class="cov1" title="1">{
+                _ = InvalidParams(w, "invalid feed id")
+                return nil, err
+        }</span>
+
+        <span class="cov7" title="3">return &amp;feed.DeleteFeedCommand{
+                FeedID: feedID,
+        }, nil</span>
+}
+
+func toDeleteFeedItemsCommand(w http.ResponseWriter, _ *http.Request, p httprouter.Params) (*item.DeleteFeedItemsCommand, error) <span class="cov7" title="3">{
+        feedIDString := p.ByName("id")
+        feedID, err := strconv.Atoi(feedIDString)
+        if err != nil </span><span class="cov0" title="0">{
+                _ = InvalidParams(w, "invalid feed id")
+                return nil, err
+        }</span>
+
+        <span class="cov7" title="3">return &amp;item.DeleteFeedItemsCommand{
+                FeedID: feedID,
+        }, nil</span>
+}
+
+type LoginRequest struct {
+        Email    string `json:"email"`
+        Password string `json:"password"`
+}
+
+func (r *LoginRequest) Validate() error <span class="cov0" title="0">{
+        if r.Email == "" || r.Password == "" </span><span class="cov0" title="0">{
+                return errors.New("email and password are required")
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+
+func toLoginCommand(w http.ResponseWriter, r *http.Request, _ httprouter.Params) (*auth.LoginCommand, error) <span class="cov0" title="0">{
+        request := &amp;LoginRequest{}
+        if err := json.NewDecoder(r.Body).Decode(request); err != nil </span><span class="cov0" title="0">{
+                log.WithError(err).Error("login: failed to decode request body")
+                _ = BadRequest(w, "invalid request body")
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">if err := request.Validate(); err != nil </span><span class="cov0" title="0">{
+                log.WithError(err).Error("login: invalid request body")
+                _ = BadRequest(w, "invalid request body")
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return &amp;auth.LoginCommand{
+                Email:    request.Email,
+                Password: request.Password,
+        }, nil</span>
+}
+
+type SignupRequest struct {
+        Email    string `json:"email"`
+        Password string `json:"password"`
+}
+
+func (r *SignupRequest) Validate() error <span class="cov7" title="3">{
+        if r.Email == "" || r.Password == "" </span><span class="cov1" title="1">{
+                return errors.New("email and password are required")
+        }</span>
+        <span class="cov4" title="2">return nil</span>
+}
+
+func toSignupCommand(w http.ResponseWriter, r *http.Request, _ httprouter.Params) (*auth.SignupCommand, error) <span class="cov10" title="5">{
+        request := &amp;SignupRequest{}
+        if err := json.NewDecoder(r.Body).Decode(request); err != nil </span><span class="cov4" title="2">{
+                log.WithError(err).Error("signup: failed to decode request body")
+                _ = BadRequest(w, "invalid request body")
+                return nil, err
+        }</span>
+
+        <span class="cov7" title="3">if err := request.Validate(); err != nil </span><span class="cov1" title="1">{
+                log.WithError(err).Error("signup: invalid request body")
+                _ = BadRequest(w, "invalid request body")
+                return nil, err
+        }</span>
+
+        <span class="cov4" title="2">return &amp;auth.SignupCommand{
+                Email:    request.Email,
+                Password: request.Password,
+        }, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file13" style="display: none">// Package api lite-reader
+//
+// Documentation of the lite-reader service.
+//
+//        Schemes: http
+//        BasePath: /
+//        Version: 1.0.0
+//        Host: lite-reader
+//
+//        Consumes:
+//        - application/json
+//
+//        Produces:
+//        - application/json
+//
+// swagger:meta
+package api
+
+import (
+        "net/http"
+
+        "github.com/julienschmidt/httprouter"
+        log "github.com/sirupsen/logrus"
+
+        "github.com/cubny/lite-reader/internal/app/auth"
+        "github.com/cubny/lite-reader/internal/app/feed"
+        "github.com/cubny/lite-reader/internal/app/item"
+        "github.com/cubny/lite-reader/internal/infra/http/api/middleware"
+)
+
+type FeedService interface {
+        AddFeed(command *feed.AddFeedCommand) (*feed.Feed, error)
+        ListFeeds(UserID int) ([]*feed.Feed, error)
+        FetchItems(int) ([]*item.Item, error)
+        DeleteFeed(command *feed.DeleteFeedCommand) error
+}
+
+type ItemService interface {
+        GetUnreadItems() ([]*item.Item, error)
+        GetStarredItems() ([]*item.Item, error)
+        GetFeedItems(*item.GetFeedItemsCommand) ([]*item.Item, error)
+        UpsertItems(command *item.UpsertItemsCommand) error
+        UpdateItem(*item.UpdateItemCommand) error
+        ReadFeedItems(*item.ReadFeedItemsCommand) error
+        UnreadFeedItems(*item.UnreadFeedItemsCommand) error
+        GetStarredItemsCount() (int, error)
+        GetUnreadItemsCount() (int, error)
+        DeleteFeedItems(*item.DeleteFeedItemsCommand) error
+}
+
+type AuthService interface {
+        Login(command *auth.LoginCommand) (*auth.LoginResponse, error)
+        Signup(command *auth.SignupCommand) error
+        GetSession(token string) (*auth.Session, error)
+        GetAllUsers() ([]*auth.User, error)
+}
+
+// Router handles http requests
+type Router struct {
+        http.Handler
+        feedService FeedService
+        itemService ItemService
+        authService AuthService
+}
+
+// New creates a new handler to handle http requests
+func New(itemService ItemService, feedService FeedService, authService AuthService) (*Router, error) <span class="cov10" title="40">{
+        h := &amp;Router{
+                itemService: itemService,
+                feedService: feedService,
+                authService: authService,
+        }
+        router := httprouter.New()
+
+        chain := middleware.NewChain(middleware.ContentTypeJSON, middleware.AuthMiddleware(h.authService))
+
+        router.GET("/health", h.health)
+
+        router.GET("/feeds", chain.Wrap(h.listFeeds))
+        router.POST("/feeds", chain.Wrap(h.addFeed))
+
+        router.DELETE("/feeds/:id", chain.Wrap(h.deleteFeed))
+        router.PUT("/feeds/:id/fetch", chain.Wrap(h.fetchFeedNewItems))
+        router.POST("/feeds/:id/read", chain.Wrap(h.readFeedItems))
+        router.POST("/feeds/:id/unread", chain.Wrap(h.unreadFeedItems))
+        router.GET("/feeds/:id/items", chain.Wrap(h.getFeedItems))
+
+        router.PUT("/items/:id", chain.Wrap(h.updateItem))
+        router.GET("/items/unread", chain.Wrap(h.getUnreadItems))
+        router.GET("/items/starred", chain.Wrap(h.getStarredItems))
+        router.GET("/items/unread/count", chain.Wrap(h.getUnreadItemsCount))
+        router.GET("/items/starred/count", chain.Wrap(h.getStarredItemsCount))
+
+        router.POST("/login", chain.Wrap(h.login))
+        router.POST("/signup", chain.Wrap(h.signup))
+        // serve static files for GET /
+        router.NotFound = http.FileServer(http.Dir("public"))
+
+        h.Handler = router
+        return h, nil
+}</span>
+
+func (h *Router) health(w http.ResponseWriter, _ *http.Request, _ httprouter.Params) <span class="cov0" title="0">{
+        w.WriteHeader(http.StatusOK)
+        _, err := w.Write([]byte("ok"))
+        if err != nil </span><span class="cov0" title="0">{
+                log.Error("failed to compose body of the response")
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file14" style="display: none">package api
+
+import (
+        "bytes"
+        "io"
+        "net/http"
+
+        "github.com/julienschmidt/httprouter"
+        log "github.com/sirupsen/logrus"
+)
+
+func (h *Router) signup(w http.ResponseWriter, r *http.Request, _ httprouter.Params) <span class="cov10" title="5">{
+        body, err := io.ReadAll(r.Body)
+        if err != nil </span><span class="cov0" title="0">{
+                log.WithError(err).Error("signup: failed to read request body")
+                _ = BadRequest(w, "invalid request body")
+                return
+        }</span>
+        <span class="cov10" title="5">r.Body = io.NopCloser(bytes.NewBuffer(body))
+
+        log.WithField("body", string(body)).Info("signup: received request")
+        command, err := toSignupCommand(w, r, nil)
+        if err != nil </span><span class="cov7" title="3">{
+                return
+        }</span>
+
+        <span class="cov4" title="2">if err := h.authService.Signup(command); err != nil </span><span class="cov1" title="1">{
+                _ = BadRequest(w, err.Error())
+                return
+        }</span>
+
+        <span class="cov1" title="1">w.WriteHeader(http.StatusCreated)</span>
+}
+</pre>
+		
+		<pre class="file" id="file15" style="display: none">package job
+
+import (
+        log "github.com/sirupsen/logrus"
+
+        "github.com/cubny/lite-reader/internal/app/item"
+)
+
+type ItemsJob struct {
+        feedService FeedService
+        itemService ItemService
+        userService UserService
+}
+
+func NewItemsJob(feedService FeedService, itemService ItemService, userService UserService) *ItemsJob <span class="cov1" title="1">{
+        return &amp;ItemsJob{feedService: feedService, itemService: itemService, userService: userService}
+}</span>
+
+func (j *ItemsJob) Execute() <span class="cov10" title="5">{
+        users, err := j.userService.GetAllUsers()
+        if err != nil </span><span class="cov1" title="1">{
+                log.Errorf("Failed to get users: %v", err)
+                return
+        }</span>
+
+        <span class="cov8" title="4">for _, u := range users </span><span class="cov8" title="4">{
+                log.Printf("Processing user %d", u.ID)
+                feeds, err := j.feedService.ListFeeds(u.ID)
+                if err != nil </span><span class="cov1" title="1">{
+                        return
+                }</span>
+                <span class="cov7" title="3">log.Infof("Found %d feeds", len(feeds))
+                for _, f := range feeds </span><span class="cov10" title="5">{
+                        items, err := j.feedService.FetchItems(f.ID)
+                        if err != nil </span><span class="cov1" title="1">{
+                                log.Errorf("Failed to fetch items for feed %d: %v", f.ID, err)
+                                continue</span>
+                        }
+                        <span class="cov8" title="4">upsertItemsCommand := &amp;item.UpsertItemsCommand{FeedID: f.ID, Items: items}
+                        log.Infof("Upserting %d items for feed %d", len(items), f.ID)
+                        if err := j.itemService.UpsertItems(upsertItemsCommand); err != nil </span><span class="cov1" title="1">{
+                                log.Errorf("Failed to upsert items for feed %d: %v", f.ID, err)
+                                continue</span>
+                        }
+                }
+        }
+}
+</pre>
+		
+		<pre class="file" id="file16" style="display: none">package job
+
+import "time"
+
+type Job interface {
+        Execute()
+}
+
+type Scheduler struct {
+        Queue    chan Job
+        Interval time.Duration
+}
+
+func NewScheduler(interval time.Duration) *Scheduler <span class="cov0" title="0">{
+        return &amp;Scheduler{
+                Queue:    make(chan Job),
+                Interval: interval,
+        }
+}</span>
+
+func (s *Scheduler) Start() <span class="cov0" title="0">{
+        go func() </span><span class="cov0" title="0">{
+                ticker := time.NewTicker(s.Interval)
+
+                for </span><span class="cov0" title="0">{
+                        select </span>{
+                        case job := &lt;-s.Queue:<span class="cov0" title="0">
+                                job.Execute()</span>
+                        case &lt;-ticker.C:<span class="cov0" title="0">
+                                for job := range s.Queue </span><span class="cov0" title="0">{
+                                        job.Execute()
+                                }</span>
+                        }
+                }
+        }()
+}
+func (s *Scheduler) ScheduleOnce(duration time.Duration, job Job) <span class="cov0" title="0">{
+        go func() </span><span class="cov0" title="0">{
+                time.Sleep(duration)
+                s.Queue &lt;- job
+        }</span>()
+}
+</pre>
+		
+		<pre class="file" id="file17" style="display: none">package auth
+
+import (
+        "crypto/rand"
+        "database/sql"
+        "encoding/hex"
+        "errors"
+        "time"
+
+        "github.com/google/uuid"
+        log "github.com/sirupsen/logrus"
+        "golang.org/x/crypto/bcrypt"
+
+        "github.com/cubny/lite-reader/internal/app/auth"
+)
+
+const (
+        dayInHours        = 24 * time.Hour
+        secureTokenLength = 32
+)
+
+type DB struct {
+        sqliteDB *sql.DB
+}
+
+func NewDB(client *sql.DB) *DB <span class="cov0" title="0">{
+        return &amp;DB{sqliteDB: client}
+}</span>
+
+func (d *DB) GetUserByEmail(email string) (*auth.User, error) <span class="cov0" title="0">{
+        var user auth.User
+        err := d.sqliteDB.QueryRow("SELECT id, email, password FROM users WHERE email = ?", email).Scan(&amp;user.ID, &amp;user.Email, &amp;user.Password)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">return &amp;user, nil</span>
+}
+
+func (d *DB) CreateUser(email, password string) error <span class="cov0" title="0">{
+        _, err := d.sqliteDB.Exec("INSERT INTO users (email, password) VALUES (?, ?)", email, password)
+        return err
+}</span>
+
+func (d *DB) GetAllUsers() ([]*auth.User, error) <span class="cov0" title="0">{
+        rows, err := d.sqliteDB.Query("SELECT id, email, password FROM users")
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">defer func() </span><span class="cov0" title="0">{
+                err := rows.Close()
+                if err != nil </span><span class="cov0" title="0">{
+                        log.Error(err)
+                }</span>
+        }()
+
+        <span class="cov0" title="0">users := make([]*auth.User, 0)
+        for rows.Next() </span><span class="cov0" title="0">{
+                var user auth.User
+                if err := rows.Scan(&amp;user.ID, &amp;user.Email, &amp;user.Password); err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+                <span class="cov0" title="0">users = append(users, &amp;user)</span>
+        }
+
+        <span class="cov0" title="0">return users, nil</span>
+}
+
+func (d *DB) Login(f *auth.LoginCommand) error <span class="cov0" title="0">{
+        user, err := d.GetUserByEmail(f.Email)
+        if err != nil </span><span class="cov0" title="0">{
+                if errors.Is(err, sql.ErrNoRows) </span><span class="cov0" title="0">{
+                        return errors.New("invalid credentials")
+                }</span>
+                <span class="cov0" title="0">return err</span>
+        }
+
+        // Compare passwords using constant-time comparison
+        <span class="cov0" title="0">if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(f.Password)); err != nil </span><span class="cov0" title="0">{
+                return errors.New("invalid credentials")
+        }</span>
+
+        <span class="cov0" title="0">return nil</span>
+}
+
+func (d *DB) CreateSession(userID int) (*auth.Session, error) <span class="cov0" title="0">{
+        session := &amp;auth.Session{
+                ID:           uuid.New().String(),
+                UserID:       userID,
+                AccessToken:  generateSecureToken(),
+                RefreshToken: generateSecureToken(),
+                ExpiresAt:    time.Now().Add(dayInHours), // Access token expires in 24 hours
+                CreatedAt:    time.Now(),
+        }
+
+        // Store session in database
+        _, err := d.sqliteDB.Exec(`
+        INSERT INTO sessions (id, user_id, access_token, refresh_token, expires_at, created_at)
+        VALUES (?, ?, ?, ?, ?, ?)
+    `, session.ID, session.UserID, session.AccessToken, session.RefreshToken, session.ExpiresAt, session.CreatedAt)
+
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return session, nil</span>
+}
+
+func (d *DB) GetSessionByToken(token string) (*auth.Session, error) <span class="cov0" title="0">{
+        var session auth.Session
+        err := d.sqliteDB.QueryRow(`
+            SELECT id, user_id, access_token, refresh_token, expires_at, created_at 
+            FROM sessions 
+            WHERE access_token = ?`, token).Scan(
+                &amp;session.ID, &amp;session.UserID, &amp;session.AccessToken,
+                &amp;session.RefreshToken, &amp;session.ExpiresAt, &amp;session.CreatedAt)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">return &amp;session, nil</span>
+}
+
+func generateSecureToken() string <span class="cov0" title="0">{
+        b := make([]byte, secureTokenLength)
+        if _, err := rand.Read(b); err != nil </span><span class="cov0" title="0">{
+                return "" // Return empty string in case of error instead of panic
+        }</span>
+        <span class="cov0" title="0">return hex.EncodeToString(b)</span>
+}
+</pre>
+		
+		<pre class="file" id="file18" style="display: none">package feed
+
+import (
+        "database/sql"
+        "time"
+
+        _ "modernc.org/sqlite"
+
+        "github.com/cubny/lite-reader/internal/app/feed"
+)
+
+type DB struct {
+        sqliteDB *sql.DB
+}
+
+func NewDB(client *sql.DB) *DB <span class="cov0" title="0">{
+        return &amp;DB{sqliteDB: client}
+}</span>
+
+func (r *DB) AddFeed(f *feed.Feed) (int, error) <span class="cov0" title="0">{
+        result, err := r.sqliteDB.Exec("INSERT INTO rss (title, desc, link, url, lang, user_id, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                f.Title, f.Description, f.Link, f.URL, f.Lang, f.UserID, f.UpdatedAt.Format(time.RFC3339))
+        if err != nil </span><span class="cov0" title="0">{
+                return 0, err
+        }</span>
+        <span class="cov0" title="0">lastInsertID, err := result.LastInsertId()
+        if err != nil </span><span class="cov0" title="0">{
+                return 0, err
+        }</span>
+        <span class="cov0" title="0">return int(lastInsertID), nil</span>
+}
+
+func (r *DB) GetFeed(id int) (*feed.Feed, error) <span class="cov0" title="0">{
+        query := "SELECT " +
+                "id, title, desc, link, url, lang, updated_at, " +
+                "(SELECT COUNT(*) FROM item WHERE rss_id = rss.id AND is_new = 1) AS unread_count FROM rss where id = ?"
+        rows, err := r.sqliteDB.Query(query, id)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">defer func() </span><span class="cov0" title="0">{
+                if err = rows.Close(); err != nil </span><span class="cov0" title="0">{
+                        panic(err)</span>
+                }
+        }()
+        <span class="cov0" title="0">for rows.Next() </span><span class="cov0" title="0">{
+                return resultToFeed(rows)
+        }</span>
+        <span class="cov0" title="0">return nil, nil</span>
+}
+
+func (r *DB) ListFeeds(userID int) ([]*feed.Feed, error) <span class="cov0" title="0">{
+        query := "SELECT " +
+                "id, title, desc, link, url, lang, updated_at, " +
+                "(SELECT COUNT(*) FROM item WHERE rss_id = rss.id AND is_new = 1) AS unread_count FROM rss " +
+                "WHERE user_id = ?"
+        rows, err := r.sqliteDB.Query(query, userID)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">defer func() </span><span class="cov0" title="0">{
+                if err = rows.Close(); err != nil </span><span class="cov0" title="0">{
+                        panic(err)</span>
+                }
+        }()
+        <span class="cov0" title="0">return resultToFeeds(rows)</span>
+}
+
+func (r *DB) DeleteFeed(id int) error <span class="cov0" title="0">{
+        _, err := r.sqliteDB.Exec("DELETE FROM rss WHERE id = ?", id)
+        return err
+}</span>
+
+func resultToFeeds(result *sql.Rows) ([]*feed.Feed, error) <span class="cov0" title="0">{
+        feeds := make([]*feed.Feed, 0)
+        for result.Next() </span><span class="cov0" title="0">{
+                f, err := resultToFeed(result)
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+                <span class="cov0" title="0">feeds = append(feeds, f)</span>
+        }
+        <span class="cov0" title="0">return feeds, nil</span>
+}
+
+func resultToFeed(result *sql.Rows) (*feed.Feed, error) <span class="cov0" title="0">{
+        var id, unreadCount int
+        var title, description, link, url, lang, updatedAt string
+        err := result.Scan(&amp;id, &amp;title, &amp;description, &amp;link, &amp;url, &amp;lang, &amp;updatedAt, &amp;unreadCount)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">updatedAtTime, err := time.Parse(time.RFC3339, updatedAt)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">return &amp;feed.Feed{
+                ID:          id,
+                Title:       title,
+                Description: description,
+                Link:        link,
+                URL:         url,
+                Lang:        lang,
+                UpdatedAt:   updatedAtTime,
+                UnreadCount: unreadCount,
+        }, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file19" style="display: none">package item
+
+import (
+        "database/sql"
+        "time"
+
+        _ "modernc.org/sqlite"
+
+        "github.com/cubny/lite-reader/internal/app/item"
+)
+
+type DB struct {
+        sqliteDB *sql.DB
+}
+
+func NewDB(client *sql.DB) *DB <span class="cov0" title="0">{
+        return &amp;DB{sqliteDB: client}
+}</span>
+
+func (r *DB) GetUnreadItems() ([]*item.Item, error) <span class="cov0" title="0">{
+        query := "SELECT id, is_new, desc, link, rss_id, title, dir, starred, timestamp FROM item WHERE is_new = 1 ORDER BY timestamp DESC"
+        result, err := r.sqliteDB.Query(query)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">return resultToItems(result)</span>
+}
+
+func (r *DB) GetStarredItems() ([]*item.Item, error) <span class="cov0" title="0">{
+        query := "SELECT id, is_new, desc, link, rss_id, title, dir, starred, timestamp FROM item WHERE starred = 1 ORDER BY timestamp DESC"
+        result, err := r.sqliteDB.Query(query)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">return resultToItems(result)</span>
+}
+
+func (r *DB) GetFeedItems(feedID int) ([]*item.Item, error) <span class="cov0" title="0">{
+        query := "SELECT id, is_new, desc, link, rss_id, title, dir, starred, timestamp FROM item WHERE rss_id = ? ORDER BY timestamp DESC"
+        result, err := r.sqliteDB.Query(query, feedID)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">return resultToItems(result)</span>
+}
+
+func resultToItem(result *sql.Rows) (*item.Item, error) <span class="cov0" title="0">{
+        var id int
+        var isNew int
+        var desc string
+        var link string
+        var rssID int
+        var title string
+        var dir string
+        var starred int
+        var timestamp time.Time
+        err := result.Scan(&amp;id, &amp;isNew, &amp;desc, &amp;link, &amp;rssID, &amp;title, &amp;dir, &amp;starred, &amp;timestamp)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">return &amp;item.Item{
+                ID:        id,
+                IsNew:     isNew == 1,
+                Desc:      desc,
+                Link:      link,
+                Title:     title,
+                Dir:       dir,
+                Starred:   starred == 1,
+                Timestamp: timestamp,
+        }, nil</span>
+}
+
+func resultToItems(result *sql.Rows) ([]*item.Item, error) <span class="cov0" title="0">{
+        items := make([]*item.Item, 0)
+        for result.Next() </span><span class="cov0" title="0">{
+                i, err := resultToItem(result)
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+                <span class="cov0" title="0">items = append(items, i)</span>
+        }
+        <span class="cov0" title="0">if err := result.Close(); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">return items, nil</span>
+}
+
+func (r *DB) UpsertItems(feedID int, items []*item.Item) error <span class="cov0" title="0">{
+        for _, t := range items </span><span class="cov0" title="0">{
+                _, err := r.UpsertItem(feedID, t)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+        }
+        <span class="cov0" title="0">return nil</span>
+}
+
+func (r *DB) UpsertItem(feedID int, i *item.Item) (int, error) <span class="cov0" title="0">{
+        // first find if item exists
+        result, err := r.sqliteDB.Query("SELECT id FROM item WHERE link = ? AND rss_id = ?", i.Link, feedID)
+        if err != nil </span><span class="cov0" title="0">{
+                return 0, err
+        }</span>
+        <span class="cov0" title="0">var id int
+        if result.Next() </span><span class="cov0" title="0">{
+                err = result.Scan(&amp;id)
+                if err != nil </span><span class="cov0" title="0">{
+                        return 0, err
+                }</span>
+        }
+        <span class="cov0" title="0">if resultErr := result.Close(); resultErr != nil </span><span class="cov0" title="0">{
+                return 0, resultErr
+        }</span>
+        // if item exists, ignore it
+        <span class="cov0" title="0">if id != 0 </span><span class="cov0" title="0">{
+                return id, nil
+        }</span>
+        // if item does not exist, insert it
+        <span class="cov0" title="0">query := "INSERT INTO item (is_new, desc, link, rss_id, title, dir, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        insertResult, execErr := r.sqliteDB.Exec(query, i.IsNew, i.Desc, i.Link, feedID, i.Title, i.Dir, i.Timestamp)
+        if execErr != nil </span><span class="cov0" title="0">{
+                return 0, execErr
+        }</span>
+        <span class="cov0" title="0">lastInsertID, lastInsertError := insertResult.LastInsertId()
+        if lastInsertError != nil </span><span class="cov0" title="0">{
+                return 0, lastInsertError
+        }</span>
+        <span class="cov0" title="0">return int(lastInsertID), nil</span>
+}
+
+func (r *DB) UpdateItem(id int, starred, isNew bool) error <span class="cov0" title="0">{
+        _, err := r.sqliteDB.Exec("UPDATE item SET starred = ?, is_new = ? WHERE id = ?", starred, isNew, id)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+
+func (r *DB) ReadFeedItems(feedID int) error <span class="cov0" title="0">{
+        _, err := r.sqliteDB.Exec("UPDATE item SET is_new = 0 WHERE rss_id = ?", feedID)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+
+func (r *DB) UnreadFeedItems(feedID int) error <span class="cov0" title="0">{
+        _, err := r.sqliteDB.Exec("UPDATE item SET is_new = 1 WHERE rss_id = ?", feedID)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+
+func (r *DB) GetUnreadItemsCount() (int, error) <span class="cov0" title="0">{
+        result, err := r.sqliteDB.Query("SELECT COUNT(*) FROM item WHERE is_new = 1")
+        if err != nil </span><span class="cov0" title="0">{
+                return 0, err
+        }</span>
+        <span class="cov0" title="0">var count int
+        if result.Next() </span><span class="cov0" title="0">{
+                err = result.Scan(&amp;count)
+                if err != nil </span><span class="cov0" title="0">{
+                        return 0, err
+                }</span>
+        }
+        <span class="cov0" title="0">if err := result.Close(); err != nil </span><span class="cov0" title="0">{
+                return 0, err
+        }</span>
+        <span class="cov0" title="0">return count, nil</span>
+}
+
+func (r *DB) GetStarredItemsCount() (int, error) <span class="cov0" title="0">{
+        result, err := r.sqliteDB.Query("SELECT COUNT(*) FROM item WHERE starred = 1")
+        if err != nil </span><span class="cov0" title="0">{
+                return 0, err
+        }</span>
+        <span class="cov0" title="0">var count int
+        if result.Next() </span><span class="cov0" title="0">{
+                err = result.Scan(&amp;count)
+                if err != nil </span><span class="cov0" title="0">{
+                        return 0, err
+                }</span>
+        }
+        <span class="cov0" title="0">if err := result.Close(); err != nil </span><span class="cov0" title="0">{
+                return 0, err
+        }</span>
+        <span class="cov0" title="0">return count, nil</span>
+}
+
+func (r *DB) DeleteFeedItems(feedID int) error <span class="cov0" title="0">{
+        _, err := r.sqliteDB.Exec("DELETE FROM item WHERE rss_id = ?", feedID)
+        return err
+}</span>
+</pre>
+		
+		<pre class="file" id="file20" style="display: none">// Code generated by MockGen. DO NOT EDIT.
+// Source: github.com/cubny/lite-reader/internal/app/auth (interfaces: Repository)
+//
+// Generated by this command:
+//
+//        mockgen -destination=./app/auth/repo_mock.go -package=mocks -mock_names=Repository=Repository github.com/cubny/lite-reader/internal/app/auth Repository
+//
+
+// Package mocks is a generated GoMock package.
+package mocks
+
+import (
+        reflect "reflect"
+
+        gomock "go.uber.org/mock/gomock"
+
+        auth "github.com/cubny/lite-reader/internal/app/auth"
+)
+
+// Repository is a mock of Repository interface.
+type Repository struct {
+        ctrl     *gomock.Controller
+        recorder *RepositoryMockRecorder
+        isgomock struct{}
+}
+
+// RepositoryMockRecorder is the mock recorder for Repository.
+type RepositoryMockRecorder struct {
+        mock *Repository
+}
+
+// NewRepository creates a new mock instance.
+func NewRepository(ctrl *gomock.Controller) *Repository <span class="cov0" title="0">{
+        mock := &amp;Repository{ctrl: ctrl}
+        mock.recorder = &amp;RepositoryMockRecorder{mock}
+        return mock
+}</span>
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *Repository) EXPECT() *RepositoryMockRecorder <span class="cov0" title="0">{
+        return m.recorder
+}</span>
+
+// CreateSession mocks base method.
+func (m *Repository) CreateSession(userID int) (*auth.Session, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "CreateSession", userID)
+        ret0, _ := ret[0].(*auth.Session)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// CreateSession indicates an expected call of CreateSession.
+func (mr *RepositoryMockRecorder) CreateSession(userID any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateSession", reflect.TypeOf((*Repository)(nil).CreateSession), userID)
+}</span>
+
+// CreateUser mocks base method.
+func (m *Repository) CreateUser(email, password string) error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "CreateUser", email, password)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// CreateUser indicates an expected call of CreateUser.
+func (mr *RepositoryMockRecorder) CreateUser(email, password any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUser", reflect.TypeOf((*Repository)(nil).CreateUser), email, password)
+}</span>
+
+// GetAllUsers mocks base method.
+func (m *Repository) GetAllUsers() ([]*auth.User, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "GetAllUsers")
+        ret0, _ := ret[0].([]*auth.User)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GetAllUsers indicates an expected call of GetAllUsers.
+func (mr *RepositoryMockRecorder) GetAllUsers() *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllUsers", reflect.TypeOf((*Repository)(nil).GetAllUsers))
+}</span>
+
+// GetSessionByToken mocks base method.
+func (m *Repository) GetSessionByToken(token string) (*auth.Session, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "GetSessionByToken", token)
+        ret0, _ := ret[0].(*auth.Session)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GetSessionByToken indicates an expected call of GetSessionByToken.
+func (mr *RepositoryMockRecorder) GetSessionByToken(token any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSessionByToken", reflect.TypeOf((*Repository)(nil).GetSessionByToken), token)
+}</span>
+
+// GetUserByEmail mocks base method.
+func (m *Repository) GetUserByEmail(email string) (*auth.User, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "GetUserByEmail", email)
+        ret0, _ := ret[0].(*auth.User)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GetUserByEmail indicates an expected call of GetUserByEmail.
+func (mr *RepositoryMockRecorder) GetUserByEmail(email any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserByEmail", reflect.TypeOf((*Repository)(nil).GetUserByEmail), email)
+}</span>
+</pre>
+		
+		<pre class="file" id="file21" style="display: none">// Code generated by MockGen. DO NOT EDIT.
+// Source: github.com/cubny/lite-reader/internal/app/feed (interfaces: Finder)
+//
+// Generated by this command:
+//
+//        mockgen -destination=./app/feed/finder_mock.go -package=mocks -mock_names=Finder=Finder github.com/cubny/lite-reader/internal/app/feed Finder
+//
+
+// Package mocks is a generated GoMock package.
+package mocks
+
+import (
+        reflect "reflect"
+
+        gomock "go.uber.org/mock/gomock"
+)
+
+// Finder is a mock of Finder interface.
+type Finder struct {
+        ctrl     *gomock.Controller
+        recorder *FinderMockRecorder
+        isgomock struct{}
+}
+
+// FinderMockRecorder is the mock recorder for Finder.
+type FinderMockRecorder struct {
+        mock *Finder
+}
+
+// NewFinder creates a new mock instance.
+func NewFinder(ctrl *gomock.Controller) *Finder <span class="cov0" title="0">{
+        mock := &amp;Finder{ctrl: ctrl}
+        mock.recorder = &amp;FinderMockRecorder{mock}
+        return mock
+}</span>
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *Finder) EXPECT() *FinderMockRecorder <span class="cov0" title="0">{
+        return m.recorder
+}</span>
+
+// FindFeeds mocks base method.
+func (m *Finder) FindFeeds(url string) ([]string, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "FindFeeds", url)
+        ret0, _ := ret[0].([]string)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// FindFeeds indicates an expected call of FindFeeds.
+func (mr *FinderMockRecorder) FindFeeds(url any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindFeeds", reflect.TypeOf((*Finder)(nil).FindFeeds), url)
+}</span>
+</pre>
+		
+		<pre class="file" id="file22" style="display: none">// Code generated by MockGen. DO NOT EDIT.
+// Source: github.com/cubny/lite-reader/internal/app/feed (interfaces: Parser)
+//
+// Generated by this command:
+//
+//        mockgen -destination=./app/feed/parser_mock.go -package=mocks -mock_names=Parser=Parser github.com/cubny/lite-reader/internal/app/feed Parser
+//
+
+// Package mocks is a generated GoMock package.
+package mocks
+
+import (
+        reflect "reflect"
+
+        gofeed "github.com/mmcdole/gofeed"
+        gomock "go.uber.org/mock/gomock"
+)
+
+// Parser is a mock of Parser interface.
+type Parser struct {
+        ctrl     *gomock.Controller
+        recorder *ParserMockRecorder
+        isgomock struct{}
+}
+
+// ParserMockRecorder is the mock recorder for Parser.
+type ParserMockRecorder struct {
+        mock *Parser
+}
+
+// NewParser creates a new mock instance.
+func NewParser(ctrl *gomock.Controller) *Parser <span class="cov0" title="0">{
+        mock := &amp;Parser{ctrl: ctrl}
+        mock.recorder = &amp;ParserMockRecorder{mock}
+        return mock
+}</span>
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *Parser) EXPECT() *ParserMockRecorder <span class="cov0" title="0">{
+        return m.recorder
+}</span>
+
+// ParseURL mocks base method.
+func (m *Parser) ParseURL(url string) (*gofeed.Feed, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "ParseURL", url)
+        ret0, _ := ret[0].(*gofeed.Feed)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// ParseURL indicates an expected call of ParseURL.
+func (mr *ParserMockRecorder) ParseURL(url any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ParseURL", reflect.TypeOf((*Parser)(nil).ParseURL), url)
+}</span>
+</pre>
+		
+		<pre class="file" id="file23" style="display: none">// Code generated by MockGen. DO NOT EDIT.
+// Source: github.com/cubny/lite-reader/internal/app/feed (interfaces: Repository)
+//
+// Generated by this command:
+//
+//        mockgen -destination=./app/feed/repo_mock.go -package=mocks -mock_names=Repository=Repository github.com/cubny/lite-reader/internal/app/feed Repository
+//
+
+// Package mocks is a generated GoMock package.
+package mocks
+
+import (
+        reflect "reflect"
+
+        gomock "go.uber.org/mock/gomock"
+
+        feed "github.com/cubny/lite-reader/internal/app/feed"
+)
+
+// Repository is a mock of Repository interface.
+type Repository struct {
+        ctrl     *gomock.Controller
+        recorder *RepositoryMockRecorder
+        isgomock struct{}
+}
+
+// RepositoryMockRecorder is the mock recorder for Repository.
+type RepositoryMockRecorder struct {
+        mock *Repository
+}
+
+// NewRepository creates a new mock instance.
+func NewRepository(ctrl *gomock.Controller) *Repository <span class="cov0" title="0">{
+        mock := &amp;Repository{ctrl: ctrl}
+        mock.recorder = &amp;RepositoryMockRecorder{mock}
+        return mock
+}</span>
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *Repository) EXPECT() *RepositoryMockRecorder <span class="cov0" title="0">{
+        return m.recorder
+}</span>
+
+// AddFeed mocks base method.
+func (m *Repository) AddFeed(feed *feed.Feed) (int, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "AddFeed", feed)
+        ret0, _ := ret[0].(int)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// AddFeed indicates an expected call of AddFeed.
+func (mr *RepositoryMockRecorder) AddFeed(feed any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddFeed", reflect.TypeOf((*Repository)(nil).AddFeed), feed)
+}</span>
+
+// DeleteFeed mocks base method.
+func (m *Repository) DeleteFeed(id int) error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "DeleteFeed", id)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// DeleteFeed indicates an expected call of DeleteFeed.
+func (mr *RepositoryMockRecorder) DeleteFeed(id any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteFeed", reflect.TypeOf((*Repository)(nil).DeleteFeed), id)
+}</span>
+
+// GetFeed mocks base method.
+func (m *Repository) GetFeed(id int) (*feed.Feed, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "GetFeed", id)
+        ret0, _ := ret[0].(*feed.Feed)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GetFeed indicates an expected call of GetFeed.
+func (mr *RepositoryMockRecorder) GetFeed(id any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFeed", reflect.TypeOf((*Repository)(nil).GetFeed), id)
+}</span>
+
+// ListFeeds mocks base method.
+func (m *Repository) ListFeeds(userID int) ([]*feed.Feed, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "ListFeeds", userID)
+        ret0, _ := ret[0].([]*feed.Feed)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// ListFeeds indicates an expected call of ListFeeds.
+func (mr *RepositoryMockRecorder) ListFeeds(userID any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListFeeds", reflect.TypeOf((*Repository)(nil).ListFeeds), userID)
+}</span>
+</pre>
+		
+		<pre class="file" id="file24" style="display: none">// Code generated by MockGen. DO NOT EDIT.
+// Source: github.com/cubny/lite-reader/internal/app/item (interfaces: Repository)
+//
+// Generated by this command:
+//
+//        mockgen -destination=./app/item/repo_mock.go -package=mocks -mock_names=Repository=Repository github.com/cubny/lite-reader/internal/app/item Repository
+//
+
+// Package mocks is a generated GoMock package.
+package mocks
+
+import (
+        reflect "reflect"
+
+        gomock "go.uber.org/mock/gomock"
+
+        item "github.com/cubny/lite-reader/internal/app/item"
+)
+
+// Repository is a mock of Repository interface.
+type Repository struct {
+        ctrl     *gomock.Controller
+        recorder *RepositoryMockRecorder
+        isgomock struct{}
+}
+
+// RepositoryMockRecorder is the mock recorder for Repository.
+type RepositoryMockRecorder struct {
+        mock *Repository
+}
+
+// NewRepository creates a new mock instance.
+func NewRepository(ctrl *gomock.Controller) *Repository <span class="cov0" title="0">{
+        mock := &amp;Repository{ctrl: ctrl}
+        mock.recorder = &amp;RepositoryMockRecorder{mock}
+        return mock
+}</span>
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *Repository) EXPECT() *RepositoryMockRecorder <span class="cov0" title="0">{
+        return m.recorder
+}</span>
+
+// DeleteFeedItems mocks base method.
+func (m *Repository) DeleteFeedItems(feedID int) error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "DeleteFeedItems", feedID)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// DeleteFeedItems indicates an expected call of DeleteFeedItems.
+func (mr *RepositoryMockRecorder) DeleteFeedItems(feedID any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteFeedItems", reflect.TypeOf((*Repository)(nil).DeleteFeedItems), feedID)
+}</span>
+
+// GetFeedItems mocks base method.
+func (m *Repository) GetFeedItems(feedID int) ([]*item.Item, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "GetFeedItems", feedID)
+        ret0, _ := ret[0].([]*item.Item)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GetFeedItems indicates an expected call of GetFeedItems.
+func (mr *RepositoryMockRecorder) GetFeedItems(feedID any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFeedItems", reflect.TypeOf((*Repository)(nil).GetFeedItems), feedID)
+}</span>
+
+// GetStarredItems mocks base method.
+func (m *Repository) GetStarredItems() ([]*item.Item, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "GetStarredItems")
+        ret0, _ := ret[0].([]*item.Item)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GetStarredItems indicates an expected call of GetStarredItems.
+func (mr *RepositoryMockRecorder) GetStarredItems() *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStarredItems", reflect.TypeOf((*Repository)(nil).GetStarredItems))
+}</span>
+
+// GetStarredItemsCount mocks base method.
+func (m *Repository) GetStarredItemsCount() (int, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "GetStarredItemsCount")
+        ret0, _ := ret[0].(int)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GetStarredItemsCount indicates an expected call of GetStarredItemsCount.
+func (mr *RepositoryMockRecorder) GetStarredItemsCount() *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStarredItemsCount", reflect.TypeOf((*Repository)(nil).GetStarredItemsCount))
+}</span>
+
+// GetUnreadItems mocks base method.
+func (m *Repository) GetUnreadItems() ([]*item.Item, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "GetUnreadItems")
+        ret0, _ := ret[0].([]*item.Item)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GetUnreadItems indicates an expected call of GetUnreadItems.
+func (mr *RepositoryMockRecorder) GetUnreadItems() *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUnreadItems", reflect.TypeOf((*Repository)(nil).GetUnreadItems))
+}</span>
+
+// GetUnreadItemsCount mocks base method.
+func (m *Repository) GetUnreadItemsCount() (int, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "GetUnreadItemsCount")
+        ret0, _ := ret[0].(int)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GetUnreadItemsCount indicates an expected call of GetUnreadItemsCount.
+func (mr *RepositoryMockRecorder) GetUnreadItemsCount() *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUnreadItemsCount", reflect.TypeOf((*Repository)(nil).GetUnreadItemsCount))
+}</span>
+
+// ReadFeedItems mocks base method.
+func (m *Repository) ReadFeedItems(feedID int) error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "ReadFeedItems", feedID)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// ReadFeedItems indicates an expected call of ReadFeedItems.
+func (mr *RepositoryMockRecorder) ReadFeedItems(feedID any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadFeedItems", reflect.TypeOf((*Repository)(nil).ReadFeedItems), feedID)
+}</span>
+
+// UnreadFeedItems mocks base method.
+func (m *Repository) UnreadFeedItems(feedID int) error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "UnreadFeedItems", feedID)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// UnreadFeedItems indicates an expected call of UnreadFeedItems.
+func (mr *RepositoryMockRecorder) UnreadFeedItems(feedID any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UnreadFeedItems", reflect.TypeOf((*Repository)(nil).UnreadFeedItems), feedID)
+}</span>
+
+// UpdateItem mocks base method.
+func (m *Repository) UpdateItem(id int, starred, isNew bool) error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "UpdateItem", id, starred, isNew)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// UpdateItem indicates an expected call of UpdateItem.
+func (mr *RepositoryMockRecorder) UpdateItem(id, starred, isNew any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateItem", reflect.TypeOf((*Repository)(nil).UpdateItem), id, starred, isNew)
+}</span>
+
+// UpsertItems mocks base method.
+func (m *Repository) UpsertItems(feedID int, items []*item.Item) error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "UpsertItems", feedID, items)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// UpsertItems indicates an expected call of UpsertItems.
+func (mr *RepositoryMockRecorder) UpsertItems(feedID, items any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpsertItems", reflect.TypeOf((*Repository)(nil).UpsertItems), feedID, items)
+}</span>
+</pre>
+		
+		<pre class="file" id="file25" style="display: none">// Code generated by MockGen. DO NOT EDIT.
+// Source: github.com/cubny/lite-reader/internal/infra/http/api (interfaces: AuthService)
+//
+// Generated by this command:
+//
+//        mockgen -destination=./infra/http/api/auth_mock.go -package=mocks -mock_names=AuthService=AuthService github.com/cubny/lite-reader/internal/infra/http/api AuthService
+//
+
+// Package mocks is a generated GoMock package.
+package mocks
+
+import (
+        reflect "reflect"
+
+        gomock "go.uber.org/mock/gomock"
+
+        auth "github.com/cubny/lite-reader/internal/app/auth"
+)
+
+// AuthService is a mock of AuthService interface.
+type AuthService struct {
+        ctrl     *gomock.Controller
+        recorder *AuthServiceMockRecorder
+        isgomock struct{}
+}
+
+// AuthServiceMockRecorder is the mock recorder for AuthService.
+type AuthServiceMockRecorder struct {
+        mock *AuthService
+}
+
+// NewAuthService creates a new mock instance.
+func NewAuthService(ctrl *gomock.Controller) *AuthService <span class="cov0" title="0">{
+        mock := &amp;AuthService{ctrl: ctrl}
+        mock.recorder = &amp;AuthServiceMockRecorder{mock}
+        return mock
+}</span>
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *AuthService) EXPECT() *AuthServiceMockRecorder <span class="cov0" title="0">{
+        return m.recorder
+}</span>
+
+// GetAllUsers mocks base method.
+func (m *AuthService) GetAllUsers() ([]*auth.User, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "GetAllUsers")
+        ret0, _ := ret[0].([]*auth.User)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GetAllUsers indicates an expected call of GetAllUsers.
+func (mr *AuthServiceMockRecorder) GetAllUsers() *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllUsers", reflect.TypeOf((*AuthService)(nil).GetAllUsers))
+}</span>
+
+// GetSession mocks base method.
+func (m *AuthService) GetSession(token string) (*auth.Session, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "GetSession", token)
+        ret0, _ := ret[0].(*auth.Session)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GetSession indicates an expected call of GetSession.
+func (mr *AuthServiceMockRecorder) GetSession(token any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSession", reflect.TypeOf((*AuthService)(nil).GetSession), token)
+}</span>
+
+// Login mocks base method.
+func (m *AuthService) Login(command *auth.LoginCommand) (*auth.LoginResponse, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "Login", command)
+        ret0, _ := ret[0].(*auth.LoginResponse)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// Login indicates an expected call of Login.
+func (mr *AuthServiceMockRecorder) Login(command any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Login", reflect.TypeOf((*AuthService)(nil).Login), command)
+}</span>
+
+// Signup mocks base method.
+func (m *AuthService) Signup(command *auth.SignupCommand) error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "Signup", command)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// Signup indicates an expected call of Signup.
+func (mr *AuthServiceMockRecorder) Signup(command any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Signup", reflect.TypeOf((*AuthService)(nil).Signup), command)
+}</span>
+</pre>
+		
+		<pre class="file" id="file26" style="display: none">// Code generated by MockGen. DO NOT EDIT.
+// Source: github.com/cubny/lite-reader/internal/infra/http/api (interfaces: FeedService)
+//
+// Generated by this command:
+//
+//        mockgen -destination=./infra/http/api/feed_mock.go -package=mocks -mock_names=FeedService=FeedService github.com/cubny/lite-reader/internal/infra/http/api FeedService
+//
+
+// Package mocks is a generated GoMock package.
+package mocks
+
+import (
+        reflect "reflect"
+
+        gomock "go.uber.org/mock/gomock"
+
+        feed "github.com/cubny/lite-reader/internal/app/feed"
+        item "github.com/cubny/lite-reader/internal/app/item"
+)
+
+// FeedService is a mock of FeedService interface.
+type FeedService struct {
+        ctrl     *gomock.Controller
+        recorder *FeedServiceMockRecorder
+        isgomock struct{}
+}
+
+// FeedServiceMockRecorder is the mock recorder for FeedService.
+type FeedServiceMockRecorder struct {
+        mock *FeedService
+}
+
+// NewFeedService creates a new mock instance.
+func NewFeedService(ctrl *gomock.Controller) *FeedService <span class="cov0" title="0">{
+        mock := &amp;FeedService{ctrl: ctrl}
+        mock.recorder = &amp;FeedServiceMockRecorder{mock}
+        return mock
+}</span>
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *FeedService) EXPECT() *FeedServiceMockRecorder <span class="cov0" title="0">{
+        return m.recorder
+}</span>
+
+// AddFeed mocks base method.
+func (m *FeedService) AddFeed(command *feed.AddFeedCommand) (*feed.Feed, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "AddFeed", command)
+        ret0, _ := ret[0].(*feed.Feed)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// AddFeed indicates an expected call of AddFeed.
+func (mr *FeedServiceMockRecorder) AddFeed(command any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddFeed", reflect.TypeOf((*FeedService)(nil).AddFeed), command)
+}</span>
+
+// DeleteFeed mocks base method.
+func (m *FeedService) DeleteFeed(command *feed.DeleteFeedCommand) error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "DeleteFeed", command)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// DeleteFeed indicates an expected call of DeleteFeed.
+func (mr *FeedServiceMockRecorder) DeleteFeed(command any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteFeed", reflect.TypeOf((*FeedService)(nil).DeleteFeed), command)
+}</span>
+
+// FetchItems mocks base method.
+func (m *FeedService) FetchItems(arg0 int) ([]*item.Item, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "FetchItems", arg0)
+        ret0, _ := ret[0].([]*item.Item)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// FetchItems indicates an expected call of FetchItems.
+func (mr *FeedServiceMockRecorder) FetchItems(arg0 any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FetchItems", reflect.TypeOf((*FeedService)(nil).FetchItems), arg0)
+}</span>
+
+// ListFeeds mocks base method.
+func (m *FeedService) ListFeeds(UserID int) ([]*feed.Feed, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "ListFeeds", UserID)
+        ret0, _ := ret[0].([]*feed.Feed)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// ListFeeds indicates an expected call of ListFeeds.
+func (mr *FeedServiceMockRecorder) ListFeeds(UserID any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListFeeds", reflect.TypeOf((*FeedService)(nil).ListFeeds), UserID)
+}</span>
+</pre>
+		
+		<pre class="file" id="file27" style="display: none">// Code generated by MockGen. DO NOT EDIT.
+// Source: github.com/cubny/lite-reader/internal/infra/http/api (interfaces: ItemService)
+//
+// Generated by this command:
+//
+//        mockgen -destination=./infra/http/api/item_mock.go -package=mocks -mock_names=ItemService=ItemService github.com/cubny/lite-reader/internal/infra/http/api ItemService
+//
+
+// Package mocks is a generated GoMock package.
+package mocks
+
+import (
+        reflect "reflect"
+
+        gomock "go.uber.org/mock/gomock"
+
+        item "github.com/cubny/lite-reader/internal/app/item"
+)
+
+// ItemService is a mock of ItemService interface.
+type ItemService struct {
+        ctrl     *gomock.Controller
+        recorder *ItemServiceMockRecorder
+        isgomock struct{}
+}
+
+// ItemServiceMockRecorder is the mock recorder for ItemService.
+type ItemServiceMockRecorder struct {
+        mock *ItemService
+}
+
+// NewItemService creates a new mock instance.
+func NewItemService(ctrl *gomock.Controller) *ItemService <span class="cov0" title="0">{
+        mock := &amp;ItemService{ctrl: ctrl}
+        mock.recorder = &amp;ItemServiceMockRecorder{mock}
+        return mock
+}</span>
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *ItemService) EXPECT() *ItemServiceMockRecorder <span class="cov0" title="0">{
+        return m.recorder
+}</span>
+
+// DeleteFeedItems mocks base method.
+func (m *ItemService) DeleteFeedItems(arg0 *item.DeleteFeedItemsCommand) error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "DeleteFeedItems", arg0)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// DeleteFeedItems indicates an expected call of DeleteFeedItems.
+func (mr *ItemServiceMockRecorder) DeleteFeedItems(arg0 any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteFeedItems", reflect.TypeOf((*ItemService)(nil).DeleteFeedItems), arg0)
+}</span>
+
+// GetFeedItems mocks base method.
+func (m *ItemService) GetFeedItems(arg0 *item.GetFeedItemsCommand) ([]*item.Item, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "GetFeedItems", arg0)
+        ret0, _ := ret[0].([]*item.Item)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GetFeedItems indicates an expected call of GetFeedItems.
+func (mr *ItemServiceMockRecorder) GetFeedItems(arg0 any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFeedItems", reflect.TypeOf((*ItemService)(nil).GetFeedItems), arg0)
+}</span>
+
+// GetStarredItems mocks base method.
+func (m *ItemService) GetStarredItems() ([]*item.Item, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "GetStarredItems")
+        ret0, _ := ret[0].([]*item.Item)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GetStarredItems indicates an expected call of GetStarredItems.
+func (mr *ItemServiceMockRecorder) GetStarredItems() *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStarredItems", reflect.TypeOf((*ItemService)(nil).GetStarredItems))
+}</span>
+
+// GetStarredItemsCount mocks base method.
+func (m *ItemService) GetStarredItemsCount() (int, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "GetStarredItemsCount")
+        ret0, _ := ret[0].(int)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GetStarredItemsCount indicates an expected call of GetStarredItemsCount.
+func (mr *ItemServiceMockRecorder) GetStarredItemsCount() *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStarredItemsCount", reflect.TypeOf((*ItemService)(nil).GetStarredItemsCount))
+}</span>
+
+// GetUnreadItems mocks base method.
+func (m *ItemService) GetUnreadItems() ([]*item.Item, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "GetUnreadItems")
+        ret0, _ := ret[0].([]*item.Item)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GetUnreadItems indicates an expected call of GetUnreadItems.
+func (mr *ItemServiceMockRecorder) GetUnreadItems() *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUnreadItems", reflect.TypeOf((*ItemService)(nil).GetUnreadItems))
+}</span>
+
+// GetUnreadItemsCount mocks base method.
+func (m *ItemService) GetUnreadItemsCount() (int, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "GetUnreadItemsCount")
+        ret0, _ := ret[0].(int)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GetUnreadItemsCount indicates an expected call of GetUnreadItemsCount.
+func (mr *ItemServiceMockRecorder) GetUnreadItemsCount() *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUnreadItemsCount", reflect.TypeOf((*ItemService)(nil).GetUnreadItemsCount))
+}</span>
+
+// ReadFeedItems mocks base method.
+func (m *ItemService) ReadFeedItems(arg0 *item.ReadFeedItemsCommand) error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "ReadFeedItems", arg0)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// ReadFeedItems indicates an expected call of ReadFeedItems.
+func (mr *ItemServiceMockRecorder) ReadFeedItems(arg0 any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadFeedItems", reflect.TypeOf((*ItemService)(nil).ReadFeedItems), arg0)
+}</span>
+
+// UnreadFeedItems mocks base method.
+func (m *ItemService) UnreadFeedItems(arg0 *item.UnreadFeedItemsCommand) error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "UnreadFeedItems", arg0)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// UnreadFeedItems indicates an expected call of UnreadFeedItems.
+func (mr *ItemServiceMockRecorder) UnreadFeedItems(arg0 any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UnreadFeedItems", reflect.TypeOf((*ItemService)(nil).UnreadFeedItems), arg0)
+}</span>
+
+// UpdateItem mocks base method.
+func (m *ItemService) UpdateItem(arg0 *item.UpdateItemCommand) error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "UpdateItem", arg0)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// UpdateItem indicates an expected call of UpdateItem.
+func (mr *ItemServiceMockRecorder) UpdateItem(arg0 any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateItem", reflect.TypeOf((*ItemService)(nil).UpdateItem), arg0)
+}</span>
+
+// UpsertItems mocks base method.
+func (m *ItemService) UpsertItems(command *item.UpsertItemsCommand) error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "UpsertItems", command)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// UpsertItems indicates an expected call of UpsertItems.
+func (mr *ItemServiceMockRecorder) UpsertItems(command any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpsertItems", reflect.TypeOf((*ItemService)(nil).UpsertItems), command)
+}</span>
+</pre>
+		
+		<pre class="file" id="file28" style="display: none">// Code generated by MockGen. DO NOT EDIT.
+// Source: github.com/cubny/lite-reader/internal/infra/job (interfaces: FeedService,ItemService,UserService)
+//
+// Generated by this command:
+//
+//        mockgen -destination=./infra/job/dependencies_mock.go -package=mocks -mock_names=FeedService=FeedService,ItemService=ItemService,UserService=UserService github.com/cubny/lite-reader/internal/infra/job FeedService,ItemService,UserService
+//
+
+// Package mocks is a generated GoMock package.
+package mocks
+
+import (
+        reflect "reflect"
+
+        gomock "go.uber.org/mock/gomock"
+
+        auth "github.com/cubny/lite-reader/internal/app/auth"
+        feed "github.com/cubny/lite-reader/internal/app/feed"
+        item "github.com/cubny/lite-reader/internal/app/item"
+)
+
+// FeedService is a mock of FeedService interface.
+type FeedService struct {
+        ctrl     *gomock.Controller
+        recorder *FeedServiceMockRecorder
+        isgomock struct{}
+}
+
+// FeedServiceMockRecorder is the mock recorder for FeedService.
+type FeedServiceMockRecorder struct {
+        mock *FeedService
+}
+
+// NewFeedService creates a new mock instance.
+func NewFeedService(ctrl *gomock.Controller) *FeedService <span class="cov0" title="0">{
+        mock := &amp;FeedService{ctrl: ctrl}
+        mock.recorder = &amp;FeedServiceMockRecorder{mock}
+        return mock
+}</span>
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *FeedService) EXPECT() *FeedServiceMockRecorder <span class="cov0" title="0">{
+        return m.recorder
+}</span>
+
+// FetchItems mocks base method.
+func (m *FeedService) FetchItems(feedID int) ([]*item.Item, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "FetchItems", feedID)
+        ret0, _ := ret[0].([]*item.Item)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// FetchItems indicates an expected call of FetchItems.
+func (mr *FeedServiceMockRecorder) FetchItems(feedID any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FetchItems", reflect.TypeOf((*FeedService)(nil).FetchItems), feedID)
+}</span>
+
+// ListFeeds mocks base method.
+func (m *FeedService) ListFeeds(userID int) ([]*feed.Feed, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "ListFeeds", userID)
+        ret0, _ := ret[0].([]*feed.Feed)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// ListFeeds indicates an expected call of ListFeeds.
+func (mr *FeedServiceMockRecorder) ListFeeds(userID any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListFeeds", reflect.TypeOf((*FeedService)(nil).ListFeeds), userID)
+}</span>
+
+// ItemService is a mock of ItemService interface.
+type ItemService struct {
+        ctrl     *gomock.Controller
+        recorder *ItemServiceMockRecorder
+        isgomock struct{}
+}
+
+// ItemServiceMockRecorder is the mock recorder for ItemService.
+type ItemServiceMockRecorder struct {
+        mock *ItemService
+}
+
+// NewItemService creates a new mock instance.
+func NewItemService(ctrl *gomock.Controller) *ItemService <span class="cov0" title="0">{
+        mock := &amp;ItemService{ctrl: ctrl}
+        mock.recorder = &amp;ItemServiceMockRecorder{mock}
+        return mock
+}</span>
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *ItemService) EXPECT() *ItemServiceMockRecorder <span class="cov0" title="0">{
+        return m.recorder
+}</span>
+
+// UpsertItems mocks base method.
+func (m *ItemService) UpsertItems(command *item.UpsertItemsCommand) error <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "UpsertItems", command)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// UpsertItems indicates an expected call of UpsertItems.
+func (mr *ItemServiceMockRecorder) UpsertItems(command any) *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpsertItems", reflect.TypeOf((*ItemService)(nil).UpsertItems), command)
+}</span>
+
+// UserService is a mock of UserService interface.
+type UserService struct {
+        ctrl     *gomock.Controller
+        recorder *UserServiceMockRecorder
+        isgomock struct{}
+}
+
+// UserServiceMockRecorder is the mock recorder for UserService.
+type UserServiceMockRecorder struct {
+        mock *UserService
+}
+
+// NewUserService creates a new mock instance.
+func NewUserService(ctrl *gomock.Controller) *UserService <span class="cov0" title="0">{
+        mock := &amp;UserService{ctrl: ctrl}
+        mock.recorder = &amp;UserServiceMockRecorder{mock}
+        return mock
+}</span>
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *UserService) EXPECT() *UserServiceMockRecorder <span class="cov0" title="0">{
+        return m.recorder
+}</span>
+
+// GetAllUsers mocks base method.
+func (m *UserService) GetAllUsers() ([]*auth.User, error) <span class="cov0" title="0">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "GetAllUsers")
+        ret0, _ := ret[0].([]*auth.User)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GetAllUsers indicates an expected call of GetAllUsers.
+func (mr *UserServiceMockRecorder) GetAllUsers() *gomock.Call <span class="cov0" title="0">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllUsers", reflect.TypeOf((*UserService)(nil).GetAllUsers))
+}</span>
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>
