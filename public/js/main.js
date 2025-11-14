@@ -78,28 +78,35 @@ function showAddFeed(e){
   aButton.find("span").text("");
   var aInput=$("#urlToAdd");
   aInput.removeClass('ui-state-error');
-      aInput.show();
-      aButton.unbind('click');
-      aButton.click(function(e){
-        aButton.unbind('click');
-        e.stopPropagation();
-        if(aInput.val() === ""){
-          hideAddFeed();
-          return;
-        }
-        if(aInput.val().indexOf('http')<0){
-          aInput.val("http://"+aInput.val());
-        }
-        var bValid = true;
-        aInput.removeClass('ui-state-error');
-        bValid = bValid && checkLength(aInput,"Url",10,255);
-        bValid = bValid && checkRegexp(aInput,/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/i,"Please Enter a Valid Url.");
-        if(bValid){
-          addFeed(aInput.val());
-          aInput.val("");
-          hideAddFeed();
-        }
-      });
+  aInput.show();
+  aButton.unbind('click');
+  aButton.click(function (e) {
+    aButton.unbind('click');
+    e.stopPropagation();
+    if (aInput.val() === "") {
+      hideAddFeed();
+      return;
+    }
+    if (aInput.val().indexOf('http') < 0) {
+      aInput.val("http://" + aInput.val());
+    }
+    var bValid = true;
+    aInput.removeClass('ui-state-error');
+    bValid = bValid && checkLength(aInput, "Url", 10, 255);
+    bValid = bValid && checkRegexp(aInput, /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/i, "Please Enter a Valid Url.");
+    if (bValid) {
+      addFeed(aInput.val());
+      aInput.val("");
+      hideAddFeed();
+    }
+  });
+  aInput.unbind('keypress');
+  aInput.keypress(function (e) {
+    if (e.which == 13) {
+      aButton.click();
+    }
+  });
+  aInput.focus();
 }
 
 function hideAddFeed(){

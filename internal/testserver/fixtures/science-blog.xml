@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Science Blog</title>
+  <link href="http://localhost:3001/feeds/science-blog" rel="alternate"/>
+  <link href="http://localhost:3001/feeds/science-blog.xml" rel="self"/>
+  <id>http://localhost:3001/feeds/science-blog</id>
+  <updated>2025-11-14T12:00:00Z</updated>
+  <subtitle>Exploring the wonders of science</subtitle>
+  
+  <entry>
+    <title>Quantum Computing Breakthroughs</title>
+    <link href="http://localhost:3001/science/quantum-computing"/>
+    <id>http://localhost:3001/science/quantum-computing</id>
+    <updated>2025-11-14T08:00:00Z</updated>
+    <published>2025-11-14T08:00:00Z</published>
+    <author>
+      <name>Dr. Sarah Chen</name>
+      <email>sarah.chen@science.example</email>
+    </author>
+    <summary>Recent advances in quantum computing are bringing us closer to practical applications</summary>
+    <content type="html"><![CDATA[
+      <p>Quantum computing has made significant strides in recent years. Researchers have achieved new milestones in qubit stability and error correction.</p>
+      <p>Key developments include:</p>
+      <ul>
+        <li>Improved quantum coherence times</li>
+        <li>Novel error correction algorithms</li>
+        <li>Scalable quantum architectures</li>
+        <li>Practical quantum applications</li>
+      </ul>
+    ]]></content>
+  </entry>
+  
+  <entry>
+    <title>Climate Change and Renewable Energy</title>
+    <link href="http://localhost:3001/science/climate-energy"/>
+    <id>http://localhost:3001/science/climate-energy</id>
+    <updated>2025-11-13T14:30:00Z</updated>
+    <published>2025-11-13T14:30:00Z</published>
+    <author>
+      <name>Dr. Michael Roberts</name>
+      <email>m.roberts@science.example</email>
+    </author>
+    <summary>Exploring solutions to climate change through renewable energy technologies</summary>
+    <content type="html"><![CDATA[
+      <p>The transition to renewable energy is accelerating globally. This article examines the latest innovations in clean energy.</p>
+      <p>Topics covered:</p>
+      <ul>
+        <li>Next-generation solar panels</li>
+        <li>Advanced battery storage</li>
+        <li>Offshore wind farms</li>
+        <li>Green hydrogen production</li>
+      </ul>
+    ]]></content>
+  </entry>
+  
+  <entry>
+    <title>Advances in Biotechnology</title>
+    <link href="http://localhost:3001/science/biotech"/>
+    <id>http://localhost:3001/science/biotech</id>
+    <updated>2025-11-12T11:00:00Z</updated>
+    <published>2025-11-12T11:00:00Z</published>
+    <author>
+      <name>Dr. Emily Wong</name>
+      <email>e.wong@science.example</email>
+    </author>
+    <summary>New biotechnology innovations are transforming medicine and agriculture</summary>
+    <content type="html"><![CDATA[
+      <p>Biotechnology continues to push the boundaries of what's possible in healthcare and food production.</p>
+      <p>Recent breakthroughs:</p>
+      <ul>
+        <li>CRISPR gene editing advances</li>
+        <li>Personalized medicine</li>
+        <li>Synthetic biology applications</li>
+        <li>Sustainable food production</li>
+      </ul>
+    ]]></content>
+  </entry>
+</feed>

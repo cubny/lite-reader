@@ -3,7 +3,18 @@
 .vscode
 .idea
 data/agg.db
+data/test-agg.db
 public/cache/*.gzip
 public/cache/*.spc
 public/cache/images/*
 reports/
+
+# Node.js dependencies
+node_modules/
+package-lock.json
+
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
+lite-reader

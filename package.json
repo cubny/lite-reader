@@ -1,0 +1,21 @@
+{
+  "name": "lite-reader",
+  "version": "1.0.0",
+  "description": "Lite Reader - Lightweight RSS feed aggregator",
+  "scripts": {
+    "test:ui": "playwright test",
+    "test:ui:headed": "playwright test --headed",
+    "test:ui:debug": "playwright test --debug",
+    "playwright:install": "playwright install chromium --with-deps"
+  },
+  "keywords": [
+    "rss",
+    "feed",
+    "reader"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.48.0"
+  }
+}
