@@ -78,18 +78,18 @@
     <!-- Left sidebar with feeds -->
     <div id="sidebar">
         <div id="toolbar">
-            <div id="addfeed" x-data="{ showing: false, url: '' }">
+            <div id="addfeed">
                 <a class="add btn" 
-                   :class="showing ? 'btn-green' : 'btn-purple'" 
+                   :class="showingAddFeed ? 'btn-green' : 'btn-purple'" 
                    href="#" 
-                   @click.prevent="showing = !showing; if (!showing) { url = ''; }">
+                   @click.prevent="showingAddFeed = !showingAddFeed; if (!showingAddFeed) { feedUrl = ''; }">
                     <i :class="adding ? 'icon-spin icon-spinner' : 'icon-plus'"></i> 
-                    <span x-text="adding ? 'Adding Feed...' : (showing ? '' : 'Feed')"></span>
+                    <span x-text="adding ? 'Adding Feed...' : (showingAddFeed ? '' : 'Feed')"></span>
                 </a>
                 <input type="text" 
-                       x-show="showing" 
-                       x-model="url" 
-                       @keydown.enter="if (url) addFeed(url)"
+                       x-show="showingAddFeed" 
+                       x-model="feedUrl" 
+                       @keydown.enter="if (feedUrl) addFeed(feedUrl)"
                        placeholder="Feed URL"
                        style="margin-top: 5px;">
             </div>
@@ -198,6 +198,8 @@
                 starredCount: 0,
                 adding: false,
                 loading: false,
+                showingAddFeed: false,
+                feedUrl: '',
                 
                 async init() {
                     // Check authentication
@@ -405,6 +407,10 @@
                         
                         // Select the new feed
                         setTimeout(() => this.selectFeed(feed.id, feed.title), 500);
+                        
+                        // Clear the input and hide it
+                        this.feedUrl = '';
+                        this.showingAddFeed = false;
                     } catch (error) {
                         console.error('Failed to add feed:', error);
                         alert('Failed to add feed. Please check the URL and try again.');
