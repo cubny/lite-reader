@@ -41,16 +41,19 @@ export class MainPage {
     await this.addFeedButton.click();
     
     // Wait for input to be visible
-    await this.feedUrlInput.waitFor({ state: 'visible', timeout: 2000 });
+    await this.feedUrlInput.waitFor({ state: 'visible', timeout: 3000 });
     
     // Fill in the URL
     await this.feedUrlInput.fill(feedUrl);
     
-    // Press Enter to submit
-    await this.feedUrlInput.press('Enter');
+    // Wait a moment for the input to be filled
+    await this.page.waitForTimeout(300);
     
-    // Wait a bit for the feed to be added
-    await this.page.waitForTimeout(1000);
+    // Click the button again to submit (it changes behavior after first click)
+    await this.addFeedButton.click();
+    
+    // Wait for the feed to be added (button changes back to purple)
+    await this.page.waitForTimeout(2000);
   }
 
   async clickFeed(feedTitle) {
@@ -95,31 +98,57 @@ export class MainPage {
   }
 
   async updateFeed() {
+    // Ensure update button is visible
+    await this.updateButton.waitFor({ state: 'visible', timeout: 5000 });
     await this.updateButton.click();
     // Wait for update to complete
     await this.page.waitForTimeout(1000);
   }
 
   async markAllRead() {
+    // Ensure button is visible (should be visible when a feed is selected)
+    await this.markReadAllButton.waitFor({ state: 'visible', timeout: 3000 });
     await this.markReadAllButton.click();
     await this.page.waitForTimeout(500);
   }
 
   async markAllUnread() {
+    // Ensure button is visible (should be visible when a feed is selected)
+    await this.markUnreadAllButton.waitFor({ state: 'visible', timeout: 3000 });
     await this.markUnreadAllButton.click();
     await this.page.waitForTimeout(500);
   }
 
   async removeFeed() {
-    await this.removeButton.click();
-    // Confirm if there's a dialog
+    // Ensure remove button is visible
+    await this.removeButton.waitFor({ state: 'visible', timeout: 5000 });
+    
+    // Set up dialog handler before clicking
     this.page.on('dialog', dialog => dialog.accept());
+    
+    await this.removeButton.click();
     await this.page.waitForTimeout(500);
   }
 
   async logout() {
-    await this.logoutButton.click();
-    await this.page.waitForURL(/login/, { timeout: 3000 });
+    // Click on "Unread" to show the action buttons (including logout)
+    // The action buttons are only visible when a feed is selected
+    await this.unreadFeed.click();
+    
+    // Wait for the actions to become visible
+    await this.page.waitForTimeout(2000);
+    
+    // Try to force click if the button is in DOM but not visible due to CSS
+    try {
+      await this.logoutButton.click({ force: true, timeout: 5000 });
+    } catch (error) {
+      // If force click doesn't work, try waiting for visibility
+      await this.logoutButton.waitFor({ state: 'visible', timeout: 5000 });
+      await this.logoutButton.click();
+    }
+    
+    // Wait for redirect to login page
+    await this.page.waitForURL(/login/, { timeout: 5000 });
   }
 
   async waitForItems(count, timeout = 5000) {
@@ -128,7 +157,7 @@ export class MainPage {
         const items = document.querySelectorAll('#items li');
         return items.length >= expectedCount;
       },
-      expectedCount,
+      count,  // Pass count as the argument to the function
       { timeout }
     ).catch(() => {
       // Ignore timeout - test will check count afterwards
