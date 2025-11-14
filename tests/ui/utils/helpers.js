@@ -41,7 +41,7 @@ export function generateUsername(prefix = 'testuser') {
 /**
  * Generate a unique email for testing
  */
-export function generateEmail(username?: string) {
+export function generateEmail(username) {
   const user = username || generateUsername();
   return `${user}@test.example`;
 }
@@ -57,10 +57,10 @@ export function generatePassword() {
  * Wait for a condition to be true
  */
 export async function waitFor(
-  condition: () => Promise<boolean>,
+  condition,
   timeout = 5000,
   interval = 100
-): Promise<void> {
+) {
   const startTime = Date.now();
   
   while (Date.now() - startTime < timeout) {

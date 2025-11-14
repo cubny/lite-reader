@@ -6,28 +6,26 @@ import { test, expect } from '@playwright/test';
 import { SignupPage } from './pages/SignupPage.js';
 import { LoginPage } from './pages/LoginPage.js';
 import { MainPage } from './pages/MainPage.js';
-import { generateUsername, generateEmail, generatePassword, MOCK_FEEDS } from './utils/helpers.js';
+import { generateEmail, generatePassword, MOCK_FEEDS } from './utils/helpers.js';
 
 test.describe('Feed Management', () => {
-  let username;
   let email;
   let password;
 
   test.beforeEach(async ({ page }) => {
     // Create a new user and login for each test
-    username = generateUsername();
-    email = generateEmail(username);
+    email = generateEmail();
     password = generatePassword();
 
     const signupPage = new SignupPage(page);
     await signupPage.goto();
-    await signupPage.signup(username, email, password);
+    await signupPage.signup(email, password);
     await signupPage.waitForSuccess();
 
     const loginPage = new LoginPage(page);
     await loginPage.goto();
-    await loginPage.login(username, password);
-    await page.waitForURL(/index|^\/$/, { timeout: 5000 });
+    await loginPage.login(email, password);
+    await page.waitForURL('http://localhost:3000/', { timeout: 5000 });
   });
 
   test('should add RSS feed successfully', async ({ page }) => {

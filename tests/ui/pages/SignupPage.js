@@ -5,9 +5,9 @@
 export class SignupPage {
   constructor(page) {
     this.page = page;
-    this.usernameInput = page.locator('input[name="username"]');
-    this.passwordInput = page.locator('input[name="password"]');
     this.emailInput = page.locator('input[name="email"]');
+    this.passwordInput = page.locator('input[name="password"]');
+    this.confirmPasswordInput = page.locator('input[name="confirm-password"]');
     this.signupButton = page.locator('button[type="submit"]');
     this.errorMessage = page.locator('.error, .alert-error');
     this.successMessage = page.locator('.success, .alert-success');
@@ -17,12 +17,10 @@ export class SignupPage {
     await this.page.goto('/signup.html');
   }
 
-  async signup(username, email, password) {
-    await this.usernameInput.fill(username);
-    if (this.emailInput) {
-      await this.emailInput.fill(email);
-    }
+  async signup(email, password) {
+    await this.emailInput.fill(email);
     await this.passwordInput.fill(password);
+    await this.confirmPasswordInput.fill(password);
     await this.signupButton.click();
   }
 

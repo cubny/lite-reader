@@ -6,16 +6,14 @@ import { test, expect } from '@playwright/test';
 import { SignupPage } from './pages/SignupPage.js';
 import { LoginPage } from './pages/LoginPage.js';
 import { MainPage } from './pages/MainPage.js';
-import { generateUsername, generateEmail, generatePassword } from './utils/helpers.js';
+import { generateEmail, generatePassword } from './utils/helpers.js';
 
 test.describe('Authentication', () => {
-  let username;
   let email;
   let password;
 
   test.beforeEach(() => {
-    username = generateUsername();
-    email = generateEmail(username);
+    email = generateEmail();
     password = generatePassword();
   });
 
@@ -23,7 +21,7 @@ test.describe('Authentication', () => {
     const signupPage = new SignupPage(page);
     
     await signupPage.goto();
-    await signupPage.signup(username, email, password);
+    await signupPage.signup(email, password);
     
     // Should redirect to login page or show success
     await signupPage.waitForSuccess();
@@ -33,16 +31,16 @@ test.describe('Authentication', () => {
     // First, create a user
     const signupPage = new SignupPage(page);
     await signupPage.goto();
-    await signupPage.signup(username, email, password);
+    await signupPage.signup(email, password);
     await signupPage.waitForSuccess();
 
     // Now login
     const loginPage = new LoginPage(page);
     await loginPage.goto();
-    await loginPage.login(username, password);
+    await loginPage.login(email, password);
 
-    // Should be redirected to main page
-    await page.waitForURL(/index|^\/$/, { timeout: 5000 });
+    // Should be redirected to main page (root path)
+    await page.waitForURL('http://localhost:3000/', { timeout: 5000 });
     
     const mainPage = new MainPage(page);
     expect(await mainPage.isLoggedIn()).toBe(true);
@@ -52,7 +50,7 @@ test.describe('Authentication', () => {
     const loginPage = new LoginPage(page);
     
     await loginPage.goto();
-    await loginPage.login('nonexistent', 'wrongpassword');
+    await loginPage.login('nonexistent@test.example', 'wrongpassword');
     
     // Should show error or stay on login page
     await page.waitForTimeout(1000);
@@ -64,13 +62,13 @@ test.describe('Authentication', () => {
     // First, signup and login
     const signupPage = new SignupPage(page);
     await signupPage.goto();
-    await signupPage.signup(username, email, password);
+    await signupPage.signup(email, password);
     await signupPage.waitForSuccess();
 
     const loginPage = new LoginPage(page);
     await loginPage.goto();
-    await loginPage.login(username, password);
-    await page.waitForURL(/index|^\/$/, { timeout: 5000 });
+    await loginPage.login(email, password);
+    await page.waitForURL('http://localhost:3000/', { timeout: 5000 });
 
     // Now logout
     const mainPage = new MainPage(page);
