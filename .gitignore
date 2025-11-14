@@ -9,4 +9,7 @@ public/cache/images/*
 reports/
 lite-reader
 public/index-old.html
+node_modules/
+package.json
+package-lock.json
 
