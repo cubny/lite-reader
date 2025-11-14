@@ -23,7 +23,7 @@ func main() {
 	if err := mockServer.Start(); err != nil {
 		log.Fatalf("failed to start mock feed server: %v", err)
 	}
-	
+
 	// Give the mock server time to start
 	time.Sleep(500 * time.Millisecond)
 	log.Info("Mock feed server started on port 3001")
