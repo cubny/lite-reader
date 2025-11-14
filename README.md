@@ -19,6 +19,7 @@ Read your feeds on your own machine with a simple and lite application.
 - Easy to install and use
 - Supports data migration from legacy Lite Reader
 - **New:** Multi-user support with individual user feeds
+- **New:** Modern UI built with htmx and Alpine.js (no jQuery dependency)
 - Feed management: add, update, delete feeds
 - Item management: read, star, mark as read/unread
 
@@ -45,7 +46,7 @@ If you are using the legacy Lite Reader, you can migrate your data to the new Li
 We are looking for contributors! Here's how you can help:
 - Report bugs (https://github.com/cubny/lite-reader/issues/new)
 - Share your ideas (https://github.com/cubny/lite-reader/issues/new)
-- We are looking for a frontend engineer to rewrite the app with a modern stack
+- ~~We are looking for a frontend engineer to rewrite the app with a modern stack~~ ✅ **Done!** The frontend has been rebuilt with htmx and Alpine.js
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
