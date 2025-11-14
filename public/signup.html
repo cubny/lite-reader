@@ -3,12 +3,48 @@
 <head>
     <title>Sign Up - Lite Reader</title>
     <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@1.9.10/dist/htmx.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script>
 </head>
-<body>
+<body x-data="{ error: '' }">
     
     <div class="login-container">
         <h1>Sign Up for Lite Reader</h1>
-        <form class="login-form" action="/signup" method="POST">
+        <aside x-show="error" class="alert alert-error" x-text="error"></aside>
+        <form class="login-form" 
+              @submit.prevent="
+                const email = $el.querySelector('#email').value.trim();
+                const password = $el.querySelector('#password').value;
+                const confirmPassword = $el.querySelector('#confirm-password').value;
+                error = '';
+                
+                if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    error = 'Please enter a valid email address';
+                    return;
+                }
+                if (!password || password.length < 6) {
+                    error = 'Password must be at least 6 characters long';
+                    return;
+                }
+                if (password !== confirmPassword) {
+                    error = 'Passwords do not match';
+                    return;
+                }
+                
+                fetch('/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Error creating account. Email may already be registered.');
+                    sessionStorage.setItem('signupSuccess', 'true');
+                    window.location.href = '/login.html';
+                })
+                .catch(err => {
+                    error = err.message || 'Error creating account. Email may already be registered.';
+                });
+              ">
             <div class="form-group">
                 <label for="email">Email:</label>
                 <input type="email" id="email" name="email" class="form-control" required>
@@ -27,9 +63,5 @@
             <a href="/login.html" style="color: #6C8A46;">Already have an account? Log in</a>
         </div>
     </div>
-    <script type="text/javascript" src="js/jquery.js"></script>
-    <script type="text/javascript" src="js/jquery.ui.all.js"></script>
-    <script type="text/javascript" src="js/auth.js"></script>
-    <script type="text/javascript" src="js/signup.js"></script>
 </body>
 </html>

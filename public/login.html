@@ -5,13 +5,47 @@
     <link href="css/jquery-ui.css" media="screen" rel="stylesheet" type="text/css" />
     <link href="css/font-awesome/css/font-awesome.min.css" media="screen" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@1.9.10/dist/htmx.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script>
 </head>
-<body>
+<body x-data="{ showSuccess: sessionStorage.getItem('signupSuccess') === 'true', error: '' }" x-init="if(showSuccess) { sessionStorage.removeItem('signupSuccess'); }">
 
     <div class="login-container">
-        <aside id="signup-successful" class="alert alert-success hidden">Account created successfully. Please log in.</aside>
+        <aside x-show="showSuccess" class="alert alert-success">Account created successfully. Please log in.</aside>
+        <aside x-show="error" class="alert alert-error" x-text="error"></aside>
         <h1>Login to Lite Reader</h1>
-        <form class="login-form" action="/login" method="POST">
+        <form class="login-form" 
+              @submit.prevent="
+                const email = $el.querySelector('#email').value.trim();
+                const password = $el.querySelector('#password').value;
+                error = '';
+                
+                if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    error = 'Please enter a valid email address';
+                    return;
+                }
+                if (!password || password.length < 6) {
+                    error = 'Password must be at least 6 characters';
+                    return;
+                }
+                
+                fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Invalid email or password');
+                    return response.json();
+                })
+                .then(data => {
+                    localStorage.setItem('authToken', data.access_token);
+                    window.location.href = '/';
+                })
+                .catch(err => {
+                    error = err.message || 'Invalid email or password';
+                });
+              ">
             <div class="form-group">
                 <label for="email">Email:</label>
                 <input type="email" id="email" name="email" class="form-control" required>
@@ -28,9 +62,5 @@
         </div>
     </div>
 
-    <script type="text/javascript" src="js/jquery.js"></script>
-    <script type="text/javascript" src="js/jquery.ui.all.js"></script>
-    <script type="text/javascript" src="js/auth.js"></script>
-    <script type="text/javascript" src="js/login.js"></script>
 </body>
 </html>

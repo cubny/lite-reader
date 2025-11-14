@@ -1,91 +1,554 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>LiteReader</title>   
-        <link href="css/jquery-ui.css" media="screen" rel="stylesheet" type="text/css" />
-        <link href="css/font-awesome/css/font-awesome.min.css" media="screen" rel="stylesheet" type="text/css" />
-        <link href="css/main.css" media="screen" rel="stylesheet" type="text/css" />
-        <script type="text/javascript"></script>
-    </head>
-
-    <body>
-        <div class="ui-layout-west" id="feeds">
-            <div id="toolbar" class="ui-layout-north">
-                <div id="addfeed">
-                    <a class="add btn btn-purple" href="#">
-                        <i class="icon-plus"></i> <span>Feed</span>
-                    </a>
-                    <input type="text" id="urlToAdd" style="display: none" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiteReader</title>
+    <link href="css/jquery-ui.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="css/font-awesome/css/font-awesome.min.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="css/main.css" media="screen" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@1.9.10/dist/htmx.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@1.9.10/dist/ext/json-enc.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script>
+    <style>
+        /* Layout styles to replace jQuery Layout */
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        #sidebar {
+            width: 250px;
+            min-width: 200px;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            background: #f5f5f5;
+            border-right: 1px solid #ddd;
+            resize: horizontal;
+            overflow: auto;
+        }
+        
+        #main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        #feedbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #fff;
+            border-bottom: 1px solid #ddd;
+            min-height: 50px;
+        }
+        
+        #items-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+        }
+        
+        #msg {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 0 0 5px 5px;
+            z-index: 1000;
+            transition: top 0.5s;
+        }
+        
+        #msg.htmx-request {
+            top: 60px;
+        }
+    </style>
+</head>
+<body x-data="readerApp()" x-init="init()" @keydown.space.window="handleSpaceKey($event)">
+    
+    <!-- Left sidebar with feeds -->
+    <div id="sidebar">
+        <div id="toolbar">
+            <div id="addfeed" x-data="{ showing: false, url: '' }">
+                <a class="add btn" 
+                   :class="showing ? 'btn-green' : 'btn-purple'" 
+                   href="#" 
+                   @click.prevent="showing = !showing; if (!showing) { url = ''; }">
+                    <i :class="adding ? 'icon-spin icon-spinner' : 'icon-plus'"></i> 
+                    <span x-text="adding ? 'Adding Feed...' : (showing ? '' : 'Feed')"></span>
+                </a>
+                <input type="text" 
+                       x-show="showing" 
+                       x-model="url" 
+                       @keydown.enter="if (url) addFeed(url)"
+                       placeholder="Feed URL"
+                       style="margin-top: 5px;">
+            </div>
+        </div>
+        <ul id="feeds">
+            <li id="unread" 
+                class="feed" 
+                :class="{ 'selected': currentFeed === 'unread' }"
+                @click="selectFeed('unread', 'Unread')">
+                <div class="count"><span x-text="unreadCount > 0 ? unreadCount : ''"></span></div>
+                <i class="icon-circle"></i>
+                <div class="feedtitle">Unread</div>
+            </li>
+            <li id="starred" 
+                class="feed"
+                :class="{ 'selected': currentFeed === 'starred' }"
+                @click="selectFeed('starred', 'Starred')">
+                <div class="count"><span x-text="starredCount > 0 ? starredCount : ''"></span></div>
+                <i class="icon-star"></i>
+                <div class="feedtitle">Starred</div>
+            </li>
+            <template x-for="feed in feeds" :key="feed.id">
+                <li :id="feed.id" 
+                    class="feed"
+                    :class="{ 'selected': currentFeed == feed.id, 'new': feed.isNew }"
+                    @click="selectFeed(feed.id, feed.title)">
+                    <img :src="'https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=' + feed.link" alt="">
+                    <div class="feedtitle" x-text="feed.title"></div>
+                    <div class="count"><span x-text="feed.unread_count > 0 ? feed.unread_count : ''"></span></div>
+                </li>
+            </template>
+        </ul>
+    </div>
+    
+    <!-- Main content area -->
+    <div id="main-content">
+        <div id="feedbar">
+            <div id="title" x-text="currentFeedTitle"></div>
+            <div id="actions">
+                <div class="action update" 
+                     x-show="currentFeed && currentFeed !== 'unread' && currentFeed !== 'starred'"
+                     @click="updateFeed()">
+                    <i class="icon-repeat"></i> Update
+                </div>
+                <div class="action markread" 
+                     x-show="currentFeed"
+                     @click="markAllRead()">
+                    <i class="icon-circle-blank"></i> Read All
+                </div>
+                <div class="action markread" 
+                     x-show="currentFeed"
+                     @click="markAllUnread()">
+                    <i class="icon-circle"></i> Unread All
+                </div>
+                <div class="action logout" @click="logout()">
+                    <i class="icon-signout"></i> Logout
+                </div>
+                <div class="action remove" 
+                     x-show="currentFeed && currentFeed !== 'unread' && currentFeed !== 'starred'"
+                     @click="deleteFeed()">
+                    <i class="icon-trash"></i> Remove
                 </div>
             </div>
-            <ul>
-                <li id="unread" class="feed">
-                    <div class="count"><span></span></div>
-                    <i class="icon-circle"></i>
-                    <div class="feedtitle">Unread</div>
-                </li>
-                <li id="starred" class="feed">
-                    <div class="count"><span></span></div>
-                    <i class="icon-star"></i>
-                    <div class="feedtitle">Starred</div>
-                </li>
+        </div>
+        
+        <div id="msg" :class="{ 'htmx-request': loading }">loading</div>
+        
+        <div id="items-container">
+            <ul id="items">
+                <template x-if="items.length === 0">
+                    <li class="empty">No items found</li>
+                </template>
+                <template x-for="item in items" :key="item.id">
+                    <li :id="item.id" 
+                        :class="{ 'new': item.is_new, 'selected': currentItem == item.id, 'rtl': isRTL(item.title) }">
+                        <div class="title" @click="toggleItem(item)">
+                            <a class="item-action item-star" @click.stop="toggleStar(item)">
+                                <i :class="item.starred ? 'icon-star' : 'icon-star-empty'"></i>
+                            </a>
+                            <a class="item-action item-read" @click.stop="toggleRead(item)">
+                                <i :class="item.is_new ? 'icon-circle' : 'icon-circle-blank'"></i>
+                            </a>
+                            <span x-text="item.title"></span>
+                            <a :href="item.link" target="_blank" class="item-action item-link" x-show="currentItem == item.id">
+                                <i class="icon-external-link"></i> link
+                            </a>
+                            <span class="timestamp" x-text="formatDate(item.timestamp)"></span>
+                        </div>
+                        <div class="dir" x-show="currentItem == item.id" x-html="item.dir"></div>
+                        <div class="desc" x-show="currentItem == item.id" x-html="item.desc"></div>
+                    </li>
+                </template>
             </ul>
         </div>
-        <div id="content" class="ui-layout-center">
-            <div class="ui-layout-north">
-                <div id="feedbar">
-                    <div id="title"></div>
-                    <div id="actions">
-                        <div class="action update">
-                            <i class="icon-repeat"></i> Update
-                        </div>
-                        <div id="mark-read-all" class="action markread">
-                            <i class="icon-circle-blank"></i> Read All
-                        </div>
-                        <div id="mark-unread-all" class="action markread">
-                            <i class="icon-circle"></i> Unread All
-                        </div>
-                        <div class="action logout" id="logout">
-                            <i class="icon-signout"></i> Logout
-                        </div>
-                        <div class="action remove">
-                            <i class="icon-trash"></i> Remove
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="msg">loading</div>
-            <div class="ui-layout-center">
-                <ul id="items"></ul>
-            </div>
-        </div>
+    </div>
 
-        <script type="text/template" id="item-template">
-            <li id={0}>
-            <div class="title">
-                <a name="starred" class="item-action item-star"><i class="{5}"></i></a>
-                <a name="read" class="item-action item-read"><i class="{4}"></i></a>
-                <span>{1}</span>
-                <a href="{3}" target="blank" class="item-action item-link"><i class="icon-external-link"></i> link</a>
-                <span class="timestamp">{6}</span>
-            </div>
-                <div class="dir">{7}</div>
-                <div class="desc">{2}</div>
-            </li>
-        </script>
-    </body>
-    <script type="text/javascript" src="js/jquery.js"></script>
-    <script type="text/javascript" src="js/jquery.ui.all.js"></script>
-    <script type="text/javascript" src="js/jquery.layout.js"></script>
-    <script type="text/javascript" src="js/jquery.cookie.js"></script>
-    <script type="text/javascript" src="js/jquery.scrollTo.min.js"></script>
-    <script type="text/javascript" src="js/spin.min.js"></script>
-    <script type="text/javascript" src="js/moment.min.js"></script>
-    <script type="text/javascript" src="js/utils.js"></script>
-    <script type="text/javascript" src="js/feeds.js"></script>
-    <script type="text/javascript" src="js/items.js"></script>
-    <script type="text/javascript" src="js/stage.js"></script>
-    <script type="text/javascript" src="js/main.js"></script>
-    <script type="text/javascript" src="js/auth.js"></script>
+    <script>
+        function readerApp() {
+            return {
+                feeds: [],
+                items: [],
+                currentFeed: null,
+                currentFeedTitle: '',
+                currentItem: null,
+                unreadCount: 0,
+                starredCount: 0,
+                adding: false,
+                loading: false,
+                
+                async init() {
+                    // Check authentication
+                    const token = localStorage.getItem('authToken');
+                    if (!token) {
+                        window.location.href = '/login.html';
+                        return;
+                    }
+                    
+                    await this.loadFeeds();
+                    await this.loadCounts();
+                    
+                    // Load last selected feed from cookie
+                    const lastFeed = this.getCookie('feed');
+                    if (lastFeed) {
+                        setTimeout(() => {
+                            const feed = this.feeds.find(f => f.id == lastFeed);
+                            if (feed) {
+                                this.selectFeed(feed.id, feed.title);
+                            } else if (lastFeed === 'unread' || lastFeed === 'starred') {
+                                this.selectFeed(lastFeed, lastFeed === 'unread' ? 'Unread' : 'Starred');
+                            }
+                        }, 100);
+                    }
+                },
+                
+                async loadFeeds() {
+                    try {
+                        const response = await this.fetchAPI('/feeds');
+                        this.feeds = response.map(f => ({ ...f, isNew: false }));
+                    } catch (error) {
+                        console.error('Failed to load feeds:', error);
+                    }
+                },
+                
+                async loadCounts() {
+                    try {
+                        const unread = await this.fetchAPI('/items/unread/count');
+                        this.unreadCount = unread.count || 0;
+                        
+                        const starred = await this.fetchAPI('/items/starred/count');
+                        this.starredCount = starred.count || 0;
+                    } catch (error) {
+                        console.error('Failed to load counts:', error);
+                    }
+                },
+                
+                async selectFeed(id, title) {
+                    this.currentFeed = id;
+                    this.currentFeedTitle = title;
+                    this.currentItem = null;
+                    this.setCookie('feed', id);
+                    
+                    const url = (id === 'unread' || id === 'starred') ? `/items/${id}` : `/feeds/${id}/items`;
+                    
+                    try {
+                        this.items = await this.fetchAPI(url);
+                        // Mark feed as not new
+                        const feed = this.feeds.find(f => f.id == id);
+                        if (feed) {
+                            feed.isNew = false;
+                        }
+                    } catch (error) {
+                        console.error('Failed to load items:', error);
+                        this.items = [];
+                    }
+                },
+                
+                toggleItem(item) {
+                    if (this.currentItem === item.id) {
+                        this.currentItem = null;
+                    } else {
+                        this.currentItem = item.id;
+                        if (item.is_new) {
+                            this.markRead(item);
+                        }
+                        // Scroll to item
+                        setTimeout(() => {
+                            document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }, 100);
+                    }
+                },
+                
+                async toggleStar(item) {
+                    try {
+                        await this.fetchAPI(`/items/${item.id}`, 'PUT', {
+                            is_new: item.is_new,
+                            starred: !item.starred
+                        });
+                        item.starred = !item.starred;
+                        this.starredCount += item.starred ? 1 : -1;
+                    } catch (error) {
+                        console.error('Failed to toggle star:', error);
+                    }
+                },
+                
+                async toggleRead(item) {
+                    if (item.is_new) {
+                        await this.markRead(item);
+                    } else {
+                        await this.markUnread(item);
+                    }
+                },
+                
+                async markRead(item) {
+                    try {
+                        await this.fetchAPI(`/items/${item.id}`, 'PUT', {
+                            is_new: false,
+                            starred: item.starred
+                        });
+                        item.is_new = false;
+                        this.decrementFeedCount();
+                    } catch (error) {
+                        console.error('Failed to mark as read:', error);
+                    }
+                },
+                
+                async markUnread(item) {
+                    try {
+                        await this.fetchAPI(`/items/${item.id}`, 'PUT', {
+                            is_new: true,
+                            starred: item.starred
+                        });
+                        item.is_new = true;
+                        this.incrementFeedCount();
+                    } catch (error) {
+                        console.error('Failed to mark as unread:', error);
+                    }
+                },
+                
+                async markAllRead() {
+                    if (!this.currentFeed) return;
+                    
+                    try {
+                        await this.fetchAPI(`/feeds/${this.currentFeed}/read`, 'POST');
+                        this.items.forEach(item => item.is_new = false);
+                        this.updateFeedCount(0);
+                    } catch (error) {
+                        console.error('Failed to mark all as read:', error);
+                    }
+                },
+                
+                async markAllUnread() {
+                    if (!this.currentFeed) return;
+                    
+                    try {
+                        await this.fetchAPI(`/feeds/${this.currentFeed}/unread`, 'POST');
+                        this.items.forEach(item => item.is_new = true);
+                        this.updateFeedCount(this.items.length);
+                    } catch (error) {
+                        console.error('Failed to mark all as unread:', error);
+                    }
+                },
+                
+                async updateFeed() {
+                    if (!this.currentFeed || this.currentFeed === 'unread' || this.currentFeed === 'starred') return;
+                    
+                    try {
+                        this.loading = true;
+                        const items = await this.fetchAPI(`/feeds/${this.currentFeed}/fetch`, 'PUT');
+                        this.items = items;
+                        const unreadCount = items.filter(item => item.is_new).length;
+                        this.updateFeedCount(unreadCount);
+                    } catch (error) {
+                        console.error('Failed to update feed:', error);
+                    } finally {
+                        this.loading = false;
+                    }
+                },
+                
+                async deleteFeed() {
+                    if (!this.currentFeed || this.currentFeed === 'unread' || this.currentFeed === 'starred') return;
+                    
+                    if (!confirm('Are you sure you want to delete this feed?')) return;
+                    
+                    try {
+                        await this.fetchAPI(`/feeds/${this.currentFeed}`, 'DELETE');
+                        this.feeds = this.feeds.filter(f => f.id != this.currentFeed);
+                        this.items = [];
+                        this.currentFeed = null;
+                        this.currentFeedTitle = '';
+                    } catch (error) {
+                        console.error('Failed to delete feed:', error);
+                    }
+                },
+                
+                async addFeed(url) {
+                    if (!url.startsWith('http')) {
+                        url = 'http://' + url;
+                    }
+                    
+                    const urlRegex = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/i;
+                    if (!urlRegex.test(url)) {
+                        alert('Please enter a valid URL.');
+                        return;
+                    }
+                    
+                    try {
+                        this.adding = true;
+                        const feed = await this.fetchAPI('/feeds', 'POST', { url });
+                        this.feeds.push({ ...feed, isNew: true });
+                        
+                        // Fetch items for the new feed
+                        await this.updateFeedById(feed.id);
+                        
+                        // Select the new feed
+                        setTimeout(() => this.selectFeed(feed.id, feed.title), 500);
+                    } catch (error) {
+                        console.error('Failed to add feed:', error);
+                        alert('Failed to add feed. Please check the URL and try again.');
+                    } finally {
+                        this.adding = false;
+                    }
+                },
+                
+                async updateFeedById(id) {
+                    try {
+                        await this.fetchAPI(`/feeds/${id}/fetch`, 'PUT');
+                    } catch (error) {
+                        console.error('Failed to fetch feed items:', error);
+                    }
+                },
+                
+                incrementFeedCount() {
+                    if (this.currentFeed === 'unread') {
+                        this.unreadCount++;
+                    } else if (this.currentFeed === 'starred') {
+                        this.starredCount++;
+                    } else {
+                        const feed = this.feeds.find(f => f.id == this.currentFeed);
+                        if (feed) {
+                            feed.unread_count = (feed.unread_count || 0) + 1;
+                        }
+                        this.unreadCount++;
+                    }
+                },
+                
+                decrementFeedCount() {
+                    if (this.currentFeed === 'unread') {
+                        this.unreadCount = Math.max(0, this.unreadCount - 1);
+                    } else if (this.currentFeed === 'starred') {
+                        this.starredCount = Math.max(0, this.starredCount - 1);
+                    } else {
+                        const feed = this.feeds.find(f => f.id == this.currentFeed);
+                        if (feed) {
+                            feed.unread_count = Math.max(0, (feed.unread_count || 0) - 1);
+                        }
+                        this.unreadCount = Math.max(0, this.unreadCount - 1);
+                    }
+                },
+                
+                updateFeedCount(count) {
+                    if (this.currentFeed === 'unread') {
+                        this.unreadCount = count;
+                    } else if (this.currentFeed === 'starred') {
+                        this.starredCount = count;
+                    } else {
+                        const feed = this.feeds.find(f => f.id == this.currentFeed);
+                        if (feed) {
+                            feed.unread_count = count;
+                        }
+                    }
+                },
+                
+                handleSpaceKey(event) {
+                    if (this.currentItem !== null && event.target.tagName !== 'INPUT') {
+                        event.preventDefault();
+                        const currentEl = document.getElementById(this.currentItem);
+                        if (currentEl) {
+                            const rect = currentEl.getBoundingClientRect();
+                            const container = document.getElementById('items-container');
+                            const containerRect = container.getBoundingClientRect();
+                            
+                            if (rect.bottom < containerRect.bottom) {
+                                const nextItem = this.items[this.items.findIndex(i => i.id === this.currentItem) + 1];
+                                if (nextItem) {
+                                    this.toggleItem(nextItem);
+                                }
+                            }
+                        }
+                    }
+                },
+                
+                logout() {
+                    localStorage.removeItem('authToken');
+                    window.location.href = '/login.html';
+                },
+                
+                async fetchAPI(url, method = 'GET', body = null) {
+                    const token = localStorage.getItem('authToken');
+                    const options = {
+                        method,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': token ? `Bearer ${token}` : ''
+                        }
+                    };
+                    
+                    if (body) {
+                        options.body = JSON.stringify(body);
+                    }
+                    
+                    const response = await fetch(url, options);
+                    
+                    if (response.status === 401) {
+                        localStorage.removeItem('authToken');
+                        window.location.href = '/login.html';
+                        throw new Error('Unauthorized');
+                    }
+                    
+                    if (!response.ok && response.status !== 204) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    if (response.status === 204 || response.headers.get('content-length') === '0') {
+                        return null;
+                    }
+                    
+                    return await response.json();
+                },
+                
+                formatDate(timestamp) {
+                    if (!timestamp) return '';
+                    const date = new Date(timestamp);
+                    const now = new Date();
+                    const diffTime = Math.abs(now - date);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    
+                    if (diffDays === 0) return 'Today';
+                    if (diffDays === 1) return 'Yesterday';
+                    if (diffDays < 7) return `${diffDays} days ago`;
+                    
+                    return date.toLocaleDateString();
+                },
+                
+                isRTL(text) {
+                    const rtlRegex = /[\u0600-\u06FF]/;
+                    return rtlRegex.test(text);
+                },
+                
+                getCookie(name) {
+                    const value = `; ${document.cookie}`;
+                    const parts = value.split(`; ${name}=`);
+                    if (parts.length === 2) return parts.pop().split(';').shift();
+                },
+                
+                setCookie(name, value) {
+                    document.cookie = `${name}=${value}; path=/`;
+                }
+            }
+        }
+    </script>
+</body>
 </html>

@@ -7,3 +7,6 @@ public/cache/*.gzip
 public/cache/*.spc
 public/cache/images/*
 reports/
+lite-reader
+public/index-old.html
+

@@ -409,6 +409,11 @@ background-color: #F5ECDE !important;
   color: #3C763D;
 }
 
+.login-container .alert-error {
+  background-color: #F2DEDE;
+  color: #A94442;
+}
+
 .login-container h1 {
   text-align: center;
   color: #333;
