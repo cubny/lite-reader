@@ -1,13 +1,10 @@
 package api
 
 import (
-	"bytes"
 	"encoding/json"
-	"io"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
-	log "github.com/sirupsen/logrus"
 )
 
 // isHTMXRequest checks if the request is an HTMX request
@@ -16,16 +13,6 @@ func isHTMXRequest(r *http.Request) bool {
 }
 
 func (h *Router) login(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	body, err := io.ReadAll(r.Body)
-	if err != nil {
-		log.WithError(err).Error("login: failed to read request body")
-		_ = BadRequest(w, "invalid request body")
-		return
-	}
-	// Restore the body for later use by toLoginCommand
-	r.Body = io.NopCloser(bytes.NewBuffer(body))
-
-	log.WithField("body", string(body)).Info("login: received request")
 	command, err := toLoginCommand(w, r, nil)
 	if err != nil {
 		return

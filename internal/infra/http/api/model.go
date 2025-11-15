@@ -248,7 +248,8 @@ func toLoginCommand(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 	// Check if this is a form submission (HTMX) or JSON request
 	contentType := r.Header.Get("Content-Type")
 	if contentType == "application/x-www-form-urlencoded" || r.Header.Get("HX-Request") == htmxRequestHeader {
-		// Parse form data
+		// For form data, r.Body should already be available
+		// Don't parse form before reading body in the handler
 		if err := r.ParseForm(); err != nil {
 			log.WithError(err).Error("login: failed to parse form data")
 			_ = BadRequest(w, "invalid request body")
