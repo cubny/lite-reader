@@ -5,13 +5,20 @@
     <link href="css/jquery-ui.css" media="screen" rel="stylesheet" type="text/css" />
     <link href="css/font-awesome/css/font-awesome.min.css" media="screen" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 </head>
 <body>
 
     <div class="login-container">
-        <aside id="signup-successful" class="alert alert-success hidden">Account created successfully. Please log in.</aside>
+        <div id="message-container">
+            <aside id="signup-successful" class="alert alert-success hidden">Account created successfully. Please log in.</aside>
+        </div>
         <h1>Login to Lite Reader</h1>
-        <form class="login-form" action="/login" method="POST">
+        <form class="login-form" 
+              hx-post="/login" 
+              hx-target="#message-container"
+              hx-swap="innerHTML"
+              hx-indicator="#login-spinner">
             <div class="form-group">
                 <label for="email">Email:</label>
                 <input type="email" id="email" name="email" class="form-control" required>
@@ -20,7 +27,10 @@
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" class="form-control" required>
             </div>
-            <button type="submit" class="btn-primary">Login</button>
+            <button type="submit" class="btn-primary">
+                Login
+                <span id="login-spinner" class="htmx-indicator">...</span>
+            </button>
 
         </form>
         <div style="text-align: center; margin-top: 20px;">
@@ -28,9 +38,6 @@
         </div>
     </div>
 
-    <script type="text/javascript" src="js/jquery.js"></script>
-    <script type="text/javascript" src="js/jquery.ui.all.js"></script>
-    <script type="text/javascript" src="js/auth.js"></script>
-    <script type="text/javascript" src="js/login.js"></script>
+    <script type="text/javascript" src="js/login-htmx.js"></script>
 </body>
 </html>
