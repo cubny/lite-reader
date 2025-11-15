@@ -3,7 +3,6 @@ module github.com/cubny/lite-reader
 go 1.23.0
 
 require (
-	github.com/angelofallars/htmx-go v0.5.0
 	github.com/google/uuid v1.5.0
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/mmcdole/gofeed v1.2.1
