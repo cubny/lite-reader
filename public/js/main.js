@@ -15,7 +15,10 @@ $(document).ready(function () {
     $('.remove').click(function(){
       feeds.del(this.id);
       });
-    // Logout is now handled inline with HTMX/onclick
+    $('.logout').click(function(){
+      clearAuthToken();
+      window.location = '/';
+    });
     feeds.init();
 
     if(feeds.container.find('>li').length < 2){
