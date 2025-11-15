@@ -1,81 +1,75 @@
-$(document).ready(function () {
-    // Login form validation and submission handling
-    var login = {
-        form: $('.login-form'),
-        
-        init: function() {
-            console.log(this.form);
-            var success = sessionStorage.getItem('signupSuccess');
-            if (success === 'true') {
-                sessionStorage.removeItem('signupSuccess');
-                $('#signup-successful').removeClass('hidden');
-            }
-            this.form.submit(function(e) {
-                e.preventDefault();
-                login.validate();
-            });
-        },
+// Login page JavaScript - Client-side validation only
+// Form submission handled by HTMX
+document.addEventListener('DOMContentLoaded', function() {
+    // Show signup success message if redirected from signup
+    var success = sessionStorage.getItem('signupSuccess');
+    if (success === 'true') {
+        sessionStorage.removeItem('signupSuccess');
+        document.getElementById('signup-successful').classList.remove('hidden');
+    }
 
-        validate: function() {
-            var email = $('#email').val().trim();
-            var password = $('#password').val();
-            var isValid = true;
+    var form = document.querySelector('.login-form');
+    
+    form.addEventListener('submit', function(e) {
+        // Reset previous error states
+        var formGroups = document.querySelectorAll('.form-group');
+        formGroups.forEach(function(group) {
+            group.classList.remove('has-error');
+        });
+        var errorMessages = document.querySelectorAll('.error-message');
+        errorMessages.forEach(function(msg) {
+            msg.remove();
+        });
 
-            // Reset previous error states
-            $('.form-group').removeClass('has-error');
-            $('.error-message').remove();
+        var email = document.getElementById('email').value.trim();
+        var password = document.getElementById('password').value;
+        var isValid = true;
 
-            // Email validation
-            if (!email || !this.isValidEmail(email)) {
-                this.showError($('#email'), 'Please enter a valid email address');
-                isValid = false;
-            }
-
-            // Password validation
-            if (!password || password.length < 6) {
-                this.showError($('#password'), 'Password must be at least 6 characters');
-                isValid = false;
-            }
-
-            if (isValid) {
-                this.submitForm();
-            }
-        },
-
-        isValidEmail: function(email) {
-            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(email);
-        },
-
-        showError: function(element, message) {
-            element.parent('.form-group').addClass('has-error');
-            $('<div class="error-message">' + message + '</div>')
-                .insertAfter(element);
-        },
-
-        submitForm: function() {
-            var data = {
-                email: $('#email').val().trim(),
-                password: $('#password').val()
-            };
-            $.ajax({
-                url: '/login',
-                type: 'POST',
-                data: JSON.stringify(data),     
-                dataType: 'json',
-                contentType: 'application/json',
-                success: function(response) {
-                    setAuthToken(response.access_token);
-                    window.location.href = '/';
-                },
-                error: function(xhr) {
-                    console.log(xhr);
-                    login.showError($('#email'), 'Invalid email or password');
-                }
-            });
+        // Email validation
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email || !emailRegex.test(email)) {
+            showError(document.getElementById('email'), 'Please enter a valid email address');
+            isValid = false;
         }
-    };
 
-    // Initialize login functionality
-    login.init();
+        // Password validation
+        if (!password || password.length < 6) {
+            showError(document.getElementById('password'), 'Password must be at least 6 characters');
+            isValid = false;
+        }
+
+        if (!isValid) {
+            e.preventDefault();
+        }
+        // If valid, HTMX will handle the submission
+    });
+
+    // HTMX event listener for successful login
+    document.body.addEventListener('htmx:beforeSwap', function(event) {
+        // Check if this is the login form
+        if (event.detail.target.id === 'form-messages') {
+            // Check for auth token cookie set by server
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.startsWith('authToken=')) {
+                    var token = cookie.substring('authToken='.length);
+                    if (token) {
+                        // Store token in localStorage
+                        setAuthToken(token);
+                        // Clear the cookie (we only used it for transfer)
+                        document.cookie = 'authToken=; path=/; max-age=0';
+                    }
+                }
+            }
+        }
+    });
 });
+
+function showError(element, message) {
+    element.parentElement.classList.add('has-error');
+    var errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.textContent = message;
+    element.parentElement.appendChild(errorDiv);
+}

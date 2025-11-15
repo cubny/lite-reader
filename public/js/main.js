@@ -15,10 +15,7 @@ $(document).ready(function () {
     $('.remove').click(function(){
       feeds.del(this.id);
       });
-    $('.logout').click(function(){
-      clearAuthToken();
-      window.location = '/';
-    });
+    // Logout is now handled by onclick in HTML calling logout() from auth.js
     feeds.init();
 
     if(feeds.container.find('>li').length < 2){

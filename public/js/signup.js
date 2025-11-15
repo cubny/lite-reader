@@ -1,85 +1,62 @@
-$(document).ready(function () {
-    // Signup form validation and submission handling
-    var signup = {
-        form: $('.login-form'),
-        
-        init: function() {
-            this.form.submit(function(e) {
-                e.preventDefault();
-                signup.validate();
-            });
-        },
+// Signup page JavaScript - Client-side validation only
+// Form submission handled by HTMX
+document.addEventListener('DOMContentLoaded', function() {
+    var form = document.querySelector('.login-form');
+    
+    form.addEventListener('submit', function(e) {
+        // Reset previous errors
+        var formGroups = document.querySelectorAll('.form-group');
+        formGroups.forEach(function(group) {
+            group.classList.remove('has-error');
+        });
+        var errorMessages = document.querySelectorAll('.error-message');
+        errorMessages.forEach(function(msg) {
+            msg.remove();
+        });
 
-        validate: function() {
-            // Reset previous errors
-            $('.form-group').removeClass('has-error');
-            $('.error-message').remove();
+        var email = document.getElementById('email').value.trim();
+        var password = document.getElementById('password').value;
+        var confirmPassword = document.getElementById('confirm-password').value;
+        var isValid = true;
 
-            var email = $('#email').val().trim();
-            var password = $('#password').val();
-            var confirmPassword = $('#confirm-password').val();
-            var isValid = true;
-
-            // Validate email
-            if (!this.isValidEmail(email)) {
-                this.showError($('#email'), 'Please enter a valid email address');
-                isValid = false;
-            }
-
-            // Validate password
-            if (!this.isValidPassword(password)) {
-                this.showError($('#password'), 'Password must be at least 6 characters long');
-                isValid = false;
-            }
-
-            // Validate password confirmation
-            if (password !== confirmPassword) {
-                this.showError($('#confirm-password'), 'Passwords do not match');
-                isValid = false;
-            }
-
-            if (isValid) {
-                this.submitForm(email, password);
-            }
-
-            return isValid;
-        },
-
-        isValidEmail: function(email) {
-            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(email);
-        },
-
-        isValidPassword: function(password) {
-            return password && password.length >= 6;
-        },
-        
-        showError: function(element, message) {
-            element.parent('.form-group').addClass('has-error');
-            $('<div class="error-message">' + message + '</div>')
-                .insertAfter(element);
-        },
-
-        submitForm: function(email, password) {
-            $.ajax({
-                url: '/signup',
-                type: 'POST',
-                data: JSON.stringify({
-                    email: email,
-                    password: password
-                }),
-                contentType: 'application/json',
-                success: function(response) {
-                    sessionStorage.setItem('signupSuccess', 'true');
-                    window.location.href = '/login.html';
-
-                },
-                error: function(xhr) {
-                    signup.showError($('#email'), 'Error creating account. Email may already be registered.');
-                }
-            });
+        // Validate email
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            showError(document.getElementById('email'), 'Please enter a valid email address');
+            isValid = false;
         }
-    };
 
-    signup.init();
+        // Validate password
+        if (!password || password.length < 6) {
+            showError(document.getElementById('password'), 'Password must be at least 6 characters long');
+            isValid = false;
+        }
+
+        // Validate password confirmation
+        if (password !== confirmPassword) {
+            showError(document.getElementById('confirm-password'), 'Passwords do not match');
+            isValid = false;
+        }
+
+        if (!isValid) {
+            e.preventDefault();
+        }
+        // If valid, HTMX will handle the submission
+    });
+
+    // Listen for successful signup (redirect via HX-Redirect header)
+    document.body.addEventListener('htmx:beforeSwap', function(event) {
+        if (event.detail.target.id === 'form-messages' && event.detail.xhr.status === 201) {
+            // Signup successful, set flag for login page
+            sessionStorage.setItem('signupSuccess', 'true');
+        }
+    });
 });
+
+function showError(element, message) {
+    element.parentElement.classList.add('has-error');
+    var errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.textContent = message;
+    element.parentElement.appendChild(errorDiv);
+}
