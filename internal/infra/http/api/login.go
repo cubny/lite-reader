@@ -33,8 +33,9 @@ func (h *Router) login(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 
 	if contentType == "application/x-www-form-urlencoded" || isHTMX {
 		// Parse form data
-		if err := r.ParseForm(); err != nil {
-			log.WithError(err).Error("login: failed to parse form")
+		parseErr = r.ParseForm()
+		if parseErr != nil {
+			log.WithError(parseErr).Error("login: failed to parse form")
 			if isHTMX {
 				w.Header().Set("Content-Type", "text/html")
 				w.WriteHeader(http.StatusBadRequest)
@@ -87,7 +88,7 @@ func (h *Router) login(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 		// Return HTML fragment with token embedded
 		w.Header().Set("Content-Type", "text/html")
 		w.WriteHeader(http.StatusOK)
-		html := fmt.Sprintf(`<div data-token="%s" class="success-message">Login successful</div>`, response.AccessToken)
+		html := fmt.Sprintf(`<div data-token=%q class="success-message">Login successful</div>`, response.AccessToken)
 		_, _ = w.Write([]byte(html))
 	} else {
 		// Return JSON for backward compatibility
