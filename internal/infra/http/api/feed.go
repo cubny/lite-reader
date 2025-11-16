@@ -26,18 +26,46 @@ import (
 func (h *Router) addFeed(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	command, err := toAddFeedCommand(w, r, p)
 	if err != nil {
+		if isHTMXRequest(r) {
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			w.WriteHeader(http.StatusBadRequest)
+			_, _ = w.Write([]byte(renderFeedError("Invalid feed URL")))
+		}
 		return
 	}
 
 	log.Infof("addFeed: command %v", command)
-	// define t as a new uuid
 	t, err := h.feedService.AddFeed(command)
 	if err != nil {
 		log.WithError(err).Errorf("addFeed: service %s", err)
+		if isHTMXRequest(r) {
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = w.Write([]byte(renderFeedError("Failed to add feed")))
+			return
+		}
 		_ = InternalError(w, "failed to add feed due to server internal error")
 		return
 	}
 
+	// For HTMX requests, get all feeds and return the complete list
+	if isHTMXRequest(r) {
+		userID := r.Context().Value(cxutil.UserIDKey).(int)
+		feeds, err := h.feedService.ListFeeds(userID)
+		if err != nil {
+			log.WithError(err).Errorf("addFeed: listFeeds %s", err)
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = w.Write([]byte(renderFeedError("Failed to refresh feed list")))
+			return
+		}
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.WriteHeader(http.StatusCreated)
+		_, _ = w.Write([]byte(renderFeedList(feeds)))
+		return
+	}
+
+	// JSON response for non-HTMX requests
 	w.WriteHeader(http.StatusCreated)
 	if err := json.NewEncoder(w).Encode(toAddFeedResponse(t)); err != nil {
 		log.WithError(err).Errorf("setFeed: encoder %s", err)
@@ -50,10 +78,25 @@ func (h *Router) listFeeds(w http.ResponseWriter, r *http.Request, _ httprouter.
 	resp, err := h.feedService.ListFeeds(userID)
 	if err != nil {
 		log.WithError(err).Errorf("listFeeds: service %s", err)
+		if isHTMXRequest(r) {
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = w.Write([]byte(renderFeedError("Cannot list feeds")))
+			return
+		}
 		_ = InternalError(w, "cannot list feeds")
 		return
 	}
 
+	// For HTMX requests, return HTML fragment
+	if isHTMXRequest(r) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(renderFeedList(resp)))
+		return
+	}
+
+	// JSON response for non-HTMX requests
 	w.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(w).Encode(toListFeedResponse(resp)); err != nil {
 		log.WithError(err).Errorf("listFeeds: encoder %s", err)
@@ -153,23 +196,63 @@ func (h *Router) unreadFeedItems(w http.ResponseWriter, r *http.Request, p httpr
 func (h *Router) deleteFeed(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	command, err := toDeleteFeedCommand(w, r, p)
 	if err != nil {
+		if isHTMXRequest(r) {
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			w.WriteHeader(http.StatusBadRequest)
+			_, _ = w.Write([]byte(renderFeedError("Invalid feed ID")))
+		}
 		return
 	}
 
 	cmdDeleteFeedItems, err := toDeleteFeedItemsCommand(w, r, p)
 	if err != nil {
+		if isHTMXRequest(r) {
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			w.WriteHeader(http.StatusBadRequest)
+			_, _ = w.Write([]byte(renderFeedError("Invalid feed ID")))
+		}
 		return
 	}
 
 	if err := h.itemService.DeleteFeedItems(cmdDeleteFeedItems); err != nil {
+		if isHTMXRequest(r) {
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = w.Write([]byte(renderFeedError("Cannot delete feed")))
+			return
+		}
 		_ = InternalError(w, "cannot delete feed")
 		return
 	}
 
 	if err := h.feedService.DeleteFeed(command); err != nil {
+		if isHTMXRequest(r) {
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = w.Write([]byte(renderFeedError("Cannot delete feed")))
+			return
+		}
 		_ = InternalError(w, "cannot delete feed")
 		return
 	}
 
+	// For HTMX requests, return updated feed list
+	if isHTMXRequest(r) {
+		userID := r.Context().Value(cxutil.UserIDKey).(int)
+		feeds, err := h.feedService.ListFeeds(userID)
+		if err != nil {
+			log.WithError(err).Errorf("deleteFeed: listFeeds %s", err)
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = w.Write([]byte(renderFeedError("Failed to refresh feed list")))
+			return
+		}
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(renderFeedList(feeds)))
+		return
+	}
+
+	// JSON response for non-HTMX requests
 	w.WriteHeader(http.StatusNoContent)
 }

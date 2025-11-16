@@ -13,13 +13,25 @@
         <div class="ui-layout-west" id="feeds">
             <div id="toolbar" class="ui-layout-north">
                 <div id="addfeed">
-                    <a class="add btn btn-purple" href="#">
+                    <a class="add btn btn-purple" href="#" id="show-feed-form">
                         <i class="icon-plus"></i> <span>Feed</span>
                     </a>
-                    <input type="text" id="urlToAdd" style="display: none" />
+                    <form id="add-feed-form" style="display: none;" 
+                          hx-post="/feeds" 
+                          hx-target="#feeds ul" 
+                          hx-swap="innerHTML"
+                          hx-indicator="#feed-add-indicator">
+                        <input type="text" id="urlToAdd" name="url" placeholder="Feed URL" required />
+                        <button type="submit" class="btn btn-green" style="display: none;">
+                            <i class="icon-plus"></i>
+                        </button>
+                    </form>
+                    <span id="feed-add-indicator" class="htmx-indicator" style="display: none;">
+                        <i class="icon-spin icon-spinner"></i> Adding...
+                    </span>
                 </div>
             </div>
-            <ul>
+            <ul id="feeds-list">
                 <li id="unread" class="feed">
                     <div class="count"><span></span></div>
                     <i class="icon-circle"></i>
@@ -75,6 +87,7 @@
             </li>
         </script>
     </body>
+    <script type="text/javascript" src="js/htmx.min.js"></script>
     <script type="text/javascript" src="js/jquery.js"></script>
     <script type="text/javascript" src="js/jquery.ui.all.js"></script>
     <script type="text/javascript" src="js/jquery.layout.js"></script>

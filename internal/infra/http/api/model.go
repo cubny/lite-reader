@@ -17,9 +17,15 @@ import (
 	"github.com/cubny/lite-reader/internal/infra/http/api/cxutil"
 )
 
+const (
+	contentTypeFormURLEncoded = "application/x-www-form-urlencoded"
+	contentTypeMultipartForm  = "multipart/form-data"
+)
+
 type AddFeedRequest struct {
 	URL string `json:"url"`
 }
+
 
 func (r *AddFeedRequest) Validate() error {
 	if _, err := url.ParseRequestURI(r.URL); err != nil {
@@ -96,10 +102,24 @@ func toGetItemsResponse(items []*item.Item) []*ItemResponse {
 
 func toAddFeedCommand(w http.ResponseWriter, r *http.Request, _ httprouter.Params) (*feed.AddFeedCommand, error) {
 	request := &AddFeedRequest{}
-	if err := json.NewDecoder(r.Body).Decode(request); err != nil {
-		log.WithError(err).Errorf("toAddFeedCommand: decoder %s", err)
-		_ = BadRequest(w, "cannot decode request body")
-		return nil, err
+
+	// Check if this is a form submission (HTMX) or JSON request
+	contentType := r.Header.Get("Content-Type")
+	if isHTMXRequest(r) || contentType == contentTypeFormURLEncoded || contentType == contentTypeMultipartForm {
+		// Parse form data
+		if err := r.ParseForm(); err != nil {
+			log.WithError(err).Error("addFeed: failed to parse form data")
+			_ = BadRequest(w, "invalid request body")
+			return nil, err
+		}
+		request.URL = r.FormValue("url")
+	} else {
+		// Parse JSON
+		if err := json.NewDecoder(r.Body).Decode(request); err != nil {
+			log.WithError(err).Errorf("toAddFeedCommand: decoder %s", err)
+			_ = BadRequest(w, "cannot decode request body")
+			return nil, err
+		}
 	}
 
 	if err := request.Validate(); err != nil {
@@ -245,7 +265,7 @@ func toLoginCommand(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 
 	// Check if this is a form submission (HTMX) or JSON request
 	contentType := r.Header.Get("Content-Type")
-	if isHTMXRequest(r) || contentType == "application/x-www-form-urlencoded" || contentType == "multipart/form-data" {
+	if isHTMXRequest(r) || contentType == contentTypeFormURLEncoded || contentType == contentTypeMultipartForm {
 		// Parse form data
 		if err := r.ParseForm(); err != nil {
 			log.WithError(err).Error("login: failed to parse form data")
@@ -292,7 +312,7 @@ func toSignupCommand(w http.ResponseWriter, r *http.Request, _ httprouter.Params
 
 	// Check if this is a form submission (HTMX) or JSON request
 	contentType := r.Header.Get("Content-Type")
-	if isHTMXRequest(r) || contentType == "application/x-www-form-urlencoded" || contentType == "multipart/form-data" {
+	if isHTMXRequest(r) || contentType == contentTypeFormURLEncoded || contentType == contentTypeMultipartForm {
 		// Parse form data
 		if err := r.ParseForm(); err != nil {
 			log.WithError(err).Error("signup: failed to parse form data")

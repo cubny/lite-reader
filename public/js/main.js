@@ -1,28 +1,98 @@
 $(document).ready(function () {
     stage.init();
     loadr.init();
-    $(document).click(hideAddFeed);
-    $('#addfeed > *').click(showAddFeed);
+    
+    // Feed form toggle handlers
+    var showFeedFormBtn = document.getElementById('show-feed-form');
+    var addFeedForm = document.getElementById('add-feed-form');
+    var urlInput = document.getElementById('urlToAdd');
+    
+    if (showFeedFormBtn && addFeedForm && urlInput) {
+      showFeedFormBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (addFeedForm.style.display === 'none') {
+          // Show the form
+          addFeedForm.style.display = 'inline-block';
+          urlInput.style.display = 'inline-block';
+          urlInput.focus();
+          showFeedFormBtn.classList.remove('btn-purple');
+          showFeedFormBtn.classList.add('btn-green');
+          showFeedFormBtn.querySelector('span').textContent = '';
+        } else {
+          // Hide the form
+          addFeedForm.style.display = 'none';
+          urlInput.value = '';
+          showFeedFormBtn.classList.remove('btn-green');
+          showFeedFormBtn.classList.add('btn-purple');
+          showFeedFormBtn.querySelector('span').textContent = 'Feed';
+        }
+      });
+      
+      // Handle Enter key in input
+      urlInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          addFeedForm.querySelector('button[type="submit"]').click();
+        }
+      });
+      
+      // Reset form after successful submission
+      document.body.addEventListener('htmx:afterSwap', function(evt) {
+        if (evt.detail.target.id === 'feeds-list') {
+          addFeedForm.style.display = 'none';
+          urlInput.value = '';
+          showFeedFormBtn.classList.remove('btn-green');
+          showFeedFormBtn.classList.add('btn-purple');
+          showFeedFormBtn.querySelector('span').textContent = 'Feed';
+          
+          // Re-initialize counts after feed list update
+          setTimeout(function() {
+            feeds.getUnreadItemsCount();
+            feeds.getStarredItemsCount();
+          }, 500);
+        }
+      });
+      
+      // Hide form when clicking outside
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('#addfeed') && addFeedForm.style.display !== 'none') {
+          addFeedForm.style.display = 'none';
+          urlInput.value = '';
+          showFeedFormBtn.classList.remove('btn-green');
+          showFeedFormBtn.classList.add('btn-purple');
+          showFeedFormBtn.querySelector('span').textContent = 'Feed';
+        }
+      });
+    }
+    
+    // Action button handlers (keep using jQuery for compatibility with existing code)
     $('.update').click(function(){
       feeds.update(this.id);
-      });
+    });
     $('#mark-read-all').click(function(){
       feeds.markread(this.id);
-      });
+    });
     $('#mark-unread-all').click(function(){
       feeds.markunread(this.id);
-      });
+    });
     $('.remove').click(function(){
       feeds.del(this.id);
-      });
+    });
     $('.logout').click(function(){
       logout()
     });
+    
     feeds.init();
 
-    if(feeds.container.find('>li').length < 2){
-      $('#feeds-actions').hide();
+    if(feeds.container && feeds.container.querySelectorAll('li').length < 2){
+      var feedActions = document.getElementById('feeds-actions');
+      if (feedActions) {
+        feedActions.style.display = 'none';
+      }
     }
+    
     $(document).bind('keydown',function(e){
       var code = (e.keyCode ? e.keyCode : e.which);
       if(code == 32) {
@@ -47,85 +117,6 @@ function logout() {
           window.location.href = '/login.html';
         }
     })
-}
-// Update the existing addFeed function
-function addFeed(url) {
-    var aInput = $("#urlToAdd");
-    var af = $('#addfeed .add');
-    af.find("span").text('Adding Feed...');
-    af.find("i").removeClass("icon-plus");
-    af.find("i").addClass("icon-spin icon-spinner");
-    
-    $.ajax({
-        url: 'feeds',
-        type: "POST",
-        data: JSON.stringify({url: url}),
-        dataType: "json",
-        success: function(data) {
-            af.find("span").text('Feed');
-            if (!data.error) {
-                feeds.add(data);
-            } else {
-                console.log(data);
-            }
-        },
-        complete: function() {
-            af.find("span").text('Feed');
-            af.find("i").removeClass("icon-spin icon-spinner");
-            af.find("i").addClass("icon-plus");
-            aInput.val("");
-            hideAddFeed();
-        }
-    });
-}
-
-function showAddFeed(e){
-  e.stopPropagation();
-  var aButton=$("#addfeed a");
-  aButton.removeClass("btn-purple");
-  aButton.addClass("btn-green");
-  aButton.find("span").text("");
-  var aInput=$("#urlToAdd");
-  aInput.removeClass('ui-state-error');
-  aInput.show();
-  aButton.unbind('click');
-  aButton.click(function (e) {
-    aButton.unbind('click');
-    e.stopPropagation();
-    if (aInput.val() === "") {
-      hideAddFeed();
-      return;
-    }
-    if (aInput.val().indexOf('http') < 0) {
-      aInput.val("http://" + aInput.val());
-    }
-    var bValid = true;
-    aInput.removeClass('ui-state-error');
-    bValid = bValid && checkLength(aInput, "Url", 10, 255);
-    bValid = bValid && checkRegexp(aInput, /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/i, "Please Enter a Valid Url.");
-    if (bValid) {
-      addFeed(aInput.val());
-      aInput.val("");
-      hideAddFeed();
-    }
-  });
-  aInput.unbind('keypress');
-  aInput.keypress(function (e) {
-    if (e.which == 13) {
-      aButton.click();
-    }
-  });
-  aInput.focus();
-}
-
-function hideAddFeed(){
-  var aButton=$("#addfeed a");
-  var aInput=$("#urlToAdd");
-  aButton.addClass("btn-purple");
-  aButton.removeClass("btn-green");
-  aButton.find("span").text("Feed");
-  aInput.hide();
-  $('#addfeed > *').click(showAddFeed);
 }
 
 
