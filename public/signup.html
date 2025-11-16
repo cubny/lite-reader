@@ -8,18 +8,22 @@
     
     <div class="login-container">
         <h1>Sign Up for Lite Reader</h1>
-        <form class="login-form" action="/signup" method="POST">
+        <form class="login-form" 
+              hx-post="/signup" 
+              hx-target="#form-messages"
+              hx-swap="innerHTML">
+            <div id="form-messages"></div>
             <div class="form-group">
                 <label for="email">Email:</label>
                 <input type="email" id="email" name="email" class="form-control" required>
             </div>
             <div class="form-group">
                 <label for="password">Password:</label>
-                <input type="password" id="password" name="password" class="form-control" required>
+                <input type="password" id="password" name="password" class="form-control" required minlength="6">
             </div>
             <div class="form-group">
                 <label for="confirm-password">Confirm Password:</label>
-                <input type="password" id="confirm-password" name="confirm-password" class="form-control" required>
+                <input type="password" id="confirm-password" name="confirm-password" class="form-control" required minlength="6">
             </div>
             <button type="submit" class="btn-primary">Sign Up</button>
         </form>
@@ -27,8 +31,7 @@
             <a href="/login.html" style="color: #6C8A46;">Already have an account? Log in</a>
         </div>
     </div>
-    <script type="text/javascript" src="js/jquery.js"></script>
-    <script type="text/javascript" src="js/jquery.ui.all.js"></script>
+    <script type="text/javascript" src="js/htmx.min.js"></script>
     <script type="text/javascript" src="js/auth.js"></script>
     <script type="text/javascript" src="js/signup.js"></script>
 </body>

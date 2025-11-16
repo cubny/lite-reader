@@ -16,8 +16,7 @@ $(document).ready(function () {
       feeds.del(this.id);
       });
     $('.logout').click(function(){
-      clearAuthToken();
-      window.location = '/';
+      logout()
     });
     feeds.init();
 
@@ -39,6 +38,16 @@ $(document).ready(function () {
     });
 });
 
+function logout() {
+    $.ajax({
+        url: 'logout',
+        type: "POST",
+        complete: function() {
+          clearAuthToken();
+          window.location.href = '/login.html';
+        }
+    })
+}
 // Update the existing addFeed function
 function addFeed(url) {
     var aInput = $("#urlToAdd");
