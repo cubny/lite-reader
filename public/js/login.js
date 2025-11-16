@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 var cookies = document.cookie.split(';');
                 for (var i = 0; i < cookies.length; i++) {
                     var cookie = cookies[i].trim();
+                    console.log('Checking cookie:', cookie);
                     if (cookie.startsWith('authToken=')) {
                         var token = cookie.substring('authToken='.length);
                         if (token) {
