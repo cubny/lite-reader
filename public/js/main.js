@@ -1,4 +1,20 @@
 $(document).ready(function () {
+    // Configure HTMX to include Authorization header in all requests
+    document.body.addEventListener('htmx:configRequest', function(evt) {
+        const token = getAuthToken();
+        if (token) {
+            evt.detail.headers['Authorization'] = 'Bearer ' + token;
+        }
+    });
+    
+    // Handle 401 errors from HTMX
+    document.body.addEventListener('htmx:responseError', function(evt) {
+        if (evt.detail.xhr && evt.detail.xhr.status === 401) {
+            clearAuthToken();
+            window.location.href = '/login.html';
+        }
+    });
+
     stage.init();
     loadr.init();
     

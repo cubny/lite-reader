@@ -18,7 +18,7 @@
                     </a>
                     <form id="add-feed-form" style="display: none;" 
                           hx-post="/feeds" 
-                          hx-target="#feeds ul" 
+                          hx-target="#feeds-list" 
                           hx-swap="innerHTML"
                           hx-indicator="#feed-add-indicator">
                         <input type="text" id="urlToAdd" name="url" placeholder="Feed URL" required />
@@ -96,9 +96,9 @@
     <script type="text/javascript" src="js/spin.min.js"></script>
     <script type="text/javascript" src="js/moment.min.js"></script>
     <script type="text/javascript" src="js/utils.js"></script>
+    <script type="text/javascript" src="js/auth.js"></script>
     <script type="text/javascript" src="js/feeds.js"></script>
     <script type="text/javascript" src="js/items.js"></script>
     <script type="text/javascript" src="js/stage.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
-    <script type="text/javascript" src="js/auth.js"></script>
 </html>

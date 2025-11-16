@@ -49,10 +49,10 @@ export class MainPage {
     // Wait a moment for the input to be filled
     await this.page.waitForTimeout(300);
     
-    // Click the button again to submit (it changes behavior after first click)
-    await this.addFeedButton.click();
+    // Press Enter to submit the form (HTMX form submission)
+    await this.feedUrlInput.press('Enter');
     
-    // Wait for the feed to be added (button changes back to purple)
+    // Wait for the feed to be added
     await this.page.waitForTimeout(2000);
   }
 
