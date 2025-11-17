@@ -1,2 +1,2 @@
 TODO
-- [ ] Fix: unread-all does not work for starred items
+- [ ] Bug: multi item actions do not work for starred and unread collections
