@@ -14,9 +14,9 @@ func (h *Router) signup(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 
 	if err := h.authService.Signup(command); err != nil {
 		if isHTMXRequest(r) {
-			// Return HTML error for HTMX requests
-			w.Header().Set("Content-Type", "text/html")
-			w.WriteHeader(http.StatusBadRequest)
+			// Return HTML error for HTMX requests (200 OK so HTMX will swap it)
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			w.WriteHeader(http.StatusOK)
 			_, _ = w.Write([]byte(`<div class="error-message">Error creating account. Email may already be registered.</div>`))
 		} else {
 			_ = BadRequest(w, err.Error())

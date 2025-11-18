@@ -52,10 +52,15 @@ test.describe('Authentication', () => {
     await loginPage.goto();
     await loginPage.login('nonexistent@test.example', 'wrongpassword');
     
-    // Should show error or stay on login page
+    // Should show error message and stay on login page
     await page.waitForTimeout(1000);
     const url = page.url();
     expect(url).toContain('login');
+    
+    // Verify error message is displayed
+    const errorMessage = await page.locator('.error-message');
+    await expect(errorMessage).toBeVisible();
+    await expect(errorMessage).toContainText('Invalid email or password');
   });
 
   test('should logout successfully', async ({ page }) => {
@@ -77,5 +82,27 @@ test.describe('Authentication', () => {
     // Should be redirected to login page
     const url = page.url();
     expect(url).toContain('login');
+  });
+
+  test('should not signup with duplicate email', async ({ page }) => {
+    // First, create a user
+    const signupPage = new SignupPage(page);
+    await signupPage.goto();
+    await signupPage.signup(email, password);
+    await signupPage.waitForSuccess();
+
+    // Try to signup again with the same email
+    await signupPage.goto();
+    await signupPage.signup(email, password);
+    
+    // Should show error message and stay on signup page
+    await page.waitForTimeout(1000);
+    const url = page.url();
+    expect(url).toContain('signup');
+    
+    // Verify error message is displayed
+    const errorMessage = await page.locator('.error-message');
+    await expect(errorMessage).toBeVisible();
+    await expect(errorMessage).toContainText('Email may already be registered');
   });
 });

@@ -21,10 +21,10 @@
                           hx-target="#feeds-list" 
                           hx-swap="innerHTML"
                           hx-indicator="#feed-add-indicator">
-                        <input type="text" id="urlToAdd" name="url" placeholder="Feed URL" required />
-                        <button type="submit" class="btn btn-green" style="display: none;">
+                        <button type="submit" class="btn btn-green">
                             <i class="icon-plus"></i>
                         </button>
+                        <input type="text" id="urlToAdd" name="url" placeholder="Feed URL" required />
                     </form>
                     <span id="feed-add-indicator" class="htmx-indicator" style="display: none;">
                         <i class="icon-spin icon-spinner"></i> Adding...

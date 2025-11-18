@@ -21,10 +21,11 @@ func (h *Router) login(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 	response, err := h.authService.Login(command)
 	if err != nil {
 		if isHTMXRequest(r) {
-			// Return HTML error for HTMX requests
-			w.Header().Set("Content-Type", "text/html")
-			w.WriteHeader(http.StatusUnauthorized)
-			_, _ = w.Write([]byte(`<div class="error-message">Invalid email or password</div>`))
+			// Return HTML error for HTMX requests (200 OK so HTMX will swap it)
+			// w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			// w.WriteHeader(http.StatusOK)
+			// _, _ = w.Write([]byte(`<div class="error-message">Invalid email or password</div>`))
+			HTMLBadRequest(w, `<div class="error-message">Invalid email or password</div>`)
 		} else {
 			_ = BadRequest(w, err.Error())
 		}

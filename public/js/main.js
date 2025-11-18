@@ -40,16 +40,12 @@ $(document).ready(function () {
           addFeedForm.style.display = 'inline-block';
           urlInput.style.display = 'inline-block';
           urlInput.focus();
-          showFeedFormBtn.classList.remove('btn-purple');
-          showFeedFormBtn.classList.add('btn-green');
-          showFeedFormBtn.querySelector('span').textContent = '';
+          hideFeedFormButton();
         } else {
           // Hide the form
           addFeedForm.style.display = 'none';
           urlInput.value = '';
-          showFeedFormBtn.classList.remove('btn-green');
-          showFeedFormBtn.classList.add('btn-purple');
-          showFeedFormBtn.querySelector('span').textContent = 'Feed';
+          showFeedButton();
         }
       });
       
@@ -66,15 +62,10 @@ $(document).ready(function () {
         if (evt.detail.target.id === 'feeds-list') {
           addFeedForm.style.display = 'none';
           urlInput.value = '';
-          showFeedFormBtn.classList.remove('btn-green');
-          showFeedFormBtn.classList.add('btn-purple');
-          showFeedFormBtn.querySelector('span').textContent = 'Feed';
+          showFeedButton();
           
-          // Re-initialize counts after feed list update
-          setTimeout(function() {
-            feeds.getUnreadItemsCount();
-            feeds.getStarredItemsCount();
-          }, 500);
+          feeds.getUnreadItemsCount();
+          feeds.getStarredItemsCount();
         }
       });
       
@@ -83,9 +74,7 @@ $(document).ready(function () {
         if (!e.target.closest('#addfeed') && addFeedForm.style.display !== 'none') {
           addFeedForm.style.display = 'none';
           urlInput.value = '';
-          showFeedFormBtn.classList.remove('btn-green');
-          showFeedFormBtn.classList.add('btn-purple');
-          showFeedFormBtn.querySelector('span').textContent = 'Feed';
+          showFeedButton();
         }
       });
     }
@@ -130,6 +119,22 @@ $(document).ready(function () {
       }
     });
 });
+
+function hideFeedFormButton() {
+  var showFeedFormBtn = document.getElementById('show-feed-form');
+  showFeedFormBtn.classList.remove('btn-purple');
+  showFeedFormBtn.style.display = 'none';
+  showFeedFormBtn.classList.add('btn-green');
+  showFeedFormBtn.querySelector('span').textContent = '';
+}
+
+function showFeedButton() {
+  var showFeedFormBtn = document.getElementById('show-feed-form');
+  showFeedFormBtn.style.display = 'inline-block';
+  showFeedFormBtn.classList.remove('btn-green');
+  showFeedFormBtn.classList.add('btn-purple');
+  showFeedFormBtn.querySelector('span').textContent = 'Feed';
+}
 
 function logout() {
     $.ajax({

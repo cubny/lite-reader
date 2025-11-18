@@ -26,7 +26,6 @@ type AddFeedRequest struct {
 	URL string `json:"url"`
 }
 
-
 func (r *AddFeedRequest) Validate() error {
 	if _, err := url.ParseRequestURI(r.URL); err != nil {
 		return err
@@ -269,7 +268,13 @@ func toLoginCommand(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 		// Parse form data
 		if err := r.ParseForm(); err != nil {
 			log.WithError(err).Error("login: failed to parse form data")
-			_ = BadRequest(w, "invalid request body")
+			if isHTMXRequest(r) {
+				w.Header().Set("Content-Type", "text/html; charset=utf-8")
+				w.WriteHeader(http.StatusOK)
+				_, _ = w.Write([]byte(`<div class="error-message">Invalid request</div>`))
+			} else {
+				_ = BadRequest(w, "invalid request body")
+			}
 			return nil, err
 		}
 		request.Email = r.FormValue("email")
@@ -285,7 +290,13 @@ func toLoginCommand(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 
 	if err := request.Validate(); err != nil {
 		log.WithError(err).Error("login: invalid request body")
-		_ = BadRequest(w, "invalid request body")
+		if isHTMXRequest(r) {
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			w.WriteHeader(http.StatusOK)
+			_, _ = w.Write([]byte(`<div class="error-message">Email and password are required</div>`))
+		} else {
+			_ = BadRequest(w, "invalid request body")
+		}
 		return nil, err
 	}
 
@@ -316,7 +327,13 @@ func toSignupCommand(w http.ResponseWriter, r *http.Request, _ httprouter.Params
 		// Parse form data
 		if err := r.ParseForm(); err != nil {
 			log.WithError(err).Error("signup: failed to parse form data")
-			_ = BadRequest(w, "invalid request body")
+			if isHTMXRequest(r) {
+				w.Header().Set("Content-Type", "text/html; charset=utf-8")
+				w.WriteHeader(http.StatusOK)
+				_, _ = w.Write([]byte(`<div class="error-message">Invalid request</div>`))
+			} else {
+				_ = BadRequest(w, "invalid request body")
+			}
 			return nil, err
 		}
 		request.Email = r.FormValue("email")
@@ -332,7 +349,13 @@ func toSignupCommand(w http.ResponseWriter, r *http.Request, _ httprouter.Params
 
 	if err := request.Validate(); err != nil {
 		log.WithError(err).Error("signup: invalid request body")
-		_ = BadRequest(w, "invalid request body")
+		if isHTMXRequest(r) {
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			w.WriteHeader(http.StatusOK)
+			_, _ = w.Write([]byte(`<div class="error-message">Email and password are required</div>`))
+		} else {
+			_ = BadRequest(w, "invalid request body")
+		}
 		return nil, err
 	}
 

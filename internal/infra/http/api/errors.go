@@ -81,3 +81,34 @@ func InvalidParams(w http.ResponseWriter, details string) error {
 func NotFound(w http.ResponseWriter, details string) error {
 	return newJSONError(errNotFound, details).write(w, http.StatusNotFound)
 }
+
+// HTMLError writes an HTML error response for HTMX requests
+func HTMLError(w http.ResponseWriter, htmlContent string) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write([]byte(htmlContent))
+}
+
+// HTMLBadRequest writes a bad request HTML error for HTMX requests
+func HTMLBadRequest(w http.ResponseWriter, htmlContent string) {
+	HTMLError(w, htmlContent)
+}
+
+// HTMLInternalError writes an internal server error HTML response for HTMX requests
+func HTMLInternalError(w http.ResponseWriter, htmlContent string) {
+	HTMLError(w, htmlContent)
+}
+
+// HTMLOK writes a successful HTML response for HTMX requests
+func HTMLOK(w http.ResponseWriter, htmlContent string) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write([]byte(htmlContent))
+}
+
+// HTMLCreated writes a created HTML response for HTMX requests
+func HTMLCreated(w http.ResponseWriter, htmlContent string) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(http.StatusCreated)
+	_, _ = w.Write([]byte(htmlContent))
+}
