@@ -56,6 +56,11 @@ var feeds = {
     // Load feed items
     feeds.load(feedId);
     
+    feeds.updateState(feedItem);
+  },
+
+  updateState: function(feedItem) {
+    let feedId = feedItem.id;
     // Update selected state
     if (feeds.currentFeed) {
       feeds.currentFeed.classList.remove("selected");
@@ -73,21 +78,38 @@ var feeds = {
     }
     
     // Show/hide actions based on feed type
-    var actions = document.querySelector("#actions .action");
-    if (actions) {
-      var allActions = document.querySelectorAll("#actions .action");
-      allActions.forEach(function(action) {
-        action.setAttribute("id", feedId);
-        action.style.display = "block";
-      });
-      
-      var removeBtn = document.querySelector(".remove");
-      if (feedId === "unread" || feedId === "starred") {
-        if (removeBtn) removeBtn.style.display = "none";
-      } else {
-        if (removeBtn) removeBtn.style.display = "block";
-      }
+    var actionsContainer = document.querySelector("#actions");
+    if (!actionsContainer) {
+      return;
     }
+    var actionButtons = actionsContainer.querySelectorAll("button, a");
+    actionButtons.forEach(function (btn) {
+      btn.dataset.feedId = feedId;
+    });
+
+    var isVirtualFeed = feedId === "unread" || feedId === "starred";
+
+    var updateBtn = document.querySelector(".update");
+    var markReadAllBtn = document.getElementById("mark-read-all");
+    var markUnreadAllBtn = document.getElementById("mark-unread-all");
+    var removeBtn = document.querySelector(".remove");
+
+    if (updateBtn) {
+      console.log("Setting update button display:", isVirtualFeed ? "none" : "block");
+      updateBtn.style.display = isVirtualFeed ? "none" : "block";
+    }
+    if (markReadAllBtn) {
+      markReadAllBtn.style.display = isVirtualFeed ? "none" : "block";
+    }
+    if (markUnreadAllBtn) {
+      markUnreadAllBtn.style.display = isVirtualFeed ? "none" : "block";
+    }
+    if (removeBtn) {
+      removeBtn.style.display = isVirtualFeed ? "none" : "block";
+    }
+
+    // Ensure the actions container itself stays visible when at least one action is available
+    actionsContainer.style.display = "block";
   },
 
   load: function (id) {

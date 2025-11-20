@@ -66,6 +66,8 @@ $(document).ready(function () {
           
           feeds.getUnreadItemsCount();
           feeds.getStarredItemsCount();
+          // get the newly added feed and highlight it
+          
         }
       });
       
@@ -80,17 +82,36 @@ $(document).ready(function () {
     }
     
     // Action button handlers (keep using jQuery for compatibility with existing code)
+    function getFeedIdFromAction(element) {
+      if (!element) {
+        return null;
+      }
+      return element.dataset && element.dataset.feedId ? element.dataset.feedId : element.id;
+    }
+
     $('.update').click(function(){
-      feeds.update(this.id);
+      var feedId = getFeedIdFromAction(this);
+      if (feedId) {
+        feeds.update(feedId);
+      }
     });
     $('#mark-read-all').click(function(){
-      feeds.markread(this.id);
+      var feedId = getFeedIdFromAction(this);
+      if (feedId) {
+        feeds.markread(feedId);
+      }
     });
     $('#mark-unread-all').click(function(){
-      feeds.markunread(this.id);
+      var feedId = getFeedIdFromAction(this);
+      if (feedId) {
+        feeds.markunread(feedId);
+      }
     });
     $('.remove').click(function(){
-      feeds.del(this.id);
+      var feedId = getFeedIdFromAction(this);
+      if (feedId) {
+        feeds.del(feedId);
+      }
     });
     $('.logout').click(function(){
       logout()
