@@ -4,22 +4,7 @@ function setAuthToken(token) {
 }
 
 function getAuthToken() {
-    let token = localStorage.getItem('authToken');
-    if (!token) {
-        console.log('Auth token not found in localStorage, checking cookies');
-        // read from cookie as fallback
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            let cookie = cookies[i].trim();
-            if (cookie.startsWith('authToken=')) {
-                token = cookie.substring('authToken='.length);
-                setAuthToken(token);
-                document.cookie = 'authToken=; path=/; max-age=0';
-                return token;
-            }
-        }
-    }
-    return token;
+    return localStorage.getItem('authToken');
 }
 
 function clearAuthToken() {

@@ -93,7 +93,6 @@ func New(itemService ItemService, feedService FeedService, authService AuthServi
 
 	router.POST("/login", chain.Wrap(h.login))
 	router.POST("/signup", chain.Wrap(h.signup))
-	router.POST("/logout", chain.Wrap(h.logout))
 	// serve static files for GET /
 	router.NotFound = http.FileServer(http.Dir("public"))
 
