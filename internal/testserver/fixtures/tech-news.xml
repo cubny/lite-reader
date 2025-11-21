@@ -2,15 +2,15 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tech News Feed</title>
-    <link>http://localhost:3001/feeds/tech-news</link>
+    <link>http://localhost:3002/feeds/tech-news</link>
     <description>Latest technology news and updates</description>
     <language>en-us</language>
     <lastBuildDate>Mon, 14 Nov 2025 12:00:00 GMT</lastBuildDate>
-    <atom:link href="http://localhost:3001/feeds/tech-news.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:3002/feeds/tech-news.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Understanding Modern Web Development</title>
-      <link>http://localhost:3001/articles/web-dev-2025</link>
+      <link>http://localhost:3002/articles/web-dev-2025</link>
       <description>A comprehensive guide to modern web development practices in 2025</description>
       <content:encoded xmlns:content="http://purl.org/rss/1.0/modules/content/"><![CDATA[
         <p>Modern web development has evolved significantly over the years. This article explores the latest trends and best practices.</p>
@@ -24,12 +24,12 @@
       ]]></content:encoded>
       <pubDate>Mon, 14 Nov 2025 10:00:00 GMT</pubDate>
       <author>editor@technews.example</author>
-      <guid isPermaLink="true">http://localhost:3001/articles/web-dev-2025</guid>
+      <guid isPermaLink="true">http://localhost:3002/articles/web-dev-2025</guid>
     </item>
     
     <item>
       <title>The Future of Cloud Computing</title>
-      <link>http://localhost:3001/articles/cloud-future</link>
+      <link>http://localhost:3002/articles/cloud-future</link>
       <description>Exploring emerging trends in cloud infrastructure and services</description>
       <content:encoded xmlns:content="http://purl.org/rss/1.0/modules/content/"><![CDATA[
         <p>Cloud computing continues to revolutionize how we build and deploy applications.</p>
@@ -43,12 +43,12 @@
       ]]></content:encoded>
       <pubDate>Sun, 13 Nov 2025 15:30:00 GMT</pubDate>
       <author>editor@technews.example</author>
-      <guid isPermaLink="true">http://localhost:3001/articles/cloud-future</guid>
+      <guid isPermaLink="true">http://localhost:3002/articles/cloud-future</guid>
     </item>
     
     <item>
       <title>Database Design Best Practices</title>
-      <link>http://localhost:3001/articles/db-design</link>
+      <link>http://localhost:3002/articles/db-design</link>
       <description>Essential principles for designing scalable and efficient databases</description>
       <content:encoded xmlns:content="http://purl.org/rss/1.0/modules/content/"><![CDATA[
         <p>Good database design is crucial for application performance and maintainability.</p>
@@ -62,7 +62,7 @@
       ]]></content:encoded>
       <pubDate>Sat, 12 Nov 2025 09:15:00 GMT</pubDate>
       <author>editor@technews.example</author>
-      <guid isPermaLink="true">http://localhost:3001/articles/db-design</guid>
+      <guid isPermaLink="true">http://localhost:3002/articles/db-design</guid>
     </item>
   </channel>
 </rss>

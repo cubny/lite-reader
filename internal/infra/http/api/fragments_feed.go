@@ -10,11 +10,12 @@ import (
 
 // renderFeedRow generates an HTML fragment for a single feed row
 func renderFeedRow(f *feed.Feed) string {
-	return fmt.Sprintf(`<li id="%d" class="feed">
+	return fmt.Sprintf(`<li id="%d" class="feed" data-feed-id="%d">
 	<img src="https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=%s" alt="">
 	<div class="feedtitle">%s</div>
 	<div class="count"><span>%s</span></div>
 </li>`,
+		f.ID,
 		f.ID,
 		html.EscapeString(f.Link),
 		html.EscapeString(f.Title),

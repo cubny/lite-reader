@@ -103,20 +103,25 @@ test-ui-setup:
 
 .PHONY: run-test-server
 run-test-server:
-	@echo "Starting test server with mock feeds..."
-	@HTTP_PORT=3000 DB_PATH=data/test-agg.db CGO_ENABLED=0 go run -mod=vendor ./cmd/testserver/main.go
+	@echo "Starting test server on port 3001 using data/test-dev.db..."
+	@HTTP_PORT=3001 DB_PATH=data/test-dev.db CGO_ENABLED=0 go run -mod=vendor ./cmd/main.go
+
+.PHONY: run-feed-provider
+run-feed-provider:
+	@echo "Starting mock feed provider on port 3002..."
+	@MOCK_FEED_PROVIDER_PORT=3002 CGO_ENABLED=0 go run -mod=vendor ./cmd/mockfeedprovider/main.go
 
 .PHONY: test-ui
 test-ui:
 	@echo "Running UI tests..."
 	@mkdir -p reports/playwright
-	@TEST_DB_PATH=data/test-agg.db npm run test:ui
+	@TEST_DB_PATH=data/test-dev.db npm run test:ui
 
 .PHONY: test-ui-headed
 test-ui-headed:
 	@echo "Running UI tests in headed mode..."
 	@mkdir -p reports/playwright
-	@TEST_DB_PATH=data/test-agg.db npm run test:ui:headed
+	@TEST_DB_PATH=data/test-dev.db npm run test:ui:headed
 
 .PHONY: test-all
 test-all: test test-ui

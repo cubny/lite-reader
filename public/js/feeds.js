@@ -3,6 +3,8 @@ var feeds = {
   container: null,
   current: null,
   currentFeed: null,
+  activeFeedId: null,  // Track currently selected feed ID
+  pendingFetchFeedId: null,  // Track feed being auto-fetched
 
   init: function () {
     // Use vanilla JS instead of jQuery for container reference
@@ -26,6 +28,31 @@ var feeds = {
         target: '#feeds-list',
         swap: 'innerHTML'
       });
+      
+      // Listen for afterSwap event on the add-feed form to trigger auto-fetch
+      // This fires AFTER HTMX has updated the DOM, avoiding race condition
+      document.body.addEventListener('htmx:afterSwap', function(evt) {
+        // Check if this is from the add feed form
+        if (evt.detail.target && evt.detail.target.id === 'feeds-list') {
+          const xhr = evt.detail.xhr;
+          if (xhr) {
+            const trigger = xhr.getResponseHeader('HX-Trigger');
+            if (trigger) {
+              try {
+                const triggerData = JSON.parse(trigger);
+                if (triggerData.feedAdded && triggerData.feedAdded.feedId) {
+                  // DOM is now updated, safe to find and auto-fetch the feed
+                  setTimeout(function() {
+                    feeds.autoFetchNewFeed(triggerData.feedAdded.feedId);
+                  }, 100);  // Small delay to ensure DOM is fully settled
+                }
+              } catch (e) {
+                console.error('Error parsing HX-Trigger:', e);
+              }
+            }
+          }
+        }
+      });
     }
 
     // Restore last selected feed after a delay
@@ -47,6 +74,12 @@ var feeds = {
   handleFeedClick: function(feedItem) {
     var feedId = feedItem.id;
     
+    // Update active feed ID
+    feeds.activeFeedId = feedId;
+    
+    // Cancel any pending auto-fetch
+    feeds.pendingFetchFeedId = null;
+    
     // Remove 'new' class
     feedItem.classList.remove("new");
     
@@ -67,6 +100,7 @@ var feeds = {
     }
     feedItem.classList.add("selected");
     feeds.currentFeed = feedItem;
+    feeds.activeFeedId = feedId;  // Track active feed ID
     
     // Update title
     var titleElement = feedItem.querySelector(".feedtitle");
@@ -82,7 +116,7 @@ var feeds = {
     if (!actionsContainer) {
       return;
     }
-    var actionButtons = actionsContainer.querySelectorAll("button, a");
+    var actionButtons = actionsContainer.querySelectorAll(".action");
     actionButtons.forEach(function (btn) {
       btn.dataset.feedId = feedId;
     });
@@ -95,7 +129,6 @@ var feeds = {
     var removeBtn = document.querySelector(".remove");
 
     if (updateBtn) {
-      console.log("Setting update button display:", isVirtualFeed ? "none" : "block");
       updateBtn.style.display = isVirtualFeed ? "none" : "block";
     }
     if (markReadAllBtn) {
@@ -116,6 +149,7 @@ var feeds = {
     const url =
       id === "unread" || id === "starred" ? `items/${id}` : `feeds/${id}/items`;
     
+      console.log("Loading feed items from:", url);
     // Use fetch API instead of jQuery
     fetch(url, {
       headers: {
@@ -280,11 +314,64 @@ var feeds = {
     })
     .then(response => response.json())
     .then(data => {
-      const unread = items.render(data);
+      // Check if this response is for the currently selected feed
+      if (data.feed_id && feeds.activeFeedId && data.feed_id.toString() !== feeds.activeFeedId.toString()) {
+        console.log('Ignoring stale response for feed', data.feed_id, 'current feed is', feeds.activeFeedId);
+        return;
+      }
+      
+      const itemsData = data.items || data;  // Handle both wrapped and unwrapped formats
+      const unread = items.render(itemsData);
       feeds.setCurrentCount(unread);
     })
     .catch(error => {
       console.error('Error updating feed:', error);
+    });
+  },
+  
+  // Auto-fetch items for newly added feed
+  autoFetchNewFeed: function(feedId) {
+    console.log('Auto-fetching feed:', feedId);
+    
+    // Find the new feed element using data-feed-id attribute
+    const feedElement = document.querySelector(`li.feed[data-feed-id="${feedId}"]`);
+    if (!feedElement) {
+      console.error('Could not find feed element for ID:', feedId);
+      return;
+    }
+    
+    // Mark as pending fetch
+    feeds.pendingFetchFeedId = feedId;
+    
+    // Select the feed in the UI
+    feeds.handleFeedClick(feedElement);
+    
+    // Fetch items
+    fetch(`feeds/${feedId}/fetch`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': 'Bearer ' + getAuthToken()
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      // Only render if this feed is still selected
+      if (feeds.activeFeedId && feeds.activeFeedId.toString() === feedId.toString()) {
+        const itemsData = data.items || data;
+        const unread = items.render(itemsData);
+        feeds.setCurrentCount(unread);
+      } else {
+        console.log('Feed selection changed, discarding auto-fetch result for feed', feedId);
+      }
+      
+      // Clear pending fetch
+      if (feeds.pendingFetchFeedId === feedId) {
+        feeds.pendingFetchFeedId = null;
+      }
+    })
+    .catch(error => {
+      console.error('Error auto-fetching feed items:', error);
+      feeds.pendingFetchFeedId = null;
     });
   }
 };

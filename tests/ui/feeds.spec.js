@@ -25,7 +25,7 @@ test.describe('Feed Management', () => {
     const loginPage = new LoginPage(page);
     await loginPage.goto();
     await loginPage.login(email, password);
-    await page.waitForURL('http://localhost:3000/', { timeout: 5000 });
+    await page.waitForURL('http://localhost:3001/', { timeout: 5000 });
   });
 
   test('should add RSS feed successfully', async ({ page }) => {
@@ -59,16 +59,40 @@ test.describe('Feed Management', () => {
     
     await mainPage.addFeed(MOCK_FEEDS.techNews);
     
-    // Click on the feed to view its items
-    await page.waitForTimeout(2000);
+    // Items should auto-load without needing to manually click or update
+    // Wait for items to appear automatically
+    await mainPage.waitForItems(1, 15000);
+    
+    // Verify items are displayed
+    const itemsCount = await mainPage.getItemsCount();
+    expect(itemsCount).toBeGreaterThan(0);
+    
+    // Verify feed is selected
+    const selectedFeed = page.locator('.feed.selected');
+    await expect(selectedFeed).toBeVisible();
+    await expect(selectedFeed).toContainText('Tech News');
+  });
+  
+  test('should auto-fetch items but respect user selection changes', async ({ page }) => {
+    const mainPage = new MainPage(page);
+    
+    // Add first feed and wait for it to complete
+    await mainPage.addFeed(MOCK_FEEDS.techNews);
+    await mainPage.waitForItems(1, 10000);
+    
+    // Add second feed (which will trigger auto-fetch and auto-select)
+    await mainPage.addFeed(MOCK_FEEDS.scienceBlog);
+    
+    // Immediately click on the first feed before auto-fetch completes
+    await page.waitForTimeout(500);
     await mainPage.clickFeed('Tech News');
     
     // Wait for items to load
     await mainPage.waitForItems(1, 10000);
     
-    // Verify items are displayed
-    const itemsCount = await mainPage.getItemsCount();
-    expect(itemsCount).toBeGreaterThan(0);
+    // The first feed should remain selected (not overridden by stale auto-fetch)
+    const selectedFeed = page.locator('.feed.selected');
+    await expect(selectedFeed).toContainText('Tech News');
   });
 
   test('should fetch and update feed items', async ({ page }) => {

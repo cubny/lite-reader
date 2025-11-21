@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>Science Blog</title>
-  <link href="http://localhost:3001/feeds/science-blog" rel="alternate"/>
-  <link href="http://localhost:3001/feeds/science-blog.xml" rel="self"/>
-  <id>http://localhost:3001/feeds/science-blog</id>
+  <link href="http://localhost:3002/feeds/science-blog" rel="alternate"/>
+  <link href="http://localhost:3002/feeds/science-blog.xml" rel="self"/>
+  <id>http://localhost:3002/feeds/science-blog</id>
   <updated>2025-11-14T12:00:00Z</updated>
   <subtitle>Exploring the wonders of science</subtitle>
   
   <entry>
     <title>Quantum Computing Breakthroughs</title>
-    <link href="http://localhost:3001/science/quantum-computing"/>
-    <id>http://localhost:3001/science/quantum-computing</id>
+    <link href="http://localhost:3002/science/quantum-computing"/>
+    <id>http://localhost:3002/science/quantum-computing</id>
     <updated>2025-11-14T08:00:00Z</updated>
     <published>2025-11-14T08:00:00Z</published>
     <author>
@@ -32,8 +32,8 @@
   
   <entry>
     <title>Climate Change and Renewable Energy</title>
-    <link href="http://localhost:3001/science/climate-energy"/>
-    <id>http://localhost:3001/science/climate-energy</id>
+    <link href="http://localhost:3002/science/climate-energy"/>
+    <id>http://localhost:3002/science/climate-energy</id>
     <updated>2025-11-13T14:30:00Z</updated>
     <published>2025-11-13T14:30:00Z</published>
     <author>
@@ -55,8 +55,8 @@
   
   <entry>
     <title>Advances in Biotechnology</title>
-    <link href="http://localhost:3001/science/biotech"/>
-    <id>http://localhost:3001/science/biotech</id>
+    <link href="http://localhost:3002/science/biotech"/>
+    <id>http://localhost:3002/science/biotech</id>
     <updated>2025-11-12T11:00:00Z</updated>
     <published>2025-11-12T11:00:00Z</published>
     <author>

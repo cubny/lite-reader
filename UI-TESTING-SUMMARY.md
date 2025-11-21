@@ -6,16 +6,16 @@ This implementation adds comprehensive automated UI testing infrastructure to th
 
 ## Key Components
 
-### 1. Mock RSS Feed Server (`internal/testserver/`)
+### 1. Mock RSS Feed Server (`cmd/mockfeedprovider/`)
 
-A Go-based HTTP server that serves mock RSS and Atom feeds for testing:
+A dedicated Go-based HTTP server that serves mock RSS and Atom feeds for testing:
 
-- **Location**: `internal/testserver/feedserver.go`
+- **Location**: `internal/testserver/feedserver.go` with entrypoint `cmd/mockfeedprovider/main.go`
 - **Features**:
-  - Serves feeds on `http://localhost:3001`
+  - Serves feeds on `http://localhost:3002`
   - Embedded feed fixtures (no external files needed at runtime)
   - Supports RSS 2.0 and Atom 1.0 formats
-  - Automatically starts/stops with test runs
+  - Automatically starts/stops with test runs via `make run-feed-provider`
 
 **Sample Feeds**:
 - `tech-news.xml` - RSS 2.0 feed with 3 technology articles
@@ -24,14 +24,13 @@ A Go-based HTTP server that serves mock RSS and Atom feeds for testing:
 
 ### 2. Test Server Command (`cmd/testserver/`)
 
-A specialized command that starts both the application and mock feed server:
+A specialized command that starts the Lite Reader application for UI tests:
 
-- **Purpose**: Provides a complete test environment
+- **Purpose**: Provides an isolated app instance for Playwright
 - **Usage**: `make run-test-server`
 - **Features**:
-  - Uses separate test database (`data/test-agg.db`)
-  - Starts mock feeds on port 3001
-  - Starts main app on port 3000
+  - Uses separate test database (`data/test-dev.db`)
+  - Starts the app on port 3001 (base URL for UI tests)
 
 ### 3. Playwright Test Framework
 
@@ -73,7 +72,8 @@ Clean, maintainable test code using the Page Object pattern:
 make test-ui-setup      # Install Playwright and dependencies (one-time)
 make test-ui            # Run all UI tests (headless)
 make test-ui-headed     # Run with visible browser (debugging)
-make run-test-server    # Start test environment manually
+make run-test-server    # Start Lite Reader test server manually (port 3001)
+make run-feed-provider  # Start mock feed provider manually (port 3002)
 make test-all           # Run both unit and UI tests
 ```
 
@@ -147,7 +147,7 @@ Updated `.github/workflows/tests.yaml`:
 - Reliable and fast
 
 ### 2. Isolated Test Environment
-- Separate test database (`data/test-agg.db`)
+- Separate test database (`data/test-dev.db`)
 - No interference with development data
 - Clean state for each test run
 
@@ -196,7 +196,7 @@ test('should do something', async ({ page }) => {
   const mainPage = new MainPage(page);
   
   // Perform actions
-  await mainPage.addFeed('http://localhost:3001/feeds/tech-news.xml');
+  await mainPage.addFeed('http://localhost:3002/feeds/tech-news.xml');
   
   // Assert expectations
   const count = await mainPage.getItemsCount();
@@ -212,7 +212,7 @@ test('should do something', async ({ page }) => {
 <rss version="2.0">
   <channel>
     <title>My Feed</title>
-    <link>http://localhost:3001/feeds/my-feed</link>
+    <link>http://localhost:3002/feeds/my-feed</link>
     <description>Test feed</description>
     <item>
       <title>Test Item</title>
@@ -227,9 +227,9 @@ test('should do something', async ({ page }) => {
 2. Add to `tests/ui/utils/helpers.js`:
 ```javascript
 export const MOCK_FEEDS = {
-  techNews: 'http://localhost:3001/feeds/tech-news.xml',
-  scienceBlog: 'http://localhost:3001/feeds/science-blog.xml',
-  myFeed: 'http://localhost:3001/feeds/my-feed.xml',  // Add this
+  techNews: 'http://localhost:3002/feeds/tech-news.xml',
+  scienceBlog: 'http://localhost:3002/feeds/science-blog.xml',
+  myFeed: 'http://localhost:3002/feeds/my-feed.xml',  // Add this
 };
 ```
 

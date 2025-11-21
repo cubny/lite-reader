@@ -71,6 +71,7 @@ func (m *MockFeedServer) GetURL(feedName string) string {
 
 func (m *MockFeedServer) serveFeed(w http.ResponseWriter, r *http.Request) {
 	// Extract feed name from path
+	log.Infof("Serving feed request: %s", r.URL.Path)
 	feedName := strings.TrimPrefix(r.URL.Path, "/feeds/")
 	if feedName == "" {
 		http.Error(w, "Feed name required", http.StatusBadRequest)

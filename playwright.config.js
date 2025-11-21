@@ -18,14 +18,13 @@ export default defineConfig({
   // Reporter configuration
   reporter: [
     ['html', { outputFolder: 'reports/playwright' }],
-    ['list'],
-    process.env.CI ? ['github'] : ['list']
+    process.env.CI ? ['github'] : ['list'],
   ],
   
   // Shared settings for all tests
   use: {
     // Base URL for the application
-    baseURL: process.env.BASE_URL || 'http://localhost:3000',
+    baseURL: process.env.BASE_URL || 'http://localhost:3001',
     
     // Screenshot and video settings
     screenshot: 'only-on-failure',
@@ -45,13 +44,23 @@ export default defineConfig({
     },
   ],
   
-  // Web server configuration - start app before tests
-  webServer: {
-    command: 'make run-test-server',
-    url: 'http://localhost:3000/health',
-    reuseExistingServer: !process.env.CI,
-    timeout: 30 * 1000,
-    stdout: 'pipe',
-    stderr: 'pipe',
-  },
+  // Web server configuration - start both the test app and mock feed provider
+  webServer: [
+    {
+      command: 'make run-feed-provider',
+      url: 'http://localhost:3002/feeds/tech-news.xml',
+      reuseExistingServer: !process.env.CI,
+      timeout: 30 * 1000,
+      stdout: 'pipe',
+      stderr: 'pipe',
+    },
+    {
+      command: 'make run-test-server',
+      url: 'http://localhost:3001/health',
+      reuseExistingServer: !process.env.CI,
+      timeout: 30 * 1000,
+      stdout: 'pipe',
+      stderr: 'pipe',
+    },
+  ],
 });

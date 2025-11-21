@@ -40,7 +40,7 @@ test.describe('Authentication', () => {
     await loginPage.login(email, password);
 
     // Should be redirected to main page (root path)
-    await page.waitForURL('http://localhost:3000/', { timeout: 5000 });
+    await page.waitForURL('http://localhost:3001/', { timeout: 5000 });
     
     const mainPage = new MainPage(page);
     expect(await mainPage.isLoggedIn()).toBe(true);
@@ -73,7 +73,7 @@ test.describe('Authentication', () => {
     const loginPage = new LoginPage(page);
     await loginPage.goto();
     await loginPage.login(email, password);
-    await page.waitForURL('http://localhost:3000/', { timeout: 5000 });
+    await page.waitForURL('http://localhost:3001/', { timeout: 5000 });
 
     // Now logout
     const mainPage = new MainPage(page);

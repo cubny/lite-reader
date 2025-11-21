@@ -99,6 +99,19 @@ func toGetItemsResponse(items []*item.Item) []*ItemResponse {
 	return resp
 }
 
+// FeedItemsResponse wraps items with feed metadata
+type FeedItemsResponse struct {
+	FeedID int              `json:"feed_id"`
+	Items  []*ItemResponse `json:"items"`
+}
+
+func toFeedItemsResponse(feedID int, items []*item.Item) *FeedItemsResponse {
+	return &FeedItemsResponse{
+		FeedID: feedID,
+		Items:  toGetItemsResponse(items),
+	}
+}
+
 func toAddFeedCommand(w http.ResponseWriter, r *http.Request, _ httprouter.Params) (*feed.AddFeedCommand, error) {
 	request := &AddFeedRequest{}
 

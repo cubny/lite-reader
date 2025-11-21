@@ -155,12 +155,12 @@ func TestRouter_fetchFeedNewItems(t *testing.T) {
 
 	specs := []spec{
 		{
-			Name:           "ok",
-			Method:         http.MethodPut,
-			Target:         "/feeds/1/fetch",
-			ExpectedStatus: http.StatusOK,
-			ExpectedBody: `[{"id":1,"title":"title","dir":"dir","desc":"description","link":"link","is_new":false,"starred":true,"timestamp":"` +
-				now.Format(time.RFC3339Nano) + `"}]`,
+		Name:           "ok",
+		Method:         http.MethodPut,
+		Target:         "/feeds/1/fetch",
+		ExpectedStatus: http.StatusOK,
+		ExpectedBody: `{"feed_id":1,"items":[{"id":1,"title":"title","dir":"dir","desc":"description","link":"link","is_new":false,"starred":true,"timestamp":"` +
+			now.Format(time.RFC3339Nano) + `"}]}`,
 			MockFn: func(i *mocks.ItemService, f *mocks.FeedService, _ *mocks.AuthService) {
 				f.EXPECT().FetchItems(1).Return([]*item.Item{
 					{

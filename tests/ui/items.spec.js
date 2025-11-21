@@ -25,7 +25,7 @@ test.describe('Item Management', () => {
     const loginPage = new LoginPage(page);
     await loginPage.goto();
     await loginPage.login(email, password);
-    await page.waitForURL('http://localhost:3000/', { timeout: 5000 });
+    await page.waitForURL('http://localhost:3001/', { timeout: 5000 });
 
     // Add a feed with items
     const mainPage = new MainPage(page);

@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -53,6 +54,8 @@ func (h *Router) addFeed(w http.ResponseWriter, r *http.Request, p httprouter.Pa
 			HTMLInternalError(w, renderFeedError("Failed to refresh feed list"))
 			return
 		}
+		// Emit HX-Trigger header with new feed ID for auto-fetch
+		w.Header().Set("HX-Trigger", fmt.Sprintf(`{"feedAdded": {"feedId": %d}}`, t.ID))
 		HTMLCreated(w, renderFeedList(feeds))
 		return
 	}
@@ -146,7 +149,7 @@ func (h *Router) fetchFeedNewItems(w http.ResponseWriter, r *http.Request, p htt
 	}
 
 	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(toGetItemsResponse(items)); err != nil {
+	if err := json.NewEncoder(w).Encode(toFeedItemsResponse(command.FeedID, items)); err != nil {
 		log.WithError(err).Errorf("fetchFeedNewItems: encoder %s", err)
 		_ = InternalError(w, "cannot encode response")
 		return

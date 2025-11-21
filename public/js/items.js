@@ -32,14 +32,17 @@ const items = {
         });
     },
     render:function(data){
-        if(data.length===0){
+        // Handle both array and wrapped object formats
+        const itemsArray = Array.isArray(data) ? data : (data.items || []);
+        
+        if(itemsArray.length===0){
             items.$elem.html("<li class='empty'>No items found</li>");
-            return;
+            return 0;
         }
         items.$elem.html("");
         let unread=0;
         const r = new RegExp(/[\u0600-\u06FF]/);
-        data.forEach(function(item){
+        itemsArray.forEach(function(item){
             const item_template = $("#item-template").html();
 
             const $li = $(item_template.format(

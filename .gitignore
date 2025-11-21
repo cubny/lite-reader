@@ -4,6 +4,7 @@
 .idea
 data/agg.db
 data/test-agg.db
+data/test-dev.db
 public/cache/*.gzip
 public/cache/*.spc
 public/cache/images/*

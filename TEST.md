@@ -92,7 +92,8 @@ make test-all
 - **Duration**: UI tests typically complete in 2-3 minutes
 - **Parallelization**: Tests run sequentially (workers: 1) to avoid database conflicts
 - **Browser**: Tests use Chromium in headless mode by default
-- **Database**: Each test run uses a separate test database (`data/test-agg.db`)
+- **Database**: Each test run uses a separate test database (`data/test-dev.db`)
+- **Ports**: UI tests hit the Lite Reader test server on `http://localhost:3001` and the mock feed provider on `http://localhost:3002`
 - **Retries**: In CI, tests retry up to 2 times on failure
 
 ### Test Reports
@@ -204,21 +205,23 @@ See the page object files in `tests/ui/pages/` for all available methods.
 The mock feed system provides offline RSS/Atom feeds for testing without requiring internet access.
 
 **Architecture**:
-1. **Mock Feed Server**: A Go HTTP server (`internal/testserver/feedserver.go`) that serves XML feeds
-2. **Feed Fixtures**: Static XML files in `internal/testserver/fixtures/`
-3. **Automatic Startup**: The server starts automatically when running UI tests (via `run-test-server`)
+1. **Lite Reader Test Server**: `cmd/testserver/` boots the application with the UI-test database on `http://localhost:3001`
+2. **Mock Feed Provider**: `cmd/mockfeedprovider/` is a dedicated binary that serves XML fixtures via `internal/testserver/feedserver.go`
+3. **Feed Fixtures**: Static XML files in `internal/testserver/fixtures/`
+4. **Automatic Startup**: Playwright launches both servers via `make run-test-server` and `make run-feed-provider`
 
 **Ports**:
-- Main app: `localhost:3000`
-- Mock feed server: `localhost:3001`
+- Main app (manual/dev): `localhost:3000`
+- Lite Reader test server (UI tests): `localhost:3001`
+- Mock feed provider: `localhost:3002`
 
 ### Available Mock Feeds
 
 | Feed Name | URL | Format | Items | Description |
 |-----------|-----|--------|-------|-------------|
-| Tech News | `http://localhost:3001/feeds/tech-news.xml` | RSS 2.0 | 3 | Technology articles |
-| Science Blog | `http://localhost:3001/feeds/science-blog.xml` | Atom 1.0 | 3 | Science articles |
-| Empty Feed | `http://localhost:3001/feeds/empty.xml` | RSS 2.0 | 0 | Feed with no items |
+| Tech News | `http://localhost:3002/feeds/tech-news.xml` | RSS 2.0 | 3 | Technology articles |
+| Science Blog | `http://localhost:3002/feeds/science-blog.xml` | Atom 1.0 | 3 | Science articles |
+| Empty Feed | `http://localhost:3002/feeds/empty.xml` | RSS 2.0 | 0 | Feed with no items |
 
 Access feeds in tests using:
 
@@ -242,7 +245,7 @@ cat > internal/testserver/fixtures/my-feed.xml << 'EOF'
 <rss version="2.0">
   <channel>
     <title>My Feed</title>
-    <link>http://localhost:3001/feeds/my-feed</link>
+    <link>http://localhost:3002/feeds/my-feed</link>
     <description>My test feed</description>
     <item>
       <title>Item 1</title>
@@ -259,10 +262,10 @@ EOF
 
 ```javascript
 export const MOCK_FEEDS = {
-  techNews: 'http://localhost:3001/feeds/tech-news.xml',
-  scienceBlog: 'http://localhost:3001/feeds/science-blog.xml',
-  empty: 'http://localhost:3001/feeds/empty.xml',
-  myFeed: 'http://localhost:3001/feeds/my-feed.xml',  // Add this
+  techNews: 'http://localhost:3002/feeds/tech-news.xml',
+  scienceBlog: 'http://localhost:3002/feeds/science-blog.xml',
+  empty: 'http://localhost:3002/feeds/empty.xml',
+  myFeed: 'http://localhost:3002/feeds/my-feed.xml',  // Add this
 };
 ```
 
@@ -277,7 +280,7 @@ await mainPage.addFeed(MOCK_FEEDS.myFeed);
 - Use valid RSS 2.0 or Atom 1.0 format
 - Include required fields: `title`, `link`, `description`
 - For items, include: `title`, `link`, `pubDate` (RSS) or `published` (Atom)
-- Use `localhost:3001` URLs to avoid external dependencies
+- Use `localhost:3002` URLs to avoid external dependencies
 - Add realistic content for better test coverage
 
 ## CI/CD Integration
@@ -340,15 +343,15 @@ make test-ui-setup
 
 #### Issue: Port already in use
 
-**Error**: `listen tcp :3000: bind: address already in use`
+**Error**: `listen tcp :3001: bind: address already in use`
 
 **Solution**:
 ```bash
-# Find and kill process using port 3000
-lsof -ti:3000 | xargs kill -9
+# Find and kill process using port 3001
+lsof -ti:3001 | xargs kill -9
 
-# Or use a different port
-HTTP_PORT=3002 make run-test-server
+# Or use a different port for the test server
+HTTP_PORT=3005 make run-test-server
 ```
 
 #### Issue: Test database locked
@@ -358,10 +361,10 @@ HTTP_PORT=3002 make run-test-server
 **Solution**:
 ```bash
 # Stop all running processes
-pkill -f testserver
+pkill -f cmd/testserver
 
 # Remove test database
-rm data/test-agg.db
+rm data/test-dev.db
 
 # Run tests again
 make test-ui

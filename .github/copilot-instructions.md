@@ -39,7 +39,8 @@ The project follows a clean architecture pattern:
 - `make run` - Run the app without Docker
 - `make docker-run` - Run the app with Docker Compose
 - `make build` - Build the binary
-- `make run-test-server` - Run the app with mock feed server for testing (uses test database)
+- `make run-test-server` - Run the app configured for UI tests (port 3001, uses `data/test-dev.db`)
+- `make run-feed-provider` - Run the standalone mock feed provider on port 3002
 
 ### Testing
 
@@ -107,11 +108,11 @@ Before running UI tests for the first time:
 - UI tests are located in `tests/ui/` directory
 - Use Page Object Model pattern (see `tests/ui/pages/`)
 - Tests use Playwright with Chromium browser
-- **IMPORTANT**: Always use the backend testserver for feed testing instead of fetching feeds from the internet
-  - Mock feeds are served from `http://localhost:3001/feeds/`
+- **IMPORTANT**: Always use the backend test server and mock feed provider instead of fetching feeds from the internet
+  - Mock feeds are served from `http://localhost:3002/feeds/`
   - Available mock feeds are defined in `tests/ui/utils/helpers.js` as `MOCK_FEEDS`
   - Never use real external feed URLs in tests to avoid network blockages
-- Test database is separate: `data/test-agg.db`
+- Test database is separate: `data/test-dev.db`
 - Tests run sequentially to avoid database conflicts
 
 ### Naming Conventions
@@ -146,11 +147,11 @@ Before running UI tests for the first time:
 
 **CRITICAL**: When testing features that involve RSS/Atom feeds:
 1. **Always use the mock feed server** instead of real internet feeds
-2. Start the test server: `make run-test-server`
-3. Use mock feed URLs from the testserver:
-   - `http://localhost:3001/feeds/tech-news.xml` - RSS 2.0 feed with 3 tech articles
-   - `http://localhost:3001/feeds/science-blog.xml` - Atom 1.0 feed with 3 science articles
-   - `http://localhost:3001/feeds/empty.xml` - Empty RSS feed for edge cases
+2. Start the test services: `make run-test-server` (app on 3001) and `make run-feed-provider` (feeds on 3002)
+3. Use mock feed URLs from the feed provider:
+  - `http://localhost:3002/feeds/tech-news.xml` - RSS 2.0 feed with 3 tech articles
+  - `http://localhost:3002/feeds/science-blog.xml` - Atom 1.0 feed with 3 science articles
+  - `http://localhost:3002/feeds/empty.xml` - Empty RSS feed for edge cases
 4. Mock feeds are located in `internal/testserver/fixtures/`
 5. Add new mock feeds in fixtures directory and reference them in tests
 
@@ -179,25 +180,25 @@ Before running UI tests for the first time:
 - **Migration support:** Legacy Lite Reader data can be migrated from `agg.db`
 - **Default port:** Application runs on port 3000 by default
 - **Data persistence:** Database file is stored in `data/agg.db`
-- **Test database:** UI tests use separate database at `data/test-agg.db`
+- **Test database:** UI tests use separate database at `data/test-dev.db`
 
 ## Mock Feed System
 
 The project includes a mock feed server for reliable, offline testing:
 
 ### Mock Feed Server
-- **Location**: `internal/testserver/`
-- **Port**: 3001 (when started via `make run-test-server`)
+- **Location**: `internal/testserver/` with entrypoint `cmd/mockfeedprovider/`
+- **Port**: 3002 (when started via `make run-feed-provider`)
 - **Purpose**: Serves mock RSS and Atom feeds locally for testing
 - **Benefits**: No internet required, consistent results, faster tests
 
 ### Available Mock Feeds
 - **tech-news.xml**: RSS 2.0 feed with 3 technology articles
-  - URL: `http://localhost:3001/feeds/tech-news.xml`
+  - URL: `http://localhost:3002/feeds/tech-news.xml`
 - **science-blog.xml**: Atom 1.0 feed with 3 science articles
-  - URL: `http://localhost:3001/feeds/science-blog.xml`
+  - URL: `http://localhost:3002/feeds/science-blog.xml`
 - **empty.xml**: Empty RSS feed for edge case testing
-  - URL: `http://localhost:3001/feeds/empty.xml`
+  - URL: `http://localhost:3002/feeds/empty.xml`
 
 ### Adding New Mock Feeds
 1. Create a new XML file in `internal/testserver/fixtures/`

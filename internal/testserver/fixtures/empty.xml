@@ -2,7 +2,7 @@
 <rss version="2.0">
   <channel>
     <title>Empty Feed</title>
-    <link>http://localhost:3001/feeds/empty</link>
+    <link>http://localhost:3002/feeds/empty</link>
     <description>A feed with no items for testing</description>
     <language>en-us</language>
   </channel>

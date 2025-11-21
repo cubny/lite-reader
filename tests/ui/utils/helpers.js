@@ -10,7 +10,7 @@ import * as path from 'path';
 const execAsync = promisify(exec);
 
 // Test database path
-const TEST_DB_PATH = process.env.TEST_DB_PATH || 'data/test-agg.db';
+const TEST_DB_PATH = process.env.TEST_DB_PATH || 'data/test-dev.db';
 
 /**
  * Clean up the test database
@@ -77,7 +77,7 @@ export async function waitFor(
  * Mock feed URLs for testing
  */
 export const MOCK_FEEDS = {
-  techNews: 'http://localhost:3001/feeds/tech-news.xml',
-  scienceBlog: 'http://localhost:3001/feeds/science-blog.xml',
-  empty: 'http://localhost:3001/feeds/empty.xml',
+  techNews: 'http://localhost:3002/feeds/tech-news.xml',
+  scienceBlog: 'http://localhost:3002/feeds/science-blog.xml',
+  empty: 'http://localhost:3002/feeds/empty.xml',
 };
