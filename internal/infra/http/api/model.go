@@ -242,25 +242,10 @@ func (r *LoginRequest) Validate() error {
 
 func toLoginCommand(w http.ResponseWriter, r *http.Request, _ httprouter.Params) (*auth.LoginCommand, error) {
 	request := &LoginRequest{}
-
-	// Check if this is a form submission (HTMX) or JSON request
-	contentType := r.Header.Get("Content-Type")
-	if isHTMXRequest(r) || contentType == "application/x-www-form-urlencoded" || contentType == "multipart/form-data" {
-		// Parse form data
-		if err := r.ParseForm(); err != nil {
-			log.WithError(err).Error("login: failed to parse form data")
-			_ = BadRequest(w, "invalid request body")
-			return nil, err
-		}
-		request.Email = r.FormValue("email")
-		request.Password = r.FormValue("password")
-	} else {
-		// Parse JSON
-		if err := json.NewDecoder(r.Body).Decode(request); err != nil {
-			log.WithError(err).Error("login: failed to decode request body")
-			_ = BadRequest(w, "invalid request body")
-			return nil, err
-		}
+	if err := json.NewDecoder(r.Body).Decode(request); err != nil {
+		log.WithError(err).Error("login: failed to decode request body")
+		_ = BadRequest(w, "invalid request body")
+		return nil, err
 	}
 
 	if err := request.Validate(); err != nil {
@@ -289,25 +274,10 @@ func (r *SignupRequest) Validate() error {
 
 func toSignupCommand(w http.ResponseWriter, r *http.Request, _ httprouter.Params) (*auth.SignupCommand, error) {
 	request := &SignupRequest{}
-
-	// Check if this is a form submission (HTMX) or JSON request
-	contentType := r.Header.Get("Content-Type")
-	if isHTMXRequest(r) || contentType == "application/x-www-form-urlencoded" || contentType == "multipart/form-data" {
-		// Parse form data
-		if err := r.ParseForm(); err != nil {
-			log.WithError(err).Error("signup: failed to parse form data")
-			_ = BadRequest(w, "invalid request body")
-			return nil, err
-		}
-		request.Email = r.FormValue("email")
-		request.Password = r.FormValue("password")
-	} else {
-		// Parse JSON
-		if err := json.NewDecoder(r.Body).Decode(request); err != nil {
-			log.WithError(err).Error("signup: failed to decode request body")
-			_ = BadRequest(w, "invalid request body")
-			return nil, err
-		}
+	if err := json.NewDecoder(r.Body).Decode(request); err != nil {
+		log.WithError(err).Error("signup: failed to decode request body")
+		_ = BadRequest(w, "invalid request body")
+		return nil, err
 	}
 
 	if err := request.Validate(); err != nil {
