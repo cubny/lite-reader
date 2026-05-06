@@ -44,12 +44,11 @@ jobs:
           # - 1.18rc1 -> 1.18.0-rc.1
           go-version: ${{ env.GO_VERSION }}
       - name: lint
-        uses: golangci/golangci-lint-action@v3.7.0
+        uses: golangci/golangci-lint-action@v6
         with:
-          version: latest
+          version: v2.12.2
           # skip cache because of flaky behaviors
-          skip-build-cache: true
-          skip-pkg-cache: true
+          skip-cache: true
 
   tests-on-windows:
     needs: golangci-lint # run after golangci-lint action to not produce duplicated errors
