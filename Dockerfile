@@ -1,4 +1,4 @@
-FROM golang:1.22.0-alpine as builder
+FROM golang:1.26-alpine AS builder
 RUN apk --update add ca-certificates
 RUN cd ..
 RUN mkdir lite-reader

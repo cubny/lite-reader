@@ -1,6 +1,6 @@
 module github.com/cubny/lite-reader
 
-go 1.23.0
+go 1.26.0
 
 require (
 	github.com/google/uuid v1.5.0
