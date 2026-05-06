@@ -95,20 +95,7 @@ linters:
     rules:
       - linters:
           - mnd
-          - goconst
         path: _test\.go
-      - path: internal/infra/sqlite/
-        linters:
-          - noctx
-      - path: internal/infra/http/api/router_test\.go
-        linters:
-          - noctx
-      - path: internal/infra/http/api/login\.go
-        linters:
-          - gosec
-      - path: internal/testserver/
-        linters:
-          - gosec
       - path: pkg/golinters/errcheck.go
         text: 'SA1019: errCfg.Exclude is deprecated: use ExcludeFunctions instead'
       - path: pkg/commands/run.go

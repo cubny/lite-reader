@@ -13,6 +13,12 @@ import (
 	mocks "github.com/cubny/lite-reader/internal/mocks/app/auth"
 )
 
+const (
+	tcSuccess    = "success"
+	testEmail    = "test@example.com"
+	testPassword = "password123"
+)
+
 func TestService_Signup(t *testing.T) {
 	tests := []struct {
 		name      string
@@ -22,14 +28,14 @@ func TestService_Signup(t *testing.T) {
 		errMsg    string
 	}{
 		{
-			name: "success",
+			name: tcSuccess,
 			command: &auth.SignupCommand{
-				Email:    "test@example.com",
-				Password: "password123",
+				Email:    testEmail,
+				Password: testPassword,
 			},
 			mockSetup: func(r *mocks.Repository) {
-				r.EXPECT().GetUserByEmail("test@example.com").Return(nil, errors.New("not found"))
-				r.EXPECT().CreateUser("test@example.com", gomock.Any()).Return(nil)
+				r.EXPECT().GetUserByEmail(testEmail).Return(nil, errors.New("not found"))
+				r.EXPECT().CreateUser(testEmail, gomock.Any()).Return(nil)
 			},
 			wantErr: false,
 		},
@@ -37,7 +43,7 @@ func TestService_Signup(t *testing.T) {
 			name: "error - email already exists",
 			command: &auth.SignupCommand{
 				Email:    "existing@example.com",
-				Password: "password123",
+				Password: testPassword,
 			},
 			mockSetup: func(r *mocks.Repository) {
 				r.EXPECT().GetUserByEmail("existing@example.com").Return(&auth.User{}, nil)
@@ -48,12 +54,12 @@ func TestService_Signup(t *testing.T) {
 		{
 			name: "error - create user fails",
 			command: &auth.SignupCommand{
-				Email:    "test@example.com",
-				Password: "password123",
+				Email:    testEmail,
+				Password: testPassword,
 			},
 			mockSetup: func(r *mocks.Repository) {
-				r.EXPECT().GetUserByEmail("test@example.com").Return(nil, errors.New("not found"))
-				r.EXPECT().CreateUser("test@example.com", gomock.Any()).Return(errors.New("db error"))
+				r.EXPECT().GetUserByEmail(testEmail).Return(nil, errors.New("not found"))
+				r.EXPECT().CreateUser(testEmail, gomock.Any()).Return(errors.New("db error"))
 			},
 			wantErr: true,
 			errMsg:  "db error",
@@ -92,16 +98,16 @@ func TestService_Login(t *testing.T) {
 		errMsg    string
 	}{
 		{
-			name: "success",
+			name: tcSuccess,
 			command: &auth.LoginCommand{
-				Email:    "test@example.com",
-				Password: "password123",
+				Email:    testEmail,
+				Password: testPassword,
 			},
 			mockSetup: func(r *mocks.Repository) {
-				hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("password123"), bcrypt.DefaultCost)
+				hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(testPassword), bcrypt.DefaultCost)
 				user := &auth.User{
 					ID:       1,
-					Email:    "test@example.com",
+					Email:    testEmail,
 					Password: string(hashedPassword),
 				}
 				session := &auth.Session{
@@ -109,7 +115,7 @@ func TestService_Login(t *testing.T) {
 					RefreshToken: "refresh-token",
 					ExpiresAt:    time.Now().Add(time.Hour),
 				}
-				r.EXPECT().GetUserByEmail("test@example.com").Return(user, nil)
+				r.EXPECT().GetUserByEmail(testEmail).Return(user, nil)
 				r.EXPECT().CreateSession(user.ID).Return(session, nil)
 			},
 			wantErr: false,
@@ -118,7 +124,7 @@ func TestService_Login(t *testing.T) {
 			name: "error - user not found",
 			command: &auth.LoginCommand{
 				Email:    "nonexistent@example.com",
-				Password: "password123",
+				Password: testPassword,
 			},
 			mockSetup: func(r *mocks.Repository) {
 				r.EXPECT().GetUserByEmail("nonexistent@example.com").Return(nil, errors.New("not found"))
@@ -129,17 +135,17 @@ func TestService_Login(t *testing.T) {
 		{
 			name: "error - invalid password",
 			command: &auth.LoginCommand{
-				Email:    "test@example.com",
+				Email:    testEmail,
 				Password: "wrongpassword",
 			},
 			mockSetup: func(r *mocks.Repository) {
-				hashedPassword := "$2a$10$abcdefghijklmnopqrstuvwxyz" // pre-hashed "password123"
+				hashedPassword := "$2a$10$abcdefghijklmnopqrstuvwxyz" // pre-hashed testPassword
 				user := &auth.User{
 					ID:       1,
-					Email:    "test@example.com",
+					Email:    testEmail,
 					Password: hashedPassword,
 				}
-				r.EXPECT().GetUserByEmail("test@example.com").Return(user, nil)
+				r.EXPECT().GetUserByEmail(testEmail).Return(user, nil)
 			},
 			wantErr: true,
 			errMsg:  "invalid email or password",
@@ -182,7 +188,7 @@ func TestService_GetSession(t *testing.T) {
 		wantErr   bool
 	}{
 		{
-			name:  "success",
+			name:  tcSuccess,
 			token: "valid-token",
 			mockSetup: func(r *mocks.Repository) {
 				session := &auth.Session{
@@ -234,7 +240,7 @@ func TestService_GetAllUsers(t *testing.T) {
 		wantErr   bool
 	}{
 		{
-			name: "success",
+			name: tcSuccess,
 			mockSetup: func(r *mocks.Repository) {
 				users := []*auth.User{
 					{ID: 1, Email: "user1@example.com"},

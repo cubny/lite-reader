@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"context"
+
 	"crypto/rand"
 	"database/sql"
 	"encoding/hex"
@@ -29,7 +31,9 @@ func NewDB(client *sql.DB) *DB {
 
 func (d *DB) GetUserByEmail(email string) (*auth.User, error) {
 	var user auth.User
-	err := d.sqliteDB.QueryRow("SELECT id, email, password FROM users WHERE email = ?", email).Scan(&user.ID, &user.Email, &user.Password)
+	err := d.sqliteDB.
+		QueryRowContext(context.Background(), "SELECT id, email, password FROM users WHERE email = ?", email).
+		Scan(&user.ID, &user.Email, &user.Password)
 	if err != nil {
 		return nil, err
 	}
@@ -37,12 +41,12 @@ func (d *DB) GetUserByEmail(email string) (*auth.User, error) {
 }
 
 func (d *DB) CreateUser(email, password string) error {
-	_, err := d.sqliteDB.Exec("INSERT INTO users (email, password) VALUES (?, ?)", email, password)
+	_, err := d.sqliteDB.ExecContext(context.Background(), "INSERT INTO users (email, password) VALUES (?, ?)", email, password)
 	return err
 }
 
 func (d *DB) GetAllUsers() ([]*auth.User, error) {
-	rows, err := d.sqliteDB.Query("SELECT id, email, password FROM users")
+	rows, err := d.sqliteDB.QueryContext(context.Background(), "SELECT id, email, password FROM users")
 	if err != nil {
 		return nil, err
 	}
@@ -93,7 +97,7 @@ func (d *DB) CreateSession(userID int) (*auth.Session, error) {
 	}
 
 	// Store session in database
-	_, err := d.sqliteDB.Exec(`
+	_, err := d.sqliteDB.ExecContext(context.Background(), `
         INSERT INTO sessions (id, user_id, access_token, refresh_token, expires_at, created_at)
         VALUES (?, ?, ?, ?, ?, ?)
     `, session.ID, session.UserID, session.AccessToken, session.RefreshToken, session.ExpiresAt, session.CreatedAt)
@@ -107,7 +111,7 @@ func (d *DB) CreateSession(userID int) (*auth.Session, error) {
 
 func (d *DB) GetSessionByToken(token string) (*auth.Session, error) {
 	var session auth.Session
-	err := d.sqliteDB.QueryRow(`
+	err := d.sqliteDB.QueryRowContext(context.Background(), `
 	    SELECT id, user_id, access_token, refresh_token, expires_at, created_at 
 	    FROM sessions 
 	    WHERE access_token = ?`, token).Scan(

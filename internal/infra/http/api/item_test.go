@@ -26,7 +26,7 @@ func TestRouter_updateItem(t *testing.T) {
 			ExpectedStatus: http.StatusNoContent,
 			ExpectedBody:   ``,
 			Method:         http.MethodPut,
-			Target:         "/items/1",
+			Target:         item1Path,
 			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {
 				i.EXPECT().UpdateItem(gomock.Any()).Return(nil)
 			},
@@ -47,15 +47,15 @@ func TestRouter_updateItem(t *testing.T) {
 			ExpectedStatus: http.StatusBadRequest,
 			ExpectedBody:   `{"error":{"code":400, "details":"Bad Request - cannot decode request body"}}`,
 			Method:         http.MethodPut,
-			Target:         "/items/1",
+			Target:         item1Path,
 		},
 		{
-			Name:           "service returns error",
+			Name:           tcServiceErr,
 			ReqBody:        `{"id": "1", "starred": true, "is_new": true}`,
 			ExpectedStatus: http.StatusInternalServerError,
 			ExpectedBody:   `{"error":{"code":500, "details":"Internal error - cannot update item"}}`,
 			Method:         http.MethodPut,
-			Target:         "/items/1",
+			Target:         item1Path,
 			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {
 				i.EXPECT().UpdateItem(gomock.Any()).Return(assert.AnError)
 			},
@@ -86,9 +86,9 @@ func TestRouter_getStarredItems(t *testing.T) {
 			},
 		},
 		{
-			Name:           "service returns error",
+			Name:           tcServiceErr,
 			ExpectedStatus: http.StatusInternalServerError,
-			ExpectedBody:   `{"error":{"code":500, "details":"Internal error - cannot get unread items"}}`,
+			ExpectedBody:   respInternalUnread,
 			Method:         http.MethodGet,
 			Target:         "/items/starred",
 			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {
@@ -121,9 +121,9 @@ func TestRouter_getUnreadItems(t *testing.T) {
 			},
 		},
 		{
-			Name:           "service returns error",
+			Name:           tcServiceErr,
 			ExpectedStatus: http.StatusInternalServerError,
-			ExpectedBody:   `{"error":{"code":500, "details":"Internal error - cannot get unread items"}}`,
+			ExpectedBody:   respInternalUnread,
 			Method:         http.MethodGet,
 			Target:         "/items/unread",
 			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {
@@ -156,9 +156,9 @@ func TestRouter_getUnreadItemsCount(t *testing.T) {
 			},
 		},
 		{
-			Name:           "service returns error",
+			Name:           tcServiceErr,
 			ExpectedStatus: http.StatusInternalServerError,
-			ExpectedBody:   `{"error":{"code":500, "details":"Internal error - cannot get unread items"}}`,
+			ExpectedBody:   respInternalUnread,
 			Method:         http.MethodGet,
 			Target:         "/items/unread/count",
 			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {
@@ -191,9 +191,9 @@ func TestRouter_getStarredItemsCount(t *testing.T) {
 			},
 		},
 		{
-			Name:           "service returns error",
+			Name:           tcServiceErr,
 			ExpectedStatus: http.StatusInternalServerError,
-			ExpectedBody:   `{"error":{"code":500, "details":"Internal error - cannot get unread items"}}`,
+			ExpectedBody:   respInternalUnread,
 			Method:         http.MethodGet,
 			Target:         "/items/starred/count",
 			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {

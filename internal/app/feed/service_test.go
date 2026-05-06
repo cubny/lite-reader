@@ -13,6 +13,16 @@ import (
 	mocks "github.com/cubny/lite-reader/internal/mocks/app/feed"
 )
 
+const (
+	exampleFeedTitle    = "Example Feed"
+	exampleFeedDesc     = "Example Description"
+	exampleFeedDesc2    = "Example Description 2"
+	exampleFeedLink     = "https://example.com"
+	exampleFeedURL      = "https://example.com/feed"
+	exampleFeedLinkTypo = "https//example.com"
+	exampleFeedLang     = "en"
+)
+
 func TestServiceImpl_AddFeed(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	tests := []struct {
@@ -32,11 +42,11 @@ func TestServiceImpl_AddFeed(t *testing.T) {
 			name:          "success",
 			parseURLError: nil,
 			parseURLResult: &gofeed.Feed{
-				Title:       "Example Feed",
-				Description: "Example Description",
-				Link:        "https://example.com",
-				FeedLink:    "https://example.com/feed",
-				Language:    "en",
+				Title:       exampleFeedTitle,
+				Description: exampleFeedDesc,
+				Link:        exampleFeedLink,
+				FeedLink:    exampleFeedURL,
+				Language:    exampleFeedLang,
 				Items:       []*gofeed.Item{},
 			},
 			finderCalled: false,
@@ -47,9 +57,9 @@ func TestServiceImpl_AddFeed(t *testing.T) {
 			repoError:    nil,
 			want: &feed.Feed{
 				ID:          1,
-				Title:       "Example Feed",
-				Link:        "https//example.com",
-				URL:         "https://example.com/feed",
+				Title:       exampleFeedTitle,
+				Link:        exampleFeedLinkTypo,
+				URL:         exampleFeedURL,
 				UnreadCount: 0,
 			},
 			wantErr: false,
@@ -123,7 +133,7 @@ func TestServiceImpl_AddFeed(t *testing.T) {
 			}
 
 			s := feed.NewService(repo, parser, finder)
-			cmd := &feed.AddFeedCommand{URL: "https://example.com/feed"}
+			cmd := &feed.AddFeedCommand{URL: exampleFeedURL}
 			got, err := s.AddFeed(cmd)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ServiceImpl.AddFeed() error = %v, wantErr %v", err, tt.wantErr)
@@ -139,22 +149,22 @@ func TestServiceImpl_AddFeed(t *testing.T) {
 		repoMock.EXPECT().AddFeed(gomock.Any()).Return(1, nil)
 
 		parserMock := mocks.NewParser(ctrl)
-		parserMock.EXPECT().ParseURL("https://example.com").Return(nil, gofeed.ErrFeedTypeNotDetected)
-		parserMock.EXPECT().ParseURL("https://example.com/feed").Return(nil, assert.AnError)
+		parserMock.EXPECT().ParseURL(exampleFeedLink).Return(nil, gofeed.ErrFeedTypeNotDetected)
+		parserMock.EXPECT().ParseURL(exampleFeedURL).Return(nil, assert.AnError)
 		parserMock.EXPECT().ParseURL("https://example.com/feed2").Return(&gofeed.Feed{
-			Title:       "Example Feed",
-			Description: "Example Description",
-			Link:        "https://example.com",
-			FeedLink:    "https://example.com/feed",
-			Language:    "en",
+			Title:       exampleFeedTitle,
+			Description: exampleFeedDesc,
+			Link:        exampleFeedLink,
+			FeedLink:    exampleFeedURL,
+			Language:    exampleFeedLang,
 			Items:       []*gofeed.Item{},
 		}, nil)
 
 		finderMock := mocks.NewFinder(ctrl)
-		finderMock.EXPECT().FindFeeds(gomock.Any()).Return([]string{"https://example.com/feed", "https://example.com/feed2"}, nil)
+		finderMock.EXPECT().FindFeeds(gomock.Any()).Return([]string{exampleFeedURL, "https://example.com/feed2"}, nil)
 
 		s := feed.NewService(repoMock, parserMock, finderMock)
-		cmd := &feed.AddFeedCommand{URL: "https://example.com"}
+		cmd := &feed.AddFeedCommand{URL: exampleFeedLink}
 		_, err := s.AddFeed(cmd)
 		assert.NoError(t, err)
 	})
@@ -198,22 +208,22 @@ func TestServiceImpl_FetchItems(t *testing.T) {
 			name: "success",
 			parser: Parser{
 				result: &gofeed.Feed{
-					Title:       "Example Feed",
-					Description: "Example Description",
-					Link:        "https://example.com",
-					FeedLink:    "https://example.com/feed",
-					Language:    "en",
+					Title:       exampleFeedTitle,
+					Description: exampleFeedDesc,
+					Link:        exampleFeedLink,
+					FeedLink:    exampleFeedURL,
+					Language:    exampleFeedLang,
 					Items: []*gofeed.Item{
 						{
 							Title:           "Example Item",
-							Description:     "Example Description",
+							Description:     exampleFeedDesc,
 							Link:            "https://example.com/item",
 							Published:       "2021-01-01T00:00:00Z",
 							PublishedParsed: &samplePublishedParsed,
 						},
 						{
 							Title:           "Example Item 2",
-							Description:     "Example Description 2",
+							Description:     exampleFeedDesc2,
 							Link:            "https://example.com/item2",
 							Published:       "2021-01-01T00:00:00Z",
 							PublishedParsed: &samplePublishedParsed,
@@ -226,9 +236,9 @@ func TestServiceImpl_FetchItems(t *testing.T) {
 			repo: Repo{
 				result: &feed.Feed{
 					ID:          1,
-					Title:       "Example Feed",
-					Link:        "https//example.com",
-					URL:         "https://example.com/feed",
+					Title:       exampleFeedTitle,
+					Link:        exampleFeedLinkTypo,
+					URL:         exampleFeedURL,
 					UnreadCount: 0,
 				},
 				error: nil,
@@ -236,19 +246,19 @@ func TestServiceImpl_FetchItems(t *testing.T) {
 			want: []*item.Item{
 				{
 					Title:     "Example Item",
-					Desc:      "Example Description",
+					Desc:      exampleFeedDesc,
 					Link:      "https://example.com/item",
 					Timestamp: samplePublishedParsed,
-					Dir:       "Example Description",
+					Dir:       exampleFeedDesc,
 					IsNew:     true,
 					Starred:   false,
 				},
 				{
 					Title:     "Example Item 2",
-					Desc:      "Example Description 2",
+					Desc:      exampleFeedDesc2,
 					Link:      "https://example.com/item2",
 					Timestamp: samplePublishedParsed,
-					Dir:       "Example Description 2",
+					Dir:       exampleFeedDesc2,
 					IsNew:     true,
 					Starred:   false,
 				},
@@ -279,9 +289,9 @@ func TestServiceImpl_FetchItems(t *testing.T) {
 			repo: Repo{
 				result: &feed.Feed{
 					ID:          1,
-					Title:       "Example Feed",
-					Link:        "https//example.com",
-					URL:         "https://example.com/feed",
+					Title:       exampleFeedTitle,
+					Link:        exampleFeedLinkTypo,
+					URL:         exampleFeedURL,
 					UnreadCount: 0,
 				},
 				error: nil,

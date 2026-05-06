@@ -18,9 +18,9 @@ func TestRouter_signup(t *testing.T) {
 
 	specs := []spec{
 		{
-			Name:           "ok",
+			Name:           tcOK,
 			Method:         http.MethodPost,
-			Target:         "/signup",
+			Target:         signupPath,
 			ReqBody:        `{"email":"test@example.com","password":"password123"}`,
 			ExpectedStatus: http.StatusCreated,
 			ExpectedBody:   ``,
@@ -31,25 +31,25 @@ func TestRouter_signup(t *testing.T) {
 		{
 			Name:           "invalid json payload",
 			Method:         http.MethodPost,
-			Target:         "/signup",
+			Target:         signupPath,
 			ReqBody:        `{"email":"test@example.com","password":"password123"`,
 			ExpectedStatus: http.StatusBadRequest,
-			ExpectedBody:   `{"error":{"code":400,"details":"Bad Request - invalid request body"}}`,
+			ExpectedBody:   respInvalidReqBody,
 			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {},
 		},
 		{
 			Name:           "missing required fields",
 			Method:         http.MethodPost,
-			Target:         "/signup",
+			Target:         signupPath,
 			ReqBody:        `{"email":"","password":""}`,
 			ExpectedStatus: http.StatusBadRequest,
-			ExpectedBody:   `{"error":{"code":400,"details":"Bad Request - invalid request body"}}`,
+			ExpectedBody:   respInvalidReqBody,
 			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {},
 		},
 		{
-			Name:           "service returns error",
+			Name:           tcServiceErr,
 			Method:         http.MethodPost,
-			Target:         "/signup",
+			Target:         signupPath,
 			ReqBody:        `{"email":"test@example.com","password":"password123"}`,
 			ExpectedStatus: http.StatusBadRequest,
 			ExpectedBody:   `{"error":{"code":400,"details":"Bad Request - user already exists"}}`,
@@ -60,10 +60,10 @@ func TestRouter_signup(t *testing.T) {
 		{
 			Name:           "empty body",
 			Method:         http.MethodPost,
-			Target:         "/signup",
+			Target:         signupPath,
 			ReqBody:        ``,
 			ExpectedStatus: http.StatusBadRequest,
-			ExpectedBody:   `{"error":{"code":400,"details":"Bad Request - invalid request body"}}`,
+			ExpectedBody:   respInvalidReqBody,
 			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {},
 		},
 	}

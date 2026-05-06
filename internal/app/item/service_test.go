@@ -11,6 +11,15 @@ import (
 	mocks "github.com/cubny/lite-reader/internal/mocks/app/item"
 )
 
+const (
+	tcHappy      = "happy"
+	tcRepoErrors = "repo errors"
+	itemTitle    = "title"
+	itemDesc     = "desc"
+	itemDir      = "dir"
+	itemLink     = "link"
+)
+
 func TestServiceImpl_GetUnreadItems(t *testing.T) {
 	type Repo struct {
 		result []*item.Item
@@ -23,15 +32,15 @@ func TestServiceImpl_GetUnreadItems(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "happy",
+			name: tcHappy,
 			repo: Repo{
 				result: []*item.Item{
 					{
 						ID:        1,
-						Title:     "title",
-						Desc:      "desc",
-						Dir:       "dir",
-						Link:      "link",
+						Title:     itemTitle,
+						Desc:      itemDesc,
+						Dir:       itemDir,
+						Link:      itemLink,
 						IsNew:     true,
 						Starred:   false,
 						Timestamp: time.Now(),
@@ -42,10 +51,10 @@ func TestServiceImpl_GetUnreadItems(t *testing.T) {
 			want: []*item.Item{
 				{
 					ID:        1,
-					Title:     "title",
-					Desc:      "desc",
-					Dir:       "dir",
-					Link:      "link",
+					Title:     itemTitle,
+					Desc:      itemDesc,
+					Dir:       itemDir,
+					Link:      itemLink,
 					IsNew:     true,
 					Starred:   false,
 					Timestamp: time.Now(),
@@ -53,7 +62,7 @@ func TestServiceImpl_GetUnreadItems(t *testing.T) {
 			}, wantErr: false,
 		},
 		{
-			name: "repo errors",
+			name: tcRepoErrors,
 			repo: Repo{
 				result: nil,
 				err:    assert.AnError,
@@ -97,15 +106,15 @@ func TestServiceImpl_GetStarredItems(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "happy",
+			name: tcHappy,
 			repo: Repo{
 				result: []*item.Item{
 					{
 						ID:        1,
-						Title:     "title",
-						Desc:      "desc",
-						Dir:       "dir",
-						Link:      "link",
+						Title:     itemTitle,
+						Desc:      itemDesc,
+						Dir:       itemDir,
+						Link:      itemLink,
 						IsNew:     true,
 						Starred:   false,
 						Timestamp: time.Now(),
@@ -116,10 +125,10 @@ func TestServiceImpl_GetStarredItems(t *testing.T) {
 			want: []*item.Item{
 				{
 					ID:        1,
-					Title:     "title",
-					Desc:      "desc",
-					Dir:       "dir",
-					Link:      "link",
+					Title:     itemTitle,
+					Desc:      itemDesc,
+					Dir:       itemDir,
+					Link:      itemLink,
 					IsNew:     true,
 					Starred:   false,
 					Timestamp: time.Now(),
@@ -127,7 +136,7 @@ func TestServiceImpl_GetStarredItems(t *testing.T) {
 			}, wantErr: false,
 		},
 		{
-			name: "repo errors",
+			name: tcRepoErrors,
 			repo: Repo{
 				result: nil,
 				err:    assert.AnError,
@@ -175,15 +184,15 @@ func TestServiceImpl_GetFeedItems(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "happy",
+			name: tcHappy,
 			repo: Repo{
 				result: []*item.Item{
 					{
 						ID:        1,
-						Title:     "title",
-						Desc:      "desc",
-						Dir:       "dir",
-						Link:      "link",
+						Title:     itemTitle,
+						Desc:      itemDesc,
+						Dir:       itemDir,
+						Link:      itemLink,
 						IsNew:     true,
 						Starred:   false,
 						Timestamp: time.Now(),
@@ -197,10 +206,10 @@ func TestServiceImpl_GetFeedItems(t *testing.T) {
 			want: []*item.Item{
 				{
 					ID:        1,
-					Title:     "title",
-					Desc:      "desc",
-					Dir:       "dir",
-					Link:      "link",
+					Title:     itemTitle,
+					Desc:      itemDesc,
+					Dir:       itemDir,
+					Link:      itemLink,
 					IsNew:     true,
 					Starred:   false,
 					Timestamp: time.Now(),
@@ -208,7 +217,7 @@ func TestServiceImpl_GetFeedItems(t *testing.T) {
 			}, wantErr: false,
 		},
 		{
-			name: "repo errors",
+			name: tcRepoErrors,
 			repo: Repo{
 				result: nil,
 				err:    assert.AnError,
@@ -258,7 +267,7 @@ func TestServiceImpl_UpsertItems(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "happy",
+			name: tcHappy,
 			repo: Repo{
 				err: nil,
 			},
@@ -267,10 +276,10 @@ func TestServiceImpl_UpsertItems(t *testing.T) {
 				Items: []*item.Item{
 					{
 						ID:        1,
-						Title:     "title",
-						Desc:      "desc",
-						Dir:       "dir",
-						Link:      "link",
+						Title:     itemTitle,
+						Desc:      itemDesc,
+						Dir:       itemDir,
+						Link:      itemLink,
 						IsNew:     true,
 						Starred:   false,
 						Timestamp: time.Now(),
@@ -279,7 +288,7 @@ func TestServiceImpl_UpsertItems(t *testing.T) {
 			}, wantErr: false,
 		},
 		{
-			name: "repo errors",
+			name: tcRepoErrors,
 			repo: Repo{
 				err: assert.AnError,
 			},
@@ -288,10 +297,10 @@ func TestServiceImpl_UpsertItems(t *testing.T) {
 				Items: []*item.Item{
 					{
 						ID:        1,
-						Title:     "title",
-						Desc:      "desc",
-						Dir:       "dir",
-						Link:      "link",
+						Title:     itemTitle,
+						Desc:      itemDesc,
+						Dir:       itemDir,
+						Link:      itemLink,
 						IsNew:     true,
 						Starred:   false,
 						Timestamp: time.Now(),
@@ -332,7 +341,7 @@ func TestServiceImpl_UpdateItem(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "happy",
+			name: tcHappy,
 			repo: Repo{
 				err: nil,
 			},
@@ -343,7 +352,7 @@ func TestServiceImpl_UpdateItem(t *testing.T) {
 			}, wantErr: false,
 		},
 		{
-			name: "repo errors",
+			name: tcRepoErrors,
 			repo: Repo{
 				err: assert.AnError,
 			},
@@ -384,7 +393,7 @@ func TestServiceImpl_ReadFeedItems(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "happy",
+			name: tcHappy,
 			repo: Repo{
 				err: nil,
 			},
@@ -393,7 +402,7 @@ func TestServiceImpl_ReadFeedItems(t *testing.T) {
 			}, wantErr: false,
 		},
 		{
-			name: "repo errors",
+			name: tcRepoErrors,
 			repo: Repo{
 				err: assert.AnError,
 			},
@@ -432,7 +441,7 @@ func TestServiceImpl_UnreadFeedItems(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "happy",
+			name: tcHappy,
 			repo: Repo{
 				err: nil,
 			},
@@ -441,7 +450,7 @@ func TestServiceImpl_UnreadFeedItems(t *testing.T) {
 			}, wantErr: false,
 		},
 		{
-			name: "repo errors",
+			name: tcRepoErrors,
 			repo: Repo{
 				err: assert.AnError,
 			},
@@ -478,7 +487,7 @@ func TestServiceImpl_GetStarredItemsCount(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "happy",
+			name: tcHappy,
 			repo: Repo{
 				result: 1,
 				err:    nil,
@@ -487,7 +496,7 @@ func TestServiceImpl_GetStarredItemsCount(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "repo errors",
+			name: tcRepoErrors,
 			repo: Repo{
 				result: 0,
 				err:    assert.AnError,
@@ -527,7 +536,7 @@ func TestServiceImpl_GetUnreadItemsCount(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "happy",
+			name: tcHappy,
 			repo: Repo{
 				result: 1,
 				err:    nil,
@@ -536,7 +545,7 @@ func TestServiceImpl_GetUnreadItemsCount(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "repo errors",
+			name: tcRepoErrors,
 			repo: Repo{
 				result: 0,
 				err:    assert.AnError,
@@ -578,7 +587,7 @@ func TestServiceImpl_DeleteFeedItems(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "happy",
+			name: tcHappy,
 			repo: Repo{
 				err: nil,
 			},
@@ -587,7 +596,7 @@ func TestServiceImpl_DeleteFeedItems(t *testing.T) {
 			}, wantErr: false,
 		},
 		{
-			name: "repo errors",
+			name: tcRepoErrors,
 			repo: Repo{
 				err: assert.AnError,
 			},

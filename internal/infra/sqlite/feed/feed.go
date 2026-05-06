@@ -1,6 +1,8 @@
 package feed
 
 import (
+	"context"
+
 	"database/sql"
 	"time"
 
@@ -18,7 +20,8 @@ func NewDB(client *sql.DB) *DB {
 }
 
 func (r *DB) AddFeed(f *feed.Feed) (int, error) {
-	result, err := r.sqliteDB.Exec("INSERT INTO rss (title, desc, link, url, lang, user_id, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
+	const q = "INSERT INTO rss (title, desc, link, url, lang, user_id, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)"
+	result, err := r.sqliteDB.ExecContext(context.Background(), q,
 		f.Title, f.Description, f.Link, f.URL, f.Lang, f.UserID, f.UpdatedAt.Format(time.RFC3339))
 	if err != nil {
 		return 0, err
@@ -34,7 +37,7 @@ func (r *DB) GetFeed(id int) (*feed.Feed, error) {
 	query := "SELECT " +
 		"id, title, desc, link, url, lang, updated_at, " +
 		"(SELECT COUNT(*) FROM item WHERE rss_id = rss.id AND is_new = 1) AS unread_count FROM rss where id = ?"
-	rows, err := r.sqliteDB.Query(query, id)
+	rows, err := r.sqliteDB.QueryContext(context.Background(), query, id)
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +57,7 @@ func (r *DB) ListFeeds(userID int) ([]*feed.Feed, error) {
 		"id, title, desc, link, url, lang, updated_at, " +
 		"(SELECT COUNT(*) FROM item WHERE rss_id = rss.id AND is_new = 1) AS unread_count FROM rss " +
 		"WHERE user_id = ?"
-	rows, err := r.sqliteDB.Query(query, userID)
+	rows, err := r.sqliteDB.QueryContext(context.Background(), query, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +70,7 @@ func (r *DB) ListFeeds(userID int) ([]*feed.Feed, error) {
 }
 
 func (r *DB) DeleteFeed(id int) error {
-	_, err := r.sqliteDB.Exec("DELETE FROM rss WHERE id = ?", id)
+	_, err := r.sqliteDB.ExecContext(context.Background(), "DELETE FROM rss WHERE id = ?", id)
 	return err
 }
 

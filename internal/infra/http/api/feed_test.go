@@ -24,9 +24,9 @@ func TestRouter_addFeed(t *testing.T) {
 
 	specs := []spec{
 		{
-			Name:           "ok",
+			Name:           tcOK,
 			Method:         http.MethodPost,
-			Target:         "/feeds",
+			Target:         feedsPath,
 			ReqBody:        `{"url":"http://valid.url"}`,
 			ExpectedStatus: http.StatusCreated,
 			ExpectedBody: `{"id":1,"title":"title","desc":"description","link":"link","url":"url","updated_at":"` +
@@ -34,9 +34,9 @@ func TestRouter_addFeed(t *testing.T) {
 			MockFn: func(_ *mocks.ItemService, f *mocks.FeedService, _ *mocks.AuthService) {
 				f.EXPECT().AddFeed(gomock.Any()).Return(&feed.Feed{
 					ID:          1,
-					Title:       "title",
-					Description: "description",
-					Link:        "link",
+					Title:       feedTitle,
+					Description: feedDesc,
+					Link:        feedLink,
 					URL:         "url",
 					Lang:        "lang",
 					UpdatedAt:   now,
@@ -50,7 +50,7 @@ func TestRouter_addFeed(t *testing.T) {
 			ExpectedStatus: http.StatusBadRequest,
 			ExpectedBody:   `{"error":{"code":400,"details":"Bad Request - cannot decode request body"}}`,
 			Method:         http.MethodPost,
-			Target:         "/feeds",
+			Target:         feedsPath,
 			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {},
 		},
 		{
@@ -59,16 +59,16 @@ func TestRouter_addFeed(t *testing.T) {
 			ExpectedStatus: http.StatusUnprocessableEntity,
 			ExpectedBody:   `{"error":{"code":422,"details":"Invalid params - invalid params"}}`,
 			Method:         http.MethodPost,
-			Target:         "/feeds",
+			Target:         feedsPath,
 			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {},
 		},
 		{
-			Name:           "service returns error",
+			Name:           tcServiceErr,
 			ReqBody:        `{"url":"http://valid.url"}`,
 			ExpectedStatus: http.StatusInternalServerError,
 			ExpectedBody:   `{"error":{"code":500,"details":"Internal error - failed to add feed due to server internal error"}}`,
 			Method:         http.MethodPost,
-			Target:         "/feeds",
+			Target:         feedsPath,
 			MockFn: func(_ *mocks.ItemService, f *mocks.FeedService, _ *mocks.AuthService) {
 				f.EXPECT().AddFeed(gomock.Any()).Return(nil, assert.AnError)
 			},
@@ -79,7 +79,7 @@ func TestRouter_addFeed(t *testing.T) {
 			ExpectedStatus: http.StatusBadRequest,
 			ExpectedBody:   `{"error":{"code":400,"details":"Bad Request - cannot decode request body"}}`,
 			Method:         http.MethodPost,
-			Target:         "/feeds",
+			Target:         feedsPath,
 			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {},
 		},
 	}
@@ -99,7 +99,7 @@ func TestRouter_getFeedItems(t *testing.T) {
 
 	specs := []spec{
 		{
-			Name:           "ok",
+			Name:           tcOK,
 			Method:         http.MethodGet,
 			Target:         "/feeds/1/items",
 			ExpectedStatus: http.StatusOK,
@@ -109,10 +109,10 @@ func TestRouter_getFeedItems(t *testing.T) {
 				i.EXPECT().GetFeedItems(gomock.Any()).Return([]*item.Item{
 					{
 						ID:        1,
-						Title:     "title",
-						Desc:      "description",
-						Dir:       "dir",
-						Link:      "link",
+						Title:     feedTitle,
+						Desc:      feedDesc,
+						Dir:       feedDir,
+						Link:      feedLink,
 						IsNew:     true,
 						Starred:   false,
 						Timestamp: now,
@@ -121,15 +121,15 @@ func TestRouter_getFeedItems(t *testing.T) {
 			},
 		},
 		{
-			Name:           "invalid feed id",
+			Name:           tcInvalidFeedID,
 			Method:         http.MethodGet,
 			Target:         "/feeds/invalid/items",
 			ExpectedStatus: http.StatusUnprocessableEntity,
-			ExpectedBody:   `{"error":{"code":422,"details":"Invalid params - invalid feed id"}}`,
+			ExpectedBody:   respInvalidFeedID,
 			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {},
 		},
 		{
-			Name:           "service returns error",
+			Name:           tcServiceErr,
 			Method:         http.MethodGet,
 			Target:         "/feeds/1/items",
 			ExpectedStatus: http.StatusInternalServerError,
@@ -155,9 +155,9 @@ func TestRouter_fetchFeedNewItems(t *testing.T) {
 
 	specs := []spec{
 		{
-			Name:           "ok",
+			Name:           tcOK,
 			Method:         http.MethodPut,
-			Target:         "/feeds/1/fetch",
+			Target:         feedFetchPath,
 			ExpectedStatus: http.StatusOK,
 			ExpectedBody: `[{"id":1,"title":"title","dir":"dir","desc":"description","link":"link","is_new":false,"starred":true,"timestamp":"` +
 				now.Format(time.RFC3339Nano) + `"}]`,
@@ -165,10 +165,10 @@ func TestRouter_fetchFeedNewItems(t *testing.T) {
 				f.EXPECT().FetchItems(1).Return([]*item.Item{
 					{
 						ID:        1,
-						Title:     "title",
-						Desc:      "description",
-						Dir:       "dir",
-						Link:      "link",
+						Title:     feedTitle,
+						Desc:      feedDesc,
+						Dir:       feedDir,
+						Link:      feedLink,
 						IsNew:     true,
 						Starred:   false,
 						Timestamp: now,
@@ -178,10 +178,10 @@ func TestRouter_fetchFeedNewItems(t *testing.T) {
 				i.EXPECT().GetFeedItems(gomock.Any()).Return([]*item.Item{
 					{
 						ID:        1,
-						Title:     "title",
-						Desc:      "description",
-						Dir:       "dir",
-						Link:      "link",
+						Title:     feedTitle,
+						Desc:      feedDesc,
+						Dir:       feedDir,
+						Link:      feedLink,
 						IsNew:     false,
 						Starred:   true,
 						Timestamp: now,
@@ -190,17 +190,17 @@ func TestRouter_fetchFeedNewItems(t *testing.T) {
 			},
 		},
 		{
-			Name:           "invalid feed id",
+			Name:           tcInvalidFeedID,
 			Method:         http.MethodPut,
 			Target:         "/feeds/invalid/fetch",
 			ExpectedStatus: http.StatusUnprocessableEntity,
-			ExpectedBody:   `{"error":{"code":422,"details":"Invalid params - invalid feed id"}}`,
+			ExpectedBody:   respInvalidFeedID,
 			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {},
 		},
 		{
 			Name:           "feed service fetch items returns error",
 			Method:         http.MethodPut,
-			Target:         "/feeds/1/fetch",
+			Target:         feedFetchPath,
 			ExpectedStatus: http.StatusInternalServerError,
 			ExpectedBody:   `{"error":{"code":500,"details":"Internal error - cannot fetch feed items"}}`,
 			MockFn: func(_ *mocks.ItemService, f *mocks.FeedService, _ *mocks.AuthService) {
@@ -210,17 +210,17 @@ func TestRouter_fetchFeedNewItems(t *testing.T) {
 		{
 			Name:           "item service returns error",
 			Method:         http.MethodPut,
-			Target:         "/feeds/1/fetch",
+			Target:         feedFetchPath,
 			ExpectedStatus: http.StatusInternalServerError,
 			ExpectedBody:   `{"error":{"code":500,"details":"Internal error - cannot store feed items"}}`,
 			MockFn: func(i *mocks.ItemService, f *mocks.FeedService, _ *mocks.AuthService) {
 				f.EXPECT().FetchItems(1).Return([]*item.Item{
 					{
 						ID:        1,
-						Title:     "title",
-						Desc:      "description",
-						Dir:       "dir",
-						Link:      "link",
+						Title:     feedTitle,
+						Desc:      feedDesc,
+						Dir:       feedDir,
+						Link:      feedLink,
 						IsNew:     true,
 						Starred:   false,
 						Timestamp: now,
@@ -232,17 +232,17 @@ func TestRouter_fetchFeedNewItems(t *testing.T) {
 		{
 			Name:           "item service get feed items returns error",
 			Method:         http.MethodPut,
-			Target:         "/feeds/1/fetch",
+			Target:         feedFetchPath,
 			ExpectedStatus: http.StatusInternalServerError,
 			ExpectedBody:   `{"error":{"code":500,"details":"Internal error - cannot get feed items"}}`,
 			MockFn: func(i *mocks.ItemService, f *mocks.FeedService, _ *mocks.AuthService) {
 				f.EXPECT().FetchItems(1).Return([]*item.Item{
 					{
 						ID:        1,
-						Title:     "title",
-						Desc:      "description",
-						Dir:       "dir",
-						Link:      "link",
+						Title:     feedTitle,
+						Desc:      feedDesc,
+						Dir:       feedDir,
+						Link:      feedLink,
 						IsNew:     true,
 						Starred:   false,
 						Timestamp: now,
@@ -268,7 +268,7 @@ func TestRouter_readFeedItems(t *testing.T) {
 
 	specs := []spec{
 		{
-			Name:           "ok",
+			Name:           tcOK,
 			Method:         http.MethodPost,
 			Target:         "/feeds/1/read",
 			ExpectedStatus: http.StatusNoContent,
@@ -278,15 +278,15 @@ func TestRouter_readFeedItems(t *testing.T) {
 			},
 		},
 		{
-			Name:           "invalid feed id",
+			Name:           tcInvalidFeedID,
 			Method:         http.MethodPost,
 			Target:         "/feeds/invalid/read",
 			ExpectedStatus: http.StatusUnprocessableEntity,
-			ExpectedBody:   `{"error":{"code":422,"details":"Invalid params - invalid feed id"}}`,
+			ExpectedBody:   respInvalidFeedID,
 			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {},
 		},
 		{
-			Name:           "service returns error",
+			Name:           tcServiceErr,
 			Method:         http.MethodPost,
 			Target:         "/feeds/1/read",
 			ExpectedStatus: http.StatusInternalServerError,
@@ -311,7 +311,7 @@ func TestRouter_unreadFeedItems(t *testing.T) {
 
 	specs := []spec{
 		{
-			Name:           "ok",
+			Name:           tcOK,
 			Method:         http.MethodPost,
 			Target:         "/feeds/1/unread",
 			ExpectedStatus: http.StatusNoContent,
@@ -321,15 +321,15 @@ func TestRouter_unreadFeedItems(t *testing.T) {
 			},
 		},
 		{
-			Name:           "invalid feed id",
+			Name:           tcInvalidFeedID,
 			Method:         http.MethodPost,
 			Target:         "/feeds/invalid/unread",
 			ExpectedStatus: http.StatusUnprocessableEntity,
-			ExpectedBody:   `{"error":{"code":422,"details":"Invalid params - invalid feed id"}}`,
+			ExpectedBody:   respInvalidFeedID,
 			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {},
 		},
 		{
-			Name:           "service returns error",
+			Name:           tcServiceErr,
 			Method:         http.MethodPost,
 			Target:         "/feeds/1/unread",
 			ExpectedStatus: http.StatusInternalServerError,
@@ -354,9 +354,9 @@ func TestRouter_DeleteFeed(t *testing.T) {
 
 	specs := []spec{
 		{
-			Name:           "ok",
+			Name:           tcOK,
 			Method:         http.MethodDelete,
-			Target:         "/feeds/1",
+			Target:         feed1Path,
 			ExpectedStatus: http.StatusNoContent,
 			ExpectedBody:   ``,
 			MockFn: func(i *mocks.ItemService, f *mocks.FeedService, _ *mocks.AuthService) {
@@ -365,17 +365,17 @@ func TestRouter_DeleteFeed(t *testing.T) {
 			},
 		},
 		{
-			Name:           "invalid feed id",
+			Name:           tcInvalidFeedID,
 			Method:         http.MethodDelete,
 			Target:         "/feeds/invalid",
 			ExpectedStatus: http.StatusUnprocessableEntity,
-			ExpectedBody:   `{"error":{"code":422,"details":"Invalid params - invalid feed id"}}`,
+			ExpectedBody:   respInvalidFeedID,
 			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {},
 		},
 		{
 			Name:           "item service returns error",
 			Method:         http.MethodDelete,
-			Target:         "/feeds/1",
+			Target:         feed1Path,
 			ExpectedStatus: http.StatusInternalServerError,
 			ExpectedBody:   `{"error":{"code":500,"details":"Internal error - cannot delete feed"}}`,
 			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {
@@ -385,7 +385,7 @@ func TestRouter_DeleteFeed(t *testing.T) {
 		{
 			Name:           "feed service returns error",
 			Method:         http.MethodDelete,
-			Target:         "/feeds/1",
+			Target:         feed1Path,
 			ExpectedStatus: http.StatusInternalServerError,
 			ExpectedBody:   `{"error":{"code":500,"details":"Internal error - cannot delete feed"}}`,
 			MockFn: func(i *mocks.ItemService, f *mocks.FeedService, _ *mocks.AuthService) {
