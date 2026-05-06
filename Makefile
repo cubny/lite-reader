@@ -78,7 +78,7 @@ gci: | $(GOBIN)/gci
 	@gci write --Section Standard --Section Default --Section "Prefix(github.com/cubny/lite-reader)"  $(shell ls  -d $(PWD)/*/ | grep -v vendor)
 
 $(GOBIN)/golangci-lint:
-	@curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(shell go env GOPATH)/bin v1.64.5
+	@curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(shell go env GOPATH)/bin v2.12.2
 
 .PHONY: lint
 lint: | $(GOBIN)/golangci-lint

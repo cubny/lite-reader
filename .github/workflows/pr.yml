@@ -6,7 +6,7 @@ on:
   pull_request:
 
 env:
-  GO_VERSION: '1.21'
+  GO_VERSION: '1.26'
 
 jobs:
   # Check if there is any dirty change for go mod tidy
@@ -44,12 +44,11 @@ jobs:
           # - 1.18rc1 -> 1.18.0-rc.1
           go-version: ${{ env.GO_VERSION }}
       - name: lint
-        uses: golangci/golangci-lint-action@v3.7.0
+        uses: golangci/golangci-lint-action@v7
         with:
-          version: latest
+          version: v2.12.2
           # skip cache because of flaky behaviors
-          skip-build-cache: true
-          skip-pkg-cache: true
+          skip-cache: true
 
   tests-on-windows:
     needs: golangci-lint # run after golangci-lint action to not produce duplicated errors
@@ -89,8 +88,7 @@ jobs:
     strategy:
       matrix:
         golang:
-          - '1.21'
-          - '1.22'
+          - '1.26'
     steps:
       - uses: actions/checkout@v4
       - name: Install Go
