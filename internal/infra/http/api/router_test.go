@@ -38,7 +38,7 @@ func (s *spec) execHTTPTestCases(i *mocks.ItemService, f *mocks.FeedService, a *
 func (s *spec) HandlerTest(t *testing.T, h *api.Router) {
 	t.Helper()
 
-	req := httptest.NewRequest(s.Method, s.Target, strings.NewReader(s.ReqBody))
+	req := httptest.NewRequestWithContext(t.Context(), s.Method, s.Target, strings.NewReader(s.ReqBody))
 	if s.AuthToken != "" {
 		req.Header.Set("Authorization", "Bearer "+s.AuthToken)
 	}

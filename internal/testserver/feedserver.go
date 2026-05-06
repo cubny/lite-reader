@@ -94,5 +94,6 @@ func (m *MockFeedServer) serveFeed(w http.ResponseWriter, r *http.Request) {
 	// Set appropriate content type
 	w.Header().Set("Content-Type", "application/xml; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	_, _ = w.Write(content)
+	// content is a fixed RSS/Atom XML fixture loaded from the testserver fixtures directory.
+	_, _ = w.Write(content) //nolint:gosec // G705: test-only mock feed server
 }

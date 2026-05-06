@@ -1,6 +1,8 @@
 package item
 
 import (
+	"context"
+
 	"database/sql"
 	"time"
 
@@ -19,7 +21,7 @@ func NewDB(client *sql.DB) *DB {
 
 func (r *DB) GetUnreadItems() ([]*item.Item, error) {
 	query := "SELECT id, is_new, desc, link, rss_id, title, dir, starred, timestamp FROM item WHERE is_new = 1 ORDER BY timestamp DESC"
-	result, err := r.sqliteDB.Query(query)
+	result, err := r.sqliteDB.QueryContext(context.Background(), query)
 	if err != nil {
 		return nil, err
 	}
@@ -28,7 +30,7 @@ func (r *DB) GetUnreadItems() ([]*item.Item, error) {
 
 func (r *DB) GetStarredItems() ([]*item.Item, error) {
 	query := "SELECT id, is_new, desc, link, rss_id, title, dir, starred, timestamp FROM item WHERE starred = 1 ORDER BY timestamp DESC"
-	result, err := r.sqliteDB.Query(query)
+	result, err := r.sqliteDB.QueryContext(context.Background(), query)
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +39,7 @@ func (r *DB) GetStarredItems() ([]*item.Item, error) {
 
 func (r *DB) GetFeedItems(feedID int) ([]*item.Item, error) {
 	query := "SELECT id, is_new, desc, link, rss_id, title, dir, starred, timestamp FROM item WHERE rss_id = ? ORDER BY timestamp DESC"
-	result, err := r.sqliteDB.Query(query, feedID)
+	result, err := r.sqliteDB.QueryContext(context.Background(), query, feedID)
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +99,7 @@ func (r *DB) UpsertItems(feedID int, items []*item.Item) error {
 
 func (r *DB) UpsertItem(feedID int, i *item.Item) (int, error) {
 	// first find if item exists
-	result, err := r.sqliteDB.Query("SELECT id FROM item WHERE link = ? AND rss_id = ?", i.Link, feedID)
+	result, err := r.sqliteDB.QueryContext(context.Background(), "SELECT id FROM item WHERE link = ? AND rss_id = ?", i.Link, feedID)
 	if err != nil {
 		return 0, err
 	}
@@ -117,7 +119,7 @@ func (r *DB) UpsertItem(feedID int, i *item.Item) (int, error) {
 	}
 	// if item does not exist, insert it
 	query := "INSERT INTO item (is_new, desc, link, rss_id, title, dir, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?)"
-	insertResult, execErr := r.sqliteDB.Exec(query, i.IsNew, i.Desc, i.Link, feedID, i.Title, i.Dir, i.Timestamp)
+	insertResult, execErr := r.sqliteDB.ExecContext(context.Background(), query, i.IsNew, i.Desc, i.Link, feedID, i.Title, i.Dir, i.Timestamp)
 	if execErr != nil {
 		return 0, execErr
 	}
@@ -129,7 +131,7 @@ func (r *DB) UpsertItem(feedID int, i *item.Item) (int, error) {
 }
 
 func (r *DB) UpdateItem(id int, starred, isNew bool) error {
-	_, err := r.sqliteDB.Exec("UPDATE item SET starred = ?, is_new = ? WHERE id = ?", starred, isNew, id)
+	_, err := r.sqliteDB.ExecContext(context.Background(), "UPDATE item SET starred = ?, is_new = ? WHERE id = ?", starred, isNew, id)
 	if err != nil {
 		return err
 	}
@@ -137,7 +139,7 @@ func (r *DB) UpdateItem(id int, starred, isNew bool) error {
 }
 
 func (r *DB) ReadFeedItems(feedID int) error {
-	_, err := r.sqliteDB.Exec("UPDATE item SET is_new = 0 WHERE rss_id = ?", feedID)
+	_, err := r.sqliteDB.ExecContext(context.Background(), "UPDATE item SET is_new = 0 WHERE rss_id = ?", feedID)
 	if err != nil {
 		return err
 	}
@@ -145,7 +147,7 @@ func (r *DB) ReadFeedItems(feedID int) error {
 }
 
 func (r *DB) UnreadFeedItems(feedID int) error {
-	_, err := r.sqliteDB.Exec("UPDATE item SET is_new = 1 WHERE rss_id = ?", feedID)
+	_, err := r.sqliteDB.ExecContext(context.Background(), "UPDATE item SET is_new = 1 WHERE rss_id = ?", feedID)
 	if err != nil {
 		return err
 	}
@@ -153,7 +155,7 @@ func (r *DB) UnreadFeedItems(feedID int) error {
 }
 
 func (r *DB) GetUnreadItemsCount() (int, error) {
-	result, err := r.sqliteDB.Query("SELECT COUNT(*) FROM item WHERE is_new = 1")
+	result, err := r.sqliteDB.QueryContext(context.Background(), "SELECT COUNT(*) FROM item WHERE is_new = 1")
 	if err != nil {
 		return 0, err
 	}
@@ -171,7 +173,7 @@ func (r *DB) GetUnreadItemsCount() (int, error) {
 }
 
 func (r *DB) GetStarredItemsCount() (int, error) {
-	result, err := r.sqliteDB.Query("SELECT COUNT(*) FROM item WHERE starred = 1")
+	result, err := r.sqliteDB.QueryContext(context.Background(), "SELECT COUNT(*) FROM item WHERE starred = 1")
 	if err != nil {
 		return 0, err
 	}
@@ -189,6 +191,6 @@ func (r *DB) GetStarredItemsCount() (int, error) {
 }
 
 func (r *DB) DeleteFeedItems(feedID int) error {
-	_, err := r.sqliteDB.Exec("DELETE FROM item WHERE rss_id = ?", feedID)
+	_, err := r.sqliteDB.ExecContext(context.Background(), "DELETE FROM item WHERE rss_id = ?", feedID)
 	return err
 }

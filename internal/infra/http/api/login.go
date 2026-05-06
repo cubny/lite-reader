@@ -33,5 +33,6 @@ func (h *Router) login(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 	}
 
 	w.WriteHeader(http.StatusOK)
-	_ = json.NewEncoder(w).Encode(response)
+	// AccessToken is a freshly minted JWT we are issuing to the caller, not a leaked secret.
+	_ = json.NewEncoder(w).Encode(response) //nolint:gosec // G117: intended response payload
 }
