@@ -17,6 +17,7 @@
 package api
 
 import (
+	"io/fs"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -63,8 +64,9 @@ type Router struct {
 	authService AuthService
 }
 
-// New creates a new handler to handle http requests
-func New(itemService ItemService, feedService FeedService, authService AuthService) (*Router, error) {
+// New creates a new handler to handle http requests. staticFS serves the
+// frontend assets at "/" via the NotFound fallback.
+func New(itemService ItemService, feedService FeedService, authService AuthService, staticFS fs.FS) (*Router, error) {
 	h := &Router{
 		itemService: itemService,
 		feedService: feedService,
@@ -94,7 +96,7 @@ func New(itemService ItemService, feedService FeedService, authService AuthServi
 	router.POST("/login", chain.Wrap(h.login))
 	router.POST("/signup", chain.Wrap(h.signup))
 	// serve static files for GET /
-	router.NotFound = http.FileServer(http.Dir("public"))
+	router.NotFound = http.FileServer(http.FS(staticFS))
 
 	h.Handler = router
 	return h, nil

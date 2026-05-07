@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"embed"
 	"fmt"
+	"io/fs"
 	"net/http"
 	"os"
 	"os/signal"
@@ -28,6 +29,7 @@ import (
 	authRepo "github.com/cubny/lite-reader/internal/infra/sqlite/auth"
 	feedRepo "github.com/cubny/lite-reader/internal/infra/sqlite/feed"
 	itemRepo "github.com/cubny/lite-reader/internal/infra/sqlite/item"
+	"github.com/cubny/lite-reader/internal/web"
 )
 
 type App struct {
@@ -200,7 +202,7 @@ func (a *App) stopAPIServer() *App {
 
 func (a *App) initAPIServer() *App {
 	return a.ifNoError(func() *App {
-		handler, err := api.New(a.itemService, a.feedService, a.authService)
+		handler, err := api.New(a.itemService, a.feedService, a.authService, staticFS())
 		if err != nil {
 			a.err = fmt.Errorf("cannot create handler, %w", err)
 			return a
@@ -234,4 +236,14 @@ func WaitTermination() {
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 	<-sigs
+}
+
+// staticFS returns the embedded frontend assets, or a directory FS rooted at
+// the path in the PUBLIC_DIR env var when set (dev hot-reload escape hatch).
+func staticFS() fs.FS {
+	if dir := os.Getenv("PUBLIC_DIR"); dir != "" {
+		log.Infof("serving static assets from disk: %s (PUBLIC_DIR)", dir)
+		return os.DirFS(dir)
+	}
+	return web.FS()
 }
