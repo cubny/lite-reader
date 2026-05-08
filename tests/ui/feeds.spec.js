@@ -37,7 +37,7 @@ test.describe('Feed Management', () => {
     await page.waitForTimeout(2000);
     
     // Verify feed was added by checking if we can click on it
-    const feedItem = page.locator('.feed:has-text("Tech News")');
+    const feedItem = page.getByTestId("feed-item").filter({ hasText: "Tech News" });
     await expect(feedItem).toBeVisible({ timeout: 5000 });
   });
 
@@ -50,7 +50,7 @@ test.describe('Feed Management', () => {
     await page.waitForTimeout(2000);
     
     // Verify feed was added
-    const feedItem = page.locator('.feed:has-text("Science Blog")');
+    const feedItem = page.getByTestId("feed-item").filter({ hasText: "Science Blog" });
     await expect(feedItem).toBeVisible({ timeout: 5000 });
   });
 
@@ -121,7 +121,7 @@ test.describe('Feed Management', () => {
     await page.waitForTimeout(1000);
     
     // Feed should no longer be visible
-    const feedItem = page.locator('.feed:has-text("Tech News")');
+    const feedItem = page.getByTestId("feed-item").filter({ hasText: "Tech News" });
     await expect(feedItem).not.toBeVisible({ timeout: 3000 });
   });
 });

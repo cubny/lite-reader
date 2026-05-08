@@ -1,14 +1,13 @@
 /**
- * Page Object Model for Login page
+ * Page Object Model for Login page (data-testid only).
  */
-
 export class LoginPage {
   constructor(page) {
     this.page = page;
-    this.emailInput = page.locator('input[name="email"]');
-    this.passwordInput = page.locator('input[name="password"]');
-    this.loginButton = page.locator('button[type="submit"]');
-    this.errorMessage = page.locator('.error, .alert-error');
+    this.emailInput = page.getByTestId('login-email');
+    this.passwordInput = page.getByTestId('login-password');
+    this.loginButton = page.getByTestId('login-submit');
+    this.errorMessage = page.getByTestId('login-error');
   }
 
   async goto() {
@@ -23,5 +22,6 @@ export class LoginPage {
 
   async waitForError() {
     await this.errorMessage.waitFor({ state: 'visible', timeout: 3000 });
+    return this.errorMessage.textContent();
   }
 }

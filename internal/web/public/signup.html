@@ -1,35 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8" />
     <title>Sign Up - Lite Reader</title>
-    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/auth.css">
+    <script type="importmap">
+    {
+      "imports": {
+        "preact": "/assets/vendor/preact@10.24.3/preact.module.js",
+        "preact/hooks": "/assets/vendor/preact@10.24.3/hooks.module.js",
+        "@preact/signals": "/assets/vendor/preact@10.24.3/signals.module.js",
+        "@preact/signals-core": "/assets/vendor/preact@10.24.3/signals-core.module.js",
+        "htm": "/assets/vendor/htm@3.1.1/htm.module.js"
+      }
+    }
+    </script>
 </head>
 <body>
-    
-    <div class="login-container">
-        <h1>Sign Up for Lite Reader</h1>
-        <form class="login-form" action="/signup" method="POST">
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="confirm-password">Confirm Password:</label>
-                <input type="password" id="confirm-password" name="confirm-password" class="form-control" required>
-            </div>
-            <button type="submit" class="btn-primary">Sign Up</button>
-        </form>
-        <div style="text-align: center; margin-top: 20px;">
-            <a href="/login.html" style="color: #6C8A46;">Already have an account? Log in</a>
-        </div>
-    </div>
-    <script type="text/javascript" src="js/jquery.js"></script>
-    <script type="text/javascript" src="js/jquery.ui.all.js"></script>
-    <script type="text/javascript" src="js/auth.js"></script>
-    <script type="text/javascript" src="js/signup.js"></script>
+    <div id="app"></div>
+    <script type="module" src="js/signup.js"></script>
 </body>
 </html>
