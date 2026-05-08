@@ -2,7 +2,10 @@
   "name": "lite-reader",
   "version": "1.0.0",
   "description": "Lite Reader - Lightweight RSS feed aggregator",
+  "type": "module",
   "scripts": {
+    "test:unit": "vitest run",
+    "test:unit:watch": "vitest",
     "test:ui": "playwright test",
     "test:ui:headed": "playwright test --headed",
     "test:ui:debug": "playwright test --debug",
@@ -16,6 +19,15 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@playwright/test": "^1.48.0"
+    "@playwright/test": "^1.48.0",
+    "@preact/signals": "1.3.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/preact": "^3.2.4",
+    "@testing-library/user-event": "^14.5.2",
+    "htm": "3.1.1",
+    "jsdom": "^25.0.1",
+    "msw": "^2.7.0",
+    "preact": "10.24.3",
+    "vitest": "^2.1.8"
   }
 }
