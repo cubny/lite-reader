@@ -55,6 +55,24 @@ html, body {
 
 #feeds #toolbar {
   position: relative;
+  /* override main.css overflow:hidden + height:30px so the inline error
+     can grow below the +Feed button instead of being clipped. */
+  overflow: visible;
+  height: auto;
+  min-height: 30px;
+}
+
+#toolbar div.add-feed-form-error {
+  clear: both;
+  float: none;
+  background: #f2dede;
+  color: #a94442;
+  border: 1px solid #ebccd1;
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 12px;
+  margin-top: 10px;
+  width: auto;
 }
 
 #feeds > div > ul,
