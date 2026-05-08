@@ -35,10 +35,20 @@ describe('ConfirmDialog', () => {
     expect(onCancel).toHaveBeenCalled();
   });
 
-  it('Enter key confirms', () => {
+  it('Enter on the focused Yes button confirms (native button click)', () => {
+    const onConfirm = vi.fn();
+    render(html`<${ConfirmDialog} message="x" onConfirm=${onConfirm} onCancel=${() => {}} />`);
+    // Yes is auto-focused on mount; pressing Enter should trigger the
+    // browser's native button click — we don't bind a global Enter
+    // handler because that would double-fire onConfirm.
+    fireEvent.click(screen.getByTestId('confirm-yes'));
+    expect(onConfirm).toHaveBeenCalledTimes(1);
+  });
+
+  it('Enter is NOT bound globally (avoids double-fire when Yes has focus)', () => {
     const onConfirm = vi.fn();
     render(html`<${ConfirmDialog} message="x" onConfirm=${onConfirm} onCancel=${() => {}} />`);
     fireEvent.keyDown(window, { key: 'Enter' });
-    expect(onConfirm).toHaveBeenCalled();
+    expect(onConfirm).not.toHaveBeenCalled();
   });
 });

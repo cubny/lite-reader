@@ -7,8 +7,14 @@ export function ConfirmDialog({ message, confirmLabel = 'OK', cancelLabel = 'Can
   useEffect(() => {
     yesRef.current && yesRef.current.focus();
     function onKey(e) {
-      if (e.key === 'Escape') onCancel();
-      else if (e.key === 'Enter') onConfirm();
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        onCancel();
+        return;
+      }
+      // Don't handle Enter globally — when focus is on the Yes button the
+      // browser already fires its native click on Enter, and a global Enter
+      // handler would cause onConfirm to run twice (double-delete).
     }
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);

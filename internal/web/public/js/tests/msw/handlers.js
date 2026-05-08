@@ -17,9 +17,10 @@ export function reset() {
 }
 
 function makeItem(feedId, overrides = {}) {
+  const id = state.nextItemId++;
   return {
-    id: state.nextItemId++,
-    title: `Item ${state.nextItemId}`,
+    id,
+    title: `Item ${id}`,
     desc: '<p>body</p>',
     link: 'http://example.com/a',
     is_new: true,
@@ -67,9 +68,10 @@ export const handlers = [
 
   http.post('/feeds', async ({ request }) => {
     const body = await request.json();
+    const id = state.nextFeedId++;
     const feed = {
-      id: state.nextFeedId++,
-      title: `Feed ${state.nextFeedId}`,
+      id,
+      title: `Feed ${id}`,
       desc: '',
       link: body.url,
       url: body.url,
