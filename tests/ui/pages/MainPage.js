@@ -1,29 +1,32 @@
 /**
- * Page Object Model for Main application page (feed reader)
+ * Page Object Model for the two-pane app shell (data-testid only).
  */
-
 export class MainPage {
   constructor(page) {
     this.page = page;
-    
-    // Feed management
-    this.addFeedButton = page.locator('.add.btn, a.add');
-    this.feedUrlInput = page.locator('#urlToAdd');
-    this.feedsList = page.locator('#feeds ul');
-    this.unreadFeed = page.locator('#unread');
-    this.starredFeed = page.locator('#starred');
-    
-    // Feed actions
-    this.updateButton = page.locator('.action.update');
-    this.markReadAllButton = page.locator('#mark-read-all');
-    this.markUnreadAllButton = page.locator('#mark-unread-all');
-    this.removeButton = page.locator('.action.remove');
-    this.logoutButton = page.locator('#logout');
-    
-    // Items
-    this.itemsList = page.locator('#items');
-    this.items = page.locator('#items li');
-    this.message = page.locator('#msg');
+    this.sidebar = page.getByTestId('sidebar');
+    this.feedItems = page.getByTestId('feed-item');
+    this.unreadFolder = page.getByTestId('smart-folder-unread');
+    this.starredFolder = page.getByTestId('smart-folder-starred');
+    this.unreadCountEl = page.getByTestId('smart-folder-unread-count');
+    this.starredCountEl = page.getByTestId('smart-folder-starred-count');
+
+    this.addFeedUrl = page.getByTestId('add-feed-url');
+    this.addFeedSubmit = page.getByTestId('add-feed-submit');
+
+    this.toolbarTitle = page.getByTestId('toolbar-title');
+    this.toolbarRefresh = page.getByTestId('toolbar-refresh');
+    this.toolbarMarkRead = page.getByTestId('toolbar-mark-read');
+    this.toolbarMarkUnread = page.getByTestId('toolbar-mark-unread');
+    this.toolbarRemove = page.getByTestId('toolbar-remove');
+    this.toolbarLogout = page.getByTestId('toolbar-logout');
+
+    this.itemList = page.getByTestId('item-list');
+    this.items = page.getByTestId('item-row');
+
+    this.confirmDialog = page.getByTestId('confirm-dialog');
+    this.confirmYes = page.getByTestId('confirm-yes');
+    this.confirmNo = page.getByTestId('confirm-no');
   }
 
   async goto() {
@@ -31,149 +34,108 @@ export class MainPage {
   }
 
   async isLoggedIn() {
-    // Check if we're on the main page and not redirected to login
-    const url = this.page.url();
-    return !url.includes('login.html');
+    return !this.page.url().includes('login.html');
   }
 
   async addFeed(feedUrl) {
-    // Click the add feed button to show input
-    await this.addFeedButton.click();
-    
-    // Wait for input to be visible
-    await this.feedUrlInput.waitFor({ state: 'visible', timeout: 3000 });
-    
-    // Fill in the URL
-    await this.feedUrlInput.fill(feedUrl);
-    
-    // Wait a moment for the input to be filled
-    await this.page.waitForTimeout(300);
-    
-    // Click the button again to submit (it changes behavior after first click)
-    await this.addFeedButton.click();
-    
-    // Wait for the feed to be added (button changes back to purple)
-    await this.page.waitForTimeout(2000);
+    const before = await this.feedItems.count();
+    // First click reveals the input, then we type, then submit via Enter.
+    await this.addFeedSubmit.click();
+    await this.addFeedUrl.fill(feedUrl);
+    await this.addFeedUrl.press('Enter');
+    await this.page.waitForFunction(
+      (n) => document.querySelectorAll('[data-testid="feed-item"]').length > n,
+      before,
+      { timeout: 10000 },
+    ).catch(() => {});
   }
 
-  async clickFeed(feedTitle) {
-    const feedItem = this.page.locator(`.feed:has-text("${feedTitle}")`);
-    await feedItem.click();
+  feedByText(text) {
+    return this.page.getByTestId('feed-item').filter({ hasText: text });
+  }
+
+  async clickFeed(feedTitleSubstring) {
+    const feed = this.feedByText(feedTitleSubstring).first();
+    await feed.waitFor({ state: 'visible', timeout: 5000 });
+    await feed.click();
+    await this.page.waitForTimeout(500);
   }
 
   async clickUnread() {
-    await this.unreadFeed.click();
+    await this.unreadFolder.click();
+    await this.page.waitForTimeout(300);
   }
 
   async clickStarred() {
-    await this.starredFeed.click();
+    await this.starredFolder.click();
+    await this.page.waitForTimeout(300);
   }
 
   async getUnreadCount() {
-    const countElement = this.unreadFeed.locator('.count span');
-    const text = await countElement.textContent();
-    return parseInt(text || '0', 10);
+    const visible = await this.unreadCountEl.isVisible().catch(() => false);
+    if (!visible) return 0;
+    const t = (await this.unreadCountEl.textContent()) || '0';
+    return parseInt(t, 10) || 0;
   }
 
   async getStarredCount() {
-    const countElement = this.starredFeed.locator('.count span');
-    const text = await countElement.textContent();
-    return parseInt(text || '0', 10);
+    const visible = await this.starredCountEl.isVisible().catch(() => false);
+    if (!visible) return 0;
+    const t = (await this.starredCountEl.textContent()) || '0';
+    return parseInt(t, 10) || 0;
   }
 
   async getItemsCount() {
     return await this.items.count();
   }
 
+  async waitForItems(count, timeout = 10000) {
+    await this.page.waitForFunction(
+      (expected) => document.querySelectorAll('[data-testid="item-row"]').length >= expected,
+      count,
+      { timeout },
+    ).catch(() => {});
+  }
+
   async markItemRead(itemIndex = 0) {
     const item = this.items.nth(itemIndex);
-    const readButton = item.locator('a[name="read"]');
-    await readButton.click();
+    await item.getByTestId('item-row-toggle-read').click();
+    await this.page.waitForTimeout(200);
   }
 
   async markItemStarred(itemIndex = 0) {
     const item = this.items.nth(itemIndex);
-    const starButton = item.locator('a[name="starred"]');
-    await starButton.click();
+    await item.getByTestId('item-row-star').click();
+    await this.page.waitForTimeout(200);
   }
 
   async updateFeed() {
-    // Use JavaScript to click the update button
-    await this.page.evaluate(() => {
-      const btn = document.querySelector('.update');
-      if (btn) btn.click();
-    });
-    // Wait for update to complete
-    await this.page.waitForTimeout(1000);
+    await this.toolbarRefresh.click();
+    await this.page.waitForTimeout(800);
   }
 
   async markAllRead() {
-    // Use JavaScript to click the button directly
-    await this.page.evaluate(() => {
-      const btn = document.querySelector('#mark-read-all');
-      if (btn) btn.click();
-    });
+    await this.toolbarMarkRead.click();
     await this.page.waitForTimeout(500);
   }
 
-  async markAllUnread() {
-    // Use JavaScript to click the button directly  
-    await this.page.evaluate(() => {
-      const btn = document.querySelector('#mark-unread-all');
-      if (btn) btn.click();
-    });
-    await this.page.waitForTimeout(500);
-  }
-
-  async removeFeed() {
-    // Set up dialog handler before clicking
-    this.page.on('dialog', dialog => dialog.accept());
-    
-    // Use JavaScript to click the remove button
-    await this.page.evaluate(() => {
-      const btn = document.querySelector('.remove');
-      if (btn) btn.click();
-    });
+  async removeFeed(feedTitleSubstring) {
+    if (feedTitleSubstring) {
+      await this.clickFeed(feedTitleSubstring);
+    }
+    await this.toolbarRemove.click();
+    await this.confirmDialog.waitFor({ state: 'visible', timeout: 2000 });
+    await this.confirmYes.click();
     await this.page.waitForTimeout(500);
   }
 
   async logout() {
-    // The logout button is in the actions bar which is only shown when a feed is selected
-    // First, click on "Unread" to ensure actions are visible
-    await this.unreadFeed.click();
-    await this.page.waitForTimeout(2000);
-    
-    // Use JavaScript to click the logout button directly, bypassing visibility checks
-    // This is more reliable as the button might be in DOM but CSS hidden
-    await this.page.evaluate(() => {
-      const logoutBtn = document.querySelector('#logout, .logout');
-      if (logoutBtn) {
-        logoutBtn.click();
-      } else {
-        throw new Error('Logout button not found in DOM');
-      }
-    });
-    
-    // Wait for redirect to login page
-    await this.page.waitForURL(/login/, { timeout: 5000 });
-  }
-
-  async waitForItems(count, timeout = 5000) {
-    await this.page.waitForFunction(
-      (expectedCount) => {
-        const items = document.querySelectorAll('#items li');
-        return items.length >= expectedCount;
-      },
-      count,  // Pass count as the argument to the function
-      { timeout }
-    ).catch(() => {
-      // Ignore timeout - test will check count afterwards
-    });
+    await this.toolbarLogout.click();
+    await this.page.waitForURL(/login\.html/, { timeout: 5000 });
   }
 
   async getItemTitle(itemIndex = 0) {
     const item = this.items.nth(itemIndex);
-    const title = item.locator('.title span').first();
-    return await title.textContent();
+    return await item.getByTestId('item-row-title').textContent();
   }
 }

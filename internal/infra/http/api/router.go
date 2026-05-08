@@ -17,6 +17,8 @@
 package api
 
 import (
+	"errors"
+	"io/fs"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -63,8 +65,12 @@ type Router struct {
 	authService AuthService
 }
 
-// New creates a new handler to handle http requests
-func New(itemService ItemService, feedService FeedService, authService AuthService) (*Router, error) {
+// New creates a new handler to handle http requests. staticFS serves the
+// frontend assets at "/" via the NotFound fallback.
+func New(itemService ItemService, feedService FeedService, authService AuthService, staticFS fs.FS) (*Router, error) {
+	if staticFS == nil {
+		return nil, errors.New("staticFS must not be nil")
+	}
 	h := &Router{
 		itemService: itemService,
 		feedService: feedService,
@@ -93,8 +99,18 @@ func New(itemService ItemService, feedService FeedService, authService AuthServi
 
 	router.POST("/login", chain.Wrap(h.login))
 	router.POST("/signup", chain.Wrap(h.signup))
-	// serve static files for GET /
-	router.NotFound = http.FileServer(http.Dir("public"))
+	// Serve static frontend assets via NotFound. Restrict to GET/HEAD so a
+	// stray POST/PUT/DELETE to an unknown path returns 404 instead of the
+	// 405 that http.FileServer would emit, which would mask missing API
+	// endpoints from clients.
+	fileServer := http.FileServer(http.FS(staticFS))
+	router.NotFound = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet && r.Method != http.MethodHead {
+			http.NotFound(w, r)
+			return
+		}
+		fileServer.ServeHTTP(w, r)
+	})
 
 	h.Handler = router
 	return h, nil

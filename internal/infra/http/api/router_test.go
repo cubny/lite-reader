@@ -3,15 +3,19 @@ package api_test
 import (
 	"encoding/json"
 	"io"
+	"io/fs"
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"testing/fstest"
 
 	"github.com/stretchr/testify/assert"
 
 	"github.com/cubny/lite-reader/internal/infra/http/api"
 	mocks "github.com/cubny/lite-reader/internal/mocks/infra/http/api"
 )
+
+func emptyStaticFS() fs.FS { return fstest.MapFS{} }
 
 type spec struct {
 	Name           string
@@ -28,7 +32,7 @@ func (s *spec) execHTTPTestCases(i *mocks.ItemService, f *mocks.FeedService, a *
 	return func(t *testing.T) {
 		s.MockFn(i, f, a)
 		s.AuthToken = "test"
-		handler, err := api.New(i, f, a)
+		handler, err := api.New(i, f, a, emptyStaticFS())
 		assert.Nil(t, err)
 		s.HandlerTest(t, handler)
 	}

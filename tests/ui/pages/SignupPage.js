@@ -1,16 +1,14 @@
 /**
- * Page Object Model for Signup page
+ * Page Object Model for Signup page (data-testid only).
  */
-
 export class SignupPage {
   constructor(page) {
     this.page = page;
-    this.emailInput = page.locator('input[name="email"]');
-    this.passwordInput = page.locator('input[name="password"]');
-    this.confirmPasswordInput = page.locator('input[name="confirm-password"]');
-    this.signupButton = page.locator('button[type="submit"]');
-    this.errorMessage = page.locator('.error, .alert-error');
-    this.successMessage = page.locator('.success, .alert-success');
+    this.emailInput = page.getByTestId('signup-email');
+    this.passwordInput = page.getByTestId('signup-password');
+    this.confirmPasswordInput = page.getByTestId('signup-confirm-password');
+    this.signupButton = page.getByTestId('signup-submit');
+    this.errorMessage = page.getByTestId('signup-error');
   }
 
   async goto() {
@@ -25,14 +23,11 @@ export class SignupPage {
   }
 
   async waitForSuccess() {
-    // After signup, might redirect to login or show success message
-    await this.page.waitForURL(/login|index/, { timeout: 5000 }).catch(() => {
-      // If no redirect, check for success message
-      return this.successMessage.waitFor({ state: 'visible', timeout: 3000 });
-    });
+    await this.page.waitForURL(/login\.html/, { timeout: 5000 });
   }
 
   async waitForError() {
     await this.errorMessage.waitFor({ state: 'visible', timeout: 3000 });
+    return this.errorMessage.textContent();
   }
 }

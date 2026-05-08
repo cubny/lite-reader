@@ -1,0 +1,101 @@
+import { useRef, useState } from 'preact/hooks';
+import { html } from '../util/html.js';
+import { add as addFeed, fetchNew, list as listFeeds } from '../api/feeds.js';
+import { feeds } from '../state.js';
+
+function isValidUrl(s) {
+  try {
+    const u = new URL(s);
+    return u.protocol === 'http:' || u.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
+export function AddFeedForm() {
+  const [open, setOpen] = useState(false);
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState('');
+  const inputRef = useRef(null);
+
+  function reveal(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    setError('');
+    setOpen(true);
+    setTimeout(() => inputRef.current && inputRef.current.focus(), 0);
+  }
+
+  function reset() {
+    setOpen(false);
+    setError('');
+    if (inputRef.current) inputRef.current.value = '';
+  }
+
+  async function submit() {
+    const raw = (inputRef.current && inputRef.current.value || '').trim();
+    if (!raw) {
+      reset();
+      return;
+    }
+    const url = raw.startsWith('http') ? raw : `http://${raw}`;
+    if (!isValidUrl(url)) {
+      setError('Please enter a valid URL');
+      return;
+    }
+    setPending(true);
+    try {
+      const created = await addFeed(url);
+      if (created && created.id) {
+        try { await fetchNew(created.id); } catch { /* ignore */ }
+      }
+      const fresh = await listFeeds();
+      feeds.value = fresh || [];
+      reset();
+    } catch (err) {
+      setError(err.message || 'Failed to add feed');
+    } finally {
+      setPending(false);
+    }
+  }
+
+  function onButtonClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!open) {
+      reveal(e);
+      return;
+    }
+    submit();
+  }
+
+  function onKey(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      submit();
+    } else if (e.key === 'Escape') {
+      reset();
+    }
+  }
+
+  const btnClass = open ? 'add btn btn-green' : 'add btn btn-purple';
+  const iconClass = pending ? 'icon-spin icon-spinner' : 'icon-plus';
+
+  return html`
+    <div id="addfeed" data-testid="add-feed-form">
+      <a class=${btnClass} href="#" onClick=${onButtonClick} data-testid="add-feed-submit">
+        <i class=${iconClass}></i> <span>${open ? '' : 'Feed'}</span>
+      </a>
+      <input
+        ref=${inputRef}
+        type="text"
+        id="urlToAdd"
+        data-testid="add-feed-url"
+        style=${open ? '' : 'display: none'}
+        onKeyDown=${onKey}
+        disabled=${pending}
+      />
+      ${error && html`<div class="add-feed-form-error" data-testid="add-feed-error">${error}</div>`}
+    </div>
+  `;
+}
