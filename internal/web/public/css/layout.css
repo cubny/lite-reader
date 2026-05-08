@@ -9,12 +9,17 @@ html, body {
   height: 100%;
 }
 
-.ui-layout-west {
+/*
+ * Override main.css's leftover `#feeds { height: 20px }` (specificity 1,0,0)
+ * with a 1,1,0 selector so the sidebar fills the viewport.
+ */
+#feeds.ui-layout-west {
   position: absolute;
   top: 0;
   left: 0;
   bottom: 0;
   width: 240px;
+  height: auto;
   overflow: auto;
   background: #FFF;
   border-right: 4px solid #eee;
@@ -52,12 +57,18 @@ html, body {
   position: relative;
 }
 
-#feeds > ul {
+#feeds > div > ul,
+#feeds ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
+/*
+ * Action bar visibility — legacy hides Update/Read/Unread/Remove until a feed
+ * is selected. Logout is always visible. We mirror that with a class on
+ * #feedbar set by FeedBar.js. Specificity 1,2,1 beats main.css's 1,1,0.
+ */
 #feedbar #actions .action {
   display: none;
 }
@@ -70,16 +81,10 @@ html, body {
   display: block;
 }
 
-#feedbar.has-smart #actions .action.logout,
-#feedbar.has-smart #actions .action.markread,
-#feedbar.has-smart #actions .action.update {
-  display: block;
-}
-
-#feedbar.has-smart #actions .action.remove {
-  display: none;
-}
-
+/*
+ * Item row inline expansion. Legacy starts .desc and .dir hidden, plus
+ * .item-link hidden until the row is .selected.
+ */
 #items li .desc,
 #items li .dir {
   display: none;
@@ -98,7 +103,13 @@ html, body {
   display: inline-block;
 }
 
-#items li.selected .title a.item-action.item-read,
-#items li.selected .title a.item-action.item-star {
+/*
+ * Star and read toggles must be clickable always (legacy behaviour).
+ * main.css already sets them to display:inline; this is a safety net in case
+ * a parent .item-action display:none rule wins on specificity.
+ */
+#items li .title a.item-action.item-star,
+#items li .title a.item-action.item-read {
   display: inline;
+  cursor: pointer;
 }
