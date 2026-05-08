@@ -68,7 +68,11 @@ async function readJsonOrNull(response) {
 async function readErrorMessage(response) {
   try {
     const data = await response.json();
-    if (data && typeof data.message === 'string') return data.message;
+    if (data) {
+      if (typeof data.message === 'string') return data.message;
+      if (data.error && typeof data.error.details === 'string') return data.error.details;
+      if (data.error && typeof data.error.message === 'string') return data.error.message;
+    }
   } catch {
     // fall through
   }

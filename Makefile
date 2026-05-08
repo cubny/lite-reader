@@ -15,7 +15,8 @@ help:
 
 	@echo "  lint               to perform linting."
 
-	@echo "  test               run all unit tests."
+	@echo "  test               run all Go unit tests."
+	@echo "  test-unit          run JS unit + integration tests (Vitest + MSW)."
 	@echo "  test-ui            run UI tests with Playwright."
 	@echo "  test-ui-headed     run UI tests in headed mode (visible browser)."
 	@echo "  test-ui-setup      install Playwright and dependencies."
@@ -40,7 +41,7 @@ docker-run:
 build:
 	CGO_ENABLED=0 GOOS=linux go build -mod=vendor -a -installsuffix cgo -o lite-reader ./cmd/main.go
 
-pre-commit: gomod update-mocks lint test
+pre-commit: gomod update-mocks lint test test-unit
 
 
 .PHONY: gomod
@@ -118,6 +119,11 @@ test-ui-headed:
 	@mkdir -p reports/playwright
 	@TEST_DB_PATH=data/test-agg.db npm run test:ui:headed
 
+.PHONY: test-unit
+test-unit:
+	@echo "Running JS unit + integration tests..."
+	@npm run test:unit
+
 .PHONY: test-all
-test-all: test test-ui
+test-all: test test-unit test-ui
 	@echo "All tests completed!"
