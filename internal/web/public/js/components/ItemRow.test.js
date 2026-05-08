@@ -6,7 +6,6 @@ const updateMock = vi.fn();
 vi.mock('../api/items.js', () => ({ update: (...a) => updateMock(...a) }));
 
 const { ItemRow } = await import('./ItemRow.js');
-const { currentItem } = await import('../state.js');
 
 const baseItem = {
   id: 42,
@@ -17,20 +16,21 @@ const baseItem = {
 };
 
 describe('ItemRow', () => {
-  beforeEach(() => { updateMock.mockReset(); currentItem.value = null; });
+  beforeEach(() => { updateMock.mockReset(); });
   afterEach(() => cleanup());
 
   it('renders title with data-testid', () => {
     render(html`<${ItemRow} item=${baseItem} onChanged=${() => {}} />`);
-    expect(screen.getByTestId('item-row-title').textContent).toBe('Hello');
+    expect(screen.getByTestId('item-row-title').textContent).toContain('Hello');
   });
 
-  it('click row sets currentItem and marks read', async () => {
+  it('click title invokes onToggle and marks read', async () => {
     updateMock.mockResolvedValue(null);
+    const onToggle = vi.fn();
     const onChanged = vi.fn();
-    render(html`<${ItemRow} item=${baseItem} onChanged=${onChanged} />`);
-    fireEvent.click(screen.getByTestId('item-row'));
-    expect(currentItem.value.id).toBe(42);
+    render(html`<${ItemRow} item=${baseItem} onToggle=${onToggle} onChanged=${onChanged} />`);
+    fireEvent.click(screen.getByTestId('item-row-title'));
+    expect(onToggle).toHaveBeenCalled();
     await waitFor(() => expect(updateMock).toHaveBeenCalledWith(42, { is_new: false, starred: false }));
     expect(onChanged).toHaveBeenCalled();
   });
@@ -53,10 +53,12 @@ describe('ItemRow', () => {
     await waitFor(() => expect(updateMock).toHaveBeenCalledWith(42, { is_new: true, starred: false }));
   });
 
-  it('does not call update on click when already read', () => {
+  it('does not call update on title click when already read', () => {
     const read = { ...baseItem, is_new: false };
-    render(html`<${ItemRow} item=${read} onChanged=${() => {}} />`);
-    fireEvent.click(screen.getByTestId('item-row'));
+    const onToggle = vi.fn();
+    render(html`<${ItemRow} item=${read} onToggle=${onToggle} onChanged=${() => {}} />`);
+    fireEvent.click(screen.getByTestId('item-row-title'));
+    expect(onToggle).toHaveBeenCalled();
     expect(updateMock).not.toHaveBeenCalled();
   });
 });

@@ -28,24 +28,28 @@ export function SmartFolders() {
   }
 
   const sel = selection.value;
+  const u = unreadCount.value;
+  const s = starredCount.value;
   return html`
-    <div class="sidebar-section" data-testid="smart-folders">
-      <div
-        class=${`smart-folder${sel.kind === 'unread' ? ' is-selected' : ''}`}
-        data-testid="smart-folder-unread"
-        onClick=${selectUnread}
-      >
-        <span>Unread</span>
-        <span data-testid="smart-folder-unread-count">${unreadCount.value}</span>
-      </div>
-      <div
-        class=${`smart-folder${sel.kind === 'starred' ? ' is-selected' : ''}`}
-        data-testid="smart-folder-starred"
-        onClick=${selectStarred}
-      >
-        <span>Starred</span>
-        <span data-testid="smart-folder-starred-count">${starredCount.value}</span>
-      </div>
-    </div>
+    <li
+      id="unread"
+      class=${`feed${sel.kind === 'unread' ? ' selected' : ''}`}
+      data-testid="smart-folder-unread"
+      onClick=${selectUnread}
+    >
+      <div class="count">${u > 0 ? html`<span data-testid="smart-folder-unread-count">${u}</span>` : html`<span data-testid="smart-folder-unread-count" style="display:none">${u}</span>`}</div>
+      <i class="icon-circle"></i>
+      <div class="feedtitle">Unread</div>
+    </li>
+    <li
+      id="starred"
+      class=${`feed${sel.kind === 'starred' ? ' selected' : ''}`}
+      data-testid="smart-folder-starred"
+      onClick=${selectStarred}
+    >
+      <div class="count">${s > 0 ? html`<span data-testid="smart-folder-starred-count">${s}</span>` : html`<span data-testid="smart-folder-starred-count" style="display:none">${s}</span>`}</div>
+      <i class="icon-star"></i>
+      <div class="feedtitle">Starred</div>
+    </li>
   `;
 }
