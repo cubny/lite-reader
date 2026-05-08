@@ -1,4 +1,4 @@
-import { useEffect } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 import { html } from '../util/html.js';
 import { selection, items, currentItem } from '../state.js';
 import { unread as unreadItems, starred as starredItems } from '../api/items.js';
@@ -15,11 +15,16 @@ async function loadFor(sel) {
 
 export function ItemList() {
   const sel = selection.value;
+  const [expanded, setExpanded] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
     loadFor(sel).then((list) => {
-      if (!cancelled) items.value = list;
+      if (!cancelled) {
+        items.value = list;
+        setExpanded(null);
+        currentItem.value = null;
+      }
     }).catch(() => {});
     return () => { cancelled = true; };
   }, [sel.kind, sel.id]);
@@ -31,13 +36,24 @@ export function ItemList() {
     }
   }
 
+  function toggleExpand(id) {
+    setExpanded((prev) => (prev === id ? null : id));
+    const next = items.value.find((it) => it.id === id);
+    currentItem.value = next || null;
+  }
+
+  if (!items.value || items.value.length === 0) {
+    return html`<ul id="items" data-testid="item-list"></ul>`;
+  }
+
   return html`
-    <ul class="item-list" data-testid="item-list">
+    <ul id="items" data-testid="item-list">
       ${items.value.map((it) => html`
         <${ItemRow}
           key=${it.id}
           item=${it}
-          isSelected=${currentItem.value && currentItem.value.id === it.id}
+          isSelected=${expanded === it.id}
+          onToggle=${() => toggleExpand(it.id)}
           onChanged=${patch}
         />
       `)}

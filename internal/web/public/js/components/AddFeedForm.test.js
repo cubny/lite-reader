@@ -1,55 +1,74 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { render, screen, cleanup, waitFor } from '@testing-library/preact';
-import userEvent from '@testing-library/user-event';
+import { render, screen, cleanup, fireEvent, waitFor } from '@testing-library/preact';
 import { html } from '../util/html.js';
 
 const addMock = vi.fn();
 const listMock = vi.fn();
+const fetchNewMock = vi.fn();
 vi.mock('../api/feeds.js', () => ({
   add: (...a) => addMock(...a),
   list: (...a) => listMock(...a),
+  fetchNew: (...a) => fetchNewMock(...a),
 }));
 
 const { AddFeedForm } = await import('./AddFeedForm.js');
 const { feeds } = await import('../state.js');
 
+function setInputValue(input, value) {
+  input.value = value;
+}
+
 describe('AddFeedForm', () => {
   beforeEach(() => {
     addMock.mockReset();
     listMock.mockReset();
+    fetchNewMock.mockReset();
+    fetchNewMock.mockResolvedValue(null);
     feeds.value = [];
   });
   afterEach(() => cleanup());
 
-  it('valid URL → calls add and refreshes list', async () => {
+  it('reveal-on-click → enter URL → submit', async () => {
     addMock.mockResolvedValue({ id: 1 });
     listMock.mockResolvedValue([{ id: 1, title: 'X' }]);
-    const user = userEvent.setup();
     render(html`<${AddFeedForm} />`);
-    await user.type(screen.getByTestId('add-feed-url'), 'http://example.com/rss.xml');
-    await user.click(screen.getByTestId('add-feed-submit'));
+
+    // First click: reveal input
+    fireEvent.click(screen.getByTestId('add-feed-submit'));
+    const input = screen.getByTestId('add-feed-url');
+    setInputValue(input, 'http://example.com/rss.xml');
+    fireEvent.keyDown(input, { key: 'Enter' });
+
     await waitFor(() => expect(addMock).toHaveBeenCalledWith('http://example.com/rss.xml'));
     await waitFor(() => expect(feeds.value).toEqual([{ id: 1, title: 'X' }]));
   });
 
   it('invalid URL → shows error, does NOT call add', async () => {
-    const user = userEvent.setup();
     render(html`<${AddFeedForm} />`);
-    await user.type(screen.getByTestId('add-feed-url'), 'not-a-url');
-    await user.click(screen.getByTestId('add-feed-submit'));
+    fireEvent.click(screen.getByTestId('add-feed-submit'));
+    const input = screen.getByTestId('add-feed-url');
+    setInputValue(input, 'not a valid url with spaces');
+    fireEvent.keyDown(input, { key: 'Enter' });
+
     await waitFor(() => expect(screen.getByTestId('add-feed-error')).toBeInTheDocument());
     expect(addMock).not.toHaveBeenCalled();
   });
 
-  it('disables submit while pending', async () => {
-    let resolve;
-    addMock.mockReturnValue(new Promise((r) => { resolve = r; }));
-    const user = userEvent.setup();
-    render(html`<${AddFeedForm} />`);
-    await user.type(screen.getByTestId('add-feed-url'), 'http://x.com/r.xml');
-    await user.click(screen.getByTestId('add-feed-submit'));
-    await waitFor(() => expect(screen.getByTestId('add-feed-submit').disabled).toBe(true));
-    resolve({ id: 1 });
+  it('shows pending spinner icon while add is in flight', async () => {
+    let resolveAdd;
+    addMock.mockReturnValue(new Promise((r) => { resolveAdd = r; }));
     listMock.mockResolvedValue([]);
+    render(html`<${AddFeedForm} />`);
+
+    fireEvent.click(screen.getByTestId('add-feed-submit'));
+    const input = screen.getByTestId('add-feed-url');
+    setInputValue(input, 'http://x.com/r.xml');
+    fireEvent.keyDown(input, { key: 'Enter' });
+
+    await waitFor(() => {
+      const btn = screen.getByTestId('add-feed-submit');
+      expect(btn.querySelector('i.icon-spin')).toBeTruthy();
+    });
+    resolveAdd({ id: 1 });
   });
 });

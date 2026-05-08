@@ -1,0 +1,104 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+#app {
+  height: 100%;
+}
+
+.ui-layout-west {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 240px;
+  overflow: auto;
+  background: #FFF;
+  border-right: 4px solid #eee;
+}
+
+#content.ui-layout-center {
+  position: absolute;
+  top: 0;
+  left: 244px;
+  right: 0;
+  bottom: 0;
+  background: #FFF;
+  overflow: hidden;
+}
+
+#content > .ui-layout-north {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  z-index: 4;
+}
+
+#content > .ui-layout-center {
+  position: absolute;
+  top: 80px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+}
+
+#feeds #toolbar {
+  position: relative;
+}
+
+#feeds > ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#feedbar #actions .action {
+  display: none;
+}
+
+#feedbar #actions .action.logout {
+  display: block;
+}
+
+#feedbar.has-feed #actions .action {
+  display: block;
+}
+
+#feedbar.has-smart #actions .action.logout,
+#feedbar.has-smart #actions .action.markread,
+#feedbar.has-smart #actions .action.update {
+  display: block;
+}
+
+#feedbar.has-smart #actions .action.remove {
+  display: none;
+}
+
+#items li .desc,
+#items li .dir {
+  display: none;
+}
+
+#items li.selected .desc,
+#items li.selected .dir {
+  display: block;
+}
+
+#items li .title a.item-action.item-link {
+  display: none;
+}
+
+#items li.selected .title a.item-action.item-link {
+  display: inline-block;
+}
+
+#items li.selected .title a.item-action.item-read,
+#items li.selected .title a.item-action.item-star {
+  display: inline;
+}

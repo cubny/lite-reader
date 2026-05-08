@@ -11,9 +11,9 @@ describe('FeedList', () => {
   });
   afterEach(() => cleanup());
 
-  it('empty list renders empty <ul>', () => {
-    render(html`<${FeedList} onDelete=${() => {}} />`);
-    expect(screen.getByTestId('feed-list').children.length).toBe(0);
+  it('empty list renders nothing', () => {
+    const { container } = render(html`<ul>${html`<${FeedList} />`}</ul>`);
+    expect(container.querySelectorAll('li.feed').length).toBe(0);
   });
 
   it('renders one row per feed', () => {
@@ -21,7 +21,7 @@ describe('FeedList', () => {
       { id: 1, title: 'A', unread_count: 2 },
       { id: 2, title: 'B', unread_count: 0 },
     ];
-    render(html`<${FeedList} onDelete=${() => {}} />`);
+    render(html`<ul>${html`<${FeedList} />`}</ul>`);
     expect(screen.getAllByTestId('feed-item')).toHaveLength(2);
   });
 });

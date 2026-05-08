@@ -16,30 +16,30 @@ describe('FeedItem', () => {
 
   const feed = { id: 7, title: 'Hacker News', url: 'http://x', unread_count: 3 };
 
-  it('renders title, unread count, delete with data-testid', () => {
-    render(html`<${FeedItem} feed=${feed} onDelete=${() => {}} />`);
+  it('renders title, unread count with data-testid', () => {
+    render(html`<${FeedItem} feed=${feed} />`);
     expect(screen.getByTestId('feed-item')).toBeInTheDocument();
     expect(screen.getByTestId('feed-item-title').textContent).toBe('Hacker News');
     expect(screen.getByTestId('feed-item-unread-count').textContent).toBe('3');
-    expect(screen.getByTestId('feed-item-delete')).toBeInTheDocument();
   });
 
   it('click selects the feed', () => {
-    render(html`<${FeedItem} feed=${feed} onDelete=${() => {}} />`);
+    render(html`<${FeedItem} feed=${feed} />`);
     fireEvent.click(screen.getByTestId('feed-item'));
     expect(selection.value).toEqual({ kind: 'feed', id: 7 });
   });
 
-  it('delete button calls onDelete (does not select)', () => {
-    const onDelete = vi.fn();
-    render(html`<${FeedItem} feed=${feed} onDelete=${onDelete} />`);
-    fireEvent.click(screen.getByTestId('feed-item-delete'));
-    expect(onDelete).toHaveBeenCalledWith(feed);
-    expect(selection.value).toEqual({ kind: 'unread' });
+  it('falls back to url when title missing', () => {
+    render(html`<${FeedItem} feed=${{ id: 1, url: 'http://only-url' }} />`);
+    expect(screen.getByTestId('feed-item-title').textContent).toBe('http://only-url');
   });
 
-  it('falls back to url when title missing', () => {
-    render(html`<${FeedItem} feed=${{ id: 1, url: 'http://only-url' }} onDelete=${() => {}} />`);
-    expect(screen.getByTestId('feed-item-title').textContent).toBe('http://only-url');
+  it('legacy DOM: <li class="feed"> with .count, <i>, .feedtitle', () => {
+    const { container } = render(html`<${FeedItem} feed=${feed} />`);
+    const li = container.querySelector('li.feed');
+    expect(li).toBeTruthy();
+    expect(li.querySelector('.count')).toBeTruthy();
+    expect(li.querySelector('i')).toBeTruthy();
+    expect(li.querySelector('.feedtitle')).toBeTruthy();
   });
 });

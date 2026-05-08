@@ -1,12 +1,10 @@
 /**
- * Page Object Model for the main 3-pane app shell (data-testid only).
+ * Page Object Model for the two-pane app shell (data-testid only).
  */
 export class MainPage {
   constructor(page) {
     this.page = page;
     this.sidebar = page.getByTestId('sidebar');
-    this.logoutButton = page.getByTestId('logout-button');
-    this.feedList = page.getByTestId('feed-list');
     this.feedItems = page.getByTestId('feed-item');
     this.unreadFolder = page.getByTestId('smart-folder-unread');
     this.starredFolder = page.getByTestId('smart-folder-starred');
@@ -19,6 +17,9 @@ export class MainPage {
     this.toolbarTitle = page.getByTestId('toolbar-title');
     this.toolbarRefresh = page.getByTestId('toolbar-refresh');
     this.toolbarMarkRead = page.getByTestId('toolbar-mark-read');
+    this.toolbarMarkUnread = page.getByTestId('toolbar-mark-unread');
+    this.toolbarRemove = page.getByTestId('toolbar-remove');
+    this.toolbarLogout = page.getByTestId('toolbar-logout');
 
     this.itemList = page.getByTestId('item-list');
     this.items = page.getByTestId('item-row');
@@ -38,8 +39,10 @@ export class MainPage {
 
   async addFeed(feedUrl) {
     const before = await this.feedItems.count();
-    await this.addFeedUrl.fill(feedUrl);
+    // First click reveals the input, then we type, then submit via Enter.
     await this.addFeedSubmit.click();
+    await this.addFeedUrl.fill(feedUrl);
+    await this.addFeedUrl.press('Enter');
     await this.page.waitForFunction(
       (n) => document.querySelectorAll('[data-testid="feed-item"]').length > n,
       before,
@@ -69,13 +72,17 @@ export class MainPage {
   }
 
   async getUnreadCount() {
+    const visible = await this.unreadCountEl.isVisible().catch(() => false);
+    if (!visible) return 0;
     const t = (await this.unreadCountEl.textContent()) || '0';
-    return parseInt(t, 10);
+    return parseInt(t, 10) || 0;
   }
 
   async getStarredCount() {
+    const visible = await this.starredCountEl.isVisible().catch(() => false);
+    if (!visible) return 0;
     const t = (await this.starredCountEl.textContent()) || '0';
-    return parseInt(t, 10);
+    return parseInt(t, 10) || 0;
   }
 
   async getItemsCount() {
@@ -113,15 +120,17 @@ export class MainPage {
   }
 
   async removeFeed(feedTitleSubstring) {
-    const feed = feedTitleSubstring ? this.feedByText(feedTitleSubstring).first() : this.feedItems.first();
-    await feed.getByTestId('feed-item-delete').click();
+    if (feedTitleSubstring) {
+      await this.clickFeed(feedTitleSubstring);
+    }
+    await this.toolbarRemove.click();
     await this.confirmDialog.waitFor({ state: 'visible', timeout: 2000 });
     await this.confirmYes.click();
     await this.page.waitForTimeout(500);
   }
 
   async logout() {
-    await this.logoutButton.click();
+    await this.toolbarLogout.click();
     await this.page.waitForURL(/login\.html/, { timeout: 5000 });
   }
 
