@@ -33,7 +33,7 @@ func TestRouter_setup(t *testing.T) {
 		{
 			Name:           tcOK,
 			Method:         http.MethodPost,
-			Target:         "/setup",
+			Target:         setupPath,
 			ReqBody:        `{"email":"admin@example.com","password":"password123","confirm_password":"password123","allow_signup":false}`,
 			ExpectedStatus: http.StatusCreated,
 			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService) {
@@ -43,7 +43,7 @@ func TestRouter_setup(t *testing.T) {
 		{
 			Name:           "setup already completed",
 			Method:         http.MethodPost,
-			Target:         "/setup",
+			Target:         setupPath,
 			ReqBody:        `{"email":"admin@example.com","password":"password123","confirm_password":"password123"}`,
 			ExpectedStatus: http.StatusBadRequest,
 			ExpectedBody:   `{"error":{"code":400,"details":"Bad Request - setup has already been completed"}}`,
@@ -54,7 +54,7 @@ func TestRouter_setup(t *testing.T) {
 		{
 			Name:           "invalid json",
 			Method:         http.MethodPost,
-			Target:         "/setup",
+			Target:         setupPath,
 			ReqBody:        `{invalid`,
 			ExpectedStatus: http.StatusBadRequest,
 			ExpectedBody:   respInvalidReqBody,
@@ -63,7 +63,7 @@ func TestRouter_setup(t *testing.T) {
 		{
 			Name:           "validation error - passwords don't match",
 			Method:         http.MethodPost,
-			Target:         "/setup",
+			Target:         setupPath,
 			ReqBody:        `{"email":"admin@example.com","password":"password123","confirm_password":"different"}`,
 			ExpectedStatus: http.StatusBadRequest,
 			ExpectedBody:   `{"error":{"code":400,"details":"Bad Request - password and confirm password do not match"}}`,
@@ -72,7 +72,7 @@ func TestRouter_setup(t *testing.T) {
 		{
 			Name:           "validation error - missing fields",
 			Method:         http.MethodPost,
-			Target:         "/setup",
+			Target:         setupPath,
 			ReqBody:        `{"email":"","password":"","confirm_password":""}`,
 			ExpectedStatus: http.StatusBadRequest,
 			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {},
@@ -94,9 +94,9 @@ func TestRouter_needsSetup(t *testing.T) {
 		{
 			Name:           "needs setup",
 			Method:         http.MethodGet,
-			Target:         "/setup/status",
+			Target:         setupStatusPath,
 			ExpectedStatus: http.StatusOK,
-			ExpectedBody:   `{"needs_setup":true,"allow_signup":false}`,
+			ExpectedBody:   `{"allow_signup":false,"needs_setup":true}`,
 			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService) {
 				a.EXPECT().NeedsSetup().Return(true, nil)
 				a.EXPECT().IsSignupAllowed().Return(false)
@@ -105,9 +105,9 @@ func TestRouter_needsSetup(t *testing.T) {
 		{
 			Name:           "setup already done",
 			Method:         http.MethodGet,
-			Target:         "/setup/status",
+			Target:         setupStatusPath,
 			ExpectedStatus: http.StatusOK,
-			ExpectedBody:   `{"needs_setup":false,"allow_signup":true}`,
+			ExpectedBody:   `{"allow_signup":true,"needs_setup":false}`,
 			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService) {
 				a.EXPECT().NeedsSetup().Return(false, nil)
 				a.EXPECT().IsSignupAllowed().Return(true)
@@ -116,7 +116,7 @@ func TestRouter_needsSetup(t *testing.T) {
 		{
 			Name:           "error checking setup",
 			Method:         http.MethodGet,
-			Target:         "/setup/status",
+			Target:         setupStatusPath,
 			ExpectedStatus: http.StatusInternalServerError,
 			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService) {
 				a.EXPECT().NeedsSetup().Return(false, errors.New("db error"))
@@ -139,9 +139,9 @@ func TestRouter_getSettings(t *testing.T) {
 		{
 			Name:           "get settings",
 			Method:         http.MethodGet,
-			Target:         "/settings",
+			Target:         settingsPath,
 			ExpectedStatus: http.StatusOK,
-			ExpectedBody:   `{"allow_signup":true}`,
+			ExpectedBody:   respAllowSignupTrue,
 			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService) {
 				a.EXPECT().GetSession("test").Return(testSession(), nil)
 				a.EXPECT().IsSignupAllowed().Return(true)
@@ -164,10 +164,10 @@ func TestRouter_updateSettings(t *testing.T) {
 		{
 			Name:           "update settings - allow signup",
 			Method:         http.MethodPut,
-			Target:         "/settings",
-			ReqBody:        `{"allow_signup":true}`,
+			Target:         settingsPath,
+			ReqBody:        respAllowSignupTrue,
 			ExpectedStatus: http.StatusOK,
-			ExpectedBody:   `{"allow_signup":true}`,
+			ExpectedBody:   respAllowSignupTrue,
 			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService) {
 				a.EXPECT().GetSession("test").Return(testSession(), nil)
 				a.EXPECT().SetAllowSignup(true).Return(nil)
@@ -176,10 +176,10 @@ func TestRouter_updateSettings(t *testing.T) {
 		{
 			Name:           "update settings - disable signup",
 			Method:         http.MethodPut,
-			Target:         "/settings",
-			ReqBody:        `{"allow_signup":false}`,
+			Target:         settingsPath,
+			ReqBody:        respAllowSignupFalse,
 			ExpectedStatus: http.StatusOK,
-			ExpectedBody:   `{"allow_signup":false}`,
+			ExpectedBody:   respAllowSignupFalse,
 			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService) {
 				a.EXPECT().GetSession("test").Return(testSession(), nil)
 				a.EXPECT().SetAllowSignup(false).Return(nil)
@@ -188,8 +188,8 @@ func TestRouter_updateSettings(t *testing.T) {
 		{
 			Name:           "update settings - error",
 			Method:         http.MethodPut,
-			Target:         "/settings",
-			ReqBody:        `{"allow_signup":true}`,
+			Target:         settingsPath,
+			ReqBody:        respAllowSignupTrue,
 			ExpectedStatus: http.StatusInternalServerError,
 			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService) {
 				a.EXPECT().GetSession("test").Return(testSession(), nil)

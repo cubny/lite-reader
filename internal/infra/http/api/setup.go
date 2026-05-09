@@ -10,6 +10,8 @@ import (
 	"github.com/cubny/lite-reader/internal/app/auth"
 )
 
+const keyAllowSignup = "allow_signup"
+
 func (h *Router) setup(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	var command auth.SetupCommand
 	if err := json.NewDecoder(r.Body).Decode(&command); err != nil {
@@ -43,7 +45,7 @@ func (h *Router) needsSetup(w http.ResponseWriter, _ *http.Request, _ httprouter
 	w.WriteHeader(http.StatusOK)
 	_ = json.NewEncoder(w).Encode(map[string]any{
 		"needs_setup":  needs,
-		"allow_signup": allowSignup,
+		keyAllowSignup: allowSignup,
 	})
 }
 
@@ -51,7 +53,7 @@ func (h *Router) getSettings(w http.ResponseWriter, _ *http.Request, _ httproute
 	allowSignup := h.authService.IsSignupAllowed()
 
 	w.WriteHeader(http.StatusOK)
-	_ = json.NewEncoder(w).Encode(map[string]bool{"allow_signup": allowSignup})
+	_ = json.NewEncoder(w).Encode(map[string]bool{keyAllowSignup: allowSignup})
 }
 
 func (h *Router) updateSettings(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -69,5 +71,5 @@ func (h *Router) updateSettings(w http.ResponseWriter, r *http.Request, _ httpro
 	}
 
 	w.WriteHeader(http.StatusOK)
-	_ = json.NewEncoder(w).Encode(map[string]bool{"allow_signup": req.AllowSignup})
+	_ = json.NewEncoder(w).Encode(map[string]bool{keyAllowSignup: req.AllowSignup})
 }

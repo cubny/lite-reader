@@ -17,6 +17,7 @@ const (
 	tcSuccess    = "success"
 	testEmail    = "test@example.com"
 	testPassword = "password123"
+	errDBError   = "db error"
 )
 
 func TestService_Signup(t *testing.T) {
@@ -62,10 +63,10 @@ func TestService_Signup(t *testing.T) {
 			mockSetup: func(r *mocks.Repository) {
 				r.EXPECT().GetSetting("allow_signup").Return("true", nil)
 				r.EXPECT().GetUserByEmail(testEmail).Return(nil, errors.New("not found"))
-				r.EXPECT().CreateUser(testEmail, gomock.Any()).Return(errors.New("db error"))
+				r.EXPECT().CreateUser(testEmail, gomock.Any()).Return(errors.New(errDBError))
 			},
 			wantErr: true,
-			errMsg:  "db error",
+			errMsg:  errDBError,
 		},
 	}
 
@@ -256,7 +257,7 @@ func TestService_GetAllUsers(t *testing.T) {
 		{
 			name: "error",
 			mockSetup: func(r *mocks.Repository) {
-				r.EXPECT().GetAllUsers().Return(nil, errors.New("db error"))
+				r.EXPECT().GetAllUsers().Return(nil, errors.New(errDBError))
 			},
 			wantErr: true,
 		},
@@ -341,10 +342,10 @@ func TestService_Setup(t *testing.T) {
 				ConfirmPassword: testPassword,
 			},
 			mockSetup: func(r *mocks.Repository) {
-				r.EXPECT().CountUsers().Return(0, errors.New("db error"))
+				r.EXPECT().CountUsers().Return(0, errors.New(errDBError))
 			},
 			wantErr: true,
-			errMsg:  "db error",
+			errMsg:  errDBError,
 		},
 		{
 			name: "error - create admin fails",
@@ -355,10 +356,10 @@ func TestService_Setup(t *testing.T) {
 			},
 			mockSetup: func(r *mocks.Repository) {
 				r.EXPECT().CountUsers().Return(0, nil)
-				r.EXPECT().CreateAdmin(testEmail, gomock.Any()).Return(errors.New("db error"))
+				r.EXPECT().CreateAdmin(testEmail, gomock.Any()).Return(errors.New(errDBError))
 			},
 			wantErr: true,
-			errMsg:  "db error",
+			errMsg:  errDBError,
 		},
 	}
 
@@ -410,7 +411,7 @@ func TestService_NeedsSetup(t *testing.T) {
 		{
 			name: "error counting users",
 			mockSetup: func(r *mocks.Repository) {
-				r.EXPECT().CountUsers().Return(0, errors.New("db error"))
+				r.EXPECT().CountUsers().Return(0, errors.New(errDBError))
 			},
 			want:    false,
 			wantErr: true,
@@ -512,7 +513,7 @@ func TestService_SetAllowSignup(t *testing.T) {
 			name:  "error setting",
 			allow: true,
 			mockSetup: func(r *mocks.Repository) {
-				r.EXPECT().SetSetting("allow_signup", "true").Return(errors.New("db error"))
+				r.EXPECT().SetSetting("allow_signup", "true").Return(errors.New(errDBError))
 			},
 			wantErr: true,
 		},

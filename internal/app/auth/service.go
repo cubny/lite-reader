@@ -9,7 +9,11 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-const settingAllowSignup = "allow_signup"
+const (
+	settingAllowSignup = "allow_signup"
+	valTrue            = "true"
+	valFalse           = "false"
+)
 
 type Service struct {
 	repo Repository
@@ -93,9 +97,9 @@ func (s *Service) Setup(command *SetupCommand) error {
 		return err
 	}
 
-	allowSignup := "false"
+	allowSignup := valFalse
 	if command.AllowSignup {
-		allowSignup = "true"
+		allowSignup = valTrue
 	}
 
 	return s.repo.SetSetting(settingAllowSignup, allowSignup)
@@ -116,14 +120,14 @@ func (s *Service) IsSignupAllowed() bool {
 	if err != nil {
 		return false
 	}
-	return val == "true"
+	return val == valTrue
 }
 
 // SetAllowSignup toggles the allow_signup setting.
 func (s *Service) SetAllowSignup(allow bool) error {
-	val := "false"
+	val := valFalse
 	if allow {
-		val = "true"
+		val = valTrue
 	}
 	return s.repo.SetSetting(settingAllowSignup, val)
 }
