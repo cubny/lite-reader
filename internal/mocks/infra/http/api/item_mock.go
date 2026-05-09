@@ -12,9 +12,8 @@ package mocks
 import (
 	reflect "reflect"
 
-	gomock "go.uber.org/mock/gomock"
-
 	item "github.com/cubny/lite-reader/internal/app/item"
+	gomock "go.uber.org/mock/gomock"
 )
 
 // ItemService is a mock of ItemService interface.

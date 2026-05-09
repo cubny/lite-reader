@@ -12,9 +12,8 @@ package mocks
 import (
 	reflect "reflect"
 
-	gomock "go.uber.org/mock/gomock"
-
 	auth "github.com/cubny/lite-reader/internal/app/auth"
+	gomock "go.uber.org/mock/gomock"
 )
 
 // AuthService is a mock of AuthService interface.
@@ -71,6 +70,20 @@ func (mr *AuthServiceMockRecorder) GetSession(token any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSession", reflect.TypeOf((*AuthService)(nil).GetSession), token)
 }
 
+// IsSignupAllowed mocks base method.
+func (m *AuthService) IsSignupAllowed() bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IsSignupAllowed")
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// IsSignupAllowed indicates an expected call of IsSignupAllowed.
+func (mr *AuthServiceMockRecorder) IsSignupAllowed() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsSignupAllowed", reflect.TypeOf((*AuthService)(nil).IsSignupAllowed))
+}
+
 // Login mocks base method.
 func (m *AuthService) Login(command *auth.LoginCommand) (*auth.LoginResponse, error) {
 	m.ctrl.T.Helper()
@@ -84,6 +97,49 @@ func (m *AuthService) Login(command *auth.LoginCommand) (*auth.LoginResponse, er
 func (mr *AuthServiceMockRecorder) Login(command any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Login", reflect.TypeOf((*AuthService)(nil).Login), command)
+}
+
+// NeedsSetup mocks base method.
+func (m *AuthService) NeedsSetup() (bool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "NeedsSetup")
+	ret0, _ := ret[0].(bool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// NeedsSetup indicates an expected call of NeedsSetup.
+func (mr *AuthServiceMockRecorder) NeedsSetup() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NeedsSetup", reflect.TypeOf((*AuthService)(nil).NeedsSetup))
+}
+
+// SetAllowSignup mocks base method.
+func (m *AuthService) SetAllowSignup(allow bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetAllowSignup", allow)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetAllowSignup indicates an expected call of SetAllowSignup.
+func (mr *AuthServiceMockRecorder) SetAllowSignup(allow any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetAllowSignup", reflect.TypeOf((*AuthService)(nil).SetAllowSignup), allow)
+}
+
+// Setup mocks base method.
+func (m *AuthService) Setup(command *auth.SetupCommand) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Setup", command)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Setup indicates an expected call of Setup.
+func (mr *AuthServiceMockRecorder) Setup(command any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Setup", reflect.TypeOf((*AuthService)(nil).Setup), command)
 }
 
 // Signup mocks base method.

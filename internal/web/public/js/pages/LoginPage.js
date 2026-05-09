@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'preact/hooks';
 
 import { html } from '../util/html.js';
-import { login } from '../api/auth.js';
+import { login, checkNeedsSetup } from '../api/auth.js';
 
 export function LoginPage() {
   const [email, setEmail] = useState('');
@@ -9,12 +9,29 @@ export function LoginPage() {
   const [error, setError] = useState('');
   const [pending, setPending] = useState(false);
   const [signupSuccess, setSignupSuccess] = useState(false);
+  const [setupSuccess, setSetupSuccess] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [allowSignup, setAllowSignup] = useState(false);
 
   useEffect(() => {
-    if (sessionStorage.getItem('signupSuccess') === 'true') {
-      setSignupSuccess(true);
-      sessionStorage.removeItem('signupSuccess');
-    }
+    checkNeedsSetup().then((data) => {
+      if (data.needs_setup) {
+        location.assign('/setup.html');
+        return;
+      }
+      setAllowSignup(data.allow_signup === true);
+      if (sessionStorage.getItem('signupSuccess') === 'true') {
+        setSignupSuccess(true);
+        sessionStorage.removeItem('signupSuccess');
+      }
+      if (sessionStorage.getItem('setupSuccess') === 'true') {
+        setSetupSuccess(true);
+        sessionStorage.removeItem('setupSuccess');
+      }
+      setLoading(false);
+    }).catch(() => {
+      setLoading(false);
+    });
   }, []);
 
   async function onSubmit(e) {
@@ -30,11 +47,20 @@ export function LoginPage() {
     }
   }
 
+  if (loading) {
+    return html`<div class="login-container"><p style="text-align:center;">Loading...</p></div>`;
+  }
+
   return html`
     <div class="login-container">
       ${signupSuccess && html`
         <aside data-testid="signup-success" class="alert alert-success">
           Account created successfully. Please log in.
+        </aside>
+      `}
+      ${setupSuccess && html`
+        <aside data-testid="setup-success" class="alert alert-success">
+          Admin account created. Please log in.
         </aside>
       `}
       <h1>Login to Lite Reader</h1>
@@ -73,9 +99,11 @@ export function LoginPage() {
         >Login</button>
         <div class="error-message" data-testid="login-error" role="alert">${error}</div>
       </form>
-      <div style="text-align: center; margin-top: 20px;">
-        <a href="/signup.html" style="color: #6C8A46;">Don't have an account? Sign up</a>
-      </div>
+      ${allowSignup && html`
+        <div style="text-align: center; margin-top: 20px;">
+          <a href="/signup.html" style="color: #6C8A46;">Don't have an account? Sign up</a>
+        </div>
+      `}
     </div>
   `;
 }

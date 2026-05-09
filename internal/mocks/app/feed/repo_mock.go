@@ -12,9 +12,8 @@ package mocks
 import (
 	reflect "reflect"
 
-	gomock "go.uber.org/mock/gomock"
-
 	feed "github.com/cubny/lite-reader/internal/app/feed"
+	gomock "go.uber.org/mock/gomock"
 )
 
 // Repository is a mock of Repository interface.
@@ -42,18 +41,18 @@ func (m *Repository) EXPECT() *RepositoryMockRecorder {
 }
 
 // AddFeed mocks base method.
-func (m *Repository) AddFeed(feed *feed.Feed) (int, error) {
+func (m *Repository) AddFeed(arg0 *feed.Feed) (int, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddFeed", feed)
+	ret := m.ctrl.Call(m, "AddFeed", arg0)
 	ret0, _ := ret[0].(int)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // AddFeed indicates an expected call of AddFeed.
-func (mr *RepositoryMockRecorder) AddFeed(feed any) *gomock.Call {
+func (mr *RepositoryMockRecorder) AddFeed(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddFeed", reflect.TypeOf((*Repository)(nil).AddFeed), feed)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddFeed", reflect.TypeOf((*Repository)(nil).AddFeed), arg0)
 }
 
 // DeleteFeed mocks base method.

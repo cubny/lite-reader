@@ -34,6 +34,7 @@ func TestService_Signup(t *testing.T) {
 				Password: testPassword,
 			},
 			mockSetup: func(r *mocks.Repository) {
+				r.EXPECT().GetSetting("allow_signup").Return("true", nil)
 				r.EXPECT().GetUserByEmail(testEmail).Return(nil, errors.New("not found"))
 				r.EXPECT().CreateUser(testEmail, gomock.Any()).Return(nil)
 			},
@@ -46,6 +47,7 @@ func TestService_Signup(t *testing.T) {
 				Password: testPassword,
 			},
 			mockSetup: func(r *mocks.Repository) {
+				r.EXPECT().GetSetting("allow_signup").Return("true", nil)
 				r.EXPECT().GetUserByEmail("existing@example.com").Return(&auth.User{}, nil)
 			},
 			wantErr: true,
@@ -58,6 +60,7 @@ func TestService_Signup(t *testing.T) {
 				Password: testPassword,
 			},
 			mockSetup: func(r *mocks.Repository) {
+				r.EXPECT().GetSetting("allow_signup").Return("true", nil)
 				r.EXPECT().GetUserByEmail(testEmail).Return(nil, errors.New("not found"))
 				r.EXPECT().CreateUser(testEmail, gomock.Any()).Return(errors.New("db error"))
 			},
@@ -273,6 +276,318 @@ func TestService_GetAllUsers(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 				assert.NotNil(t, got)
+			}
+			ctrl.Finish()
+		})
+	}
+}
+
+func TestService_Setup(t *testing.T) {
+	tests := []struct {
+		name      string
+		command   *auth.SetupCommand
+		mockSetup func(*mocks.Repository)
+		wantErr   bool
+		errMsg    string
+	}{
+		{
+			name: "success - creates admin and sets allow_signup to false",
+			command: &auth.SetupCommand{
+				Email:           testEmail,
+				Password:        testPassword,
+				ConfirmPassword: testPassword,
+				AllowSignup:     false,
+			},
+			mockSetup: func(r *mocks.Repository) {
+				r.EXPECT().CountUsers().Return(0, nil)
+				r.EXPECT().CreateAdmin(testEmail, gomock.Any()).Return(nil)
+				r.EXPECT().SetSetting("allow_signup", "false").Return(nil)
+			},
+			wantErr: false,
+		},
+		{
+			name: "success - creates admin and sets allow_signup to true",
+			command: &auth.SetupCommand{
+				Email:           testEmail,
+				Password:        testPassword,
+				ConfirmPassword: testPassword,
+				AllowSignup:     true,
+			},
+			mockSetup: func(r *mocks.Repository) {
+				r.EXPECT().CountUsers().Return(0, nil)
+				r.EXPECT().CreateAdmin(testEmail, gomock.Any()).Return(nil)
+				r.EXPECT().SetSetting("allow_signup", "true").Return(nil)
+			},
+			wantErr: false,
+		},
+		{
+			name: "error - users already exist",
+			command: &auth.SetupCommand{
+				Email:           testEmail,
+				Password:        testPassword,
+				ConfirmPassword: testPassword,
+			},
+			mockSetup: func(r *mocks.Repository) {
+				r.EXPECT().CountUsers().Return(1, nil)
+			},
+			wantErr: true,
+			errMsg:  "setup has already been completed",
+		},
+		{
+			name: "error - count users fails",
+			command: &auth.SetupCommand{
+				Email:           testEmail,
+				Password:        testPassword,
+				ConfirmPassword: testPassword,
+			},
+			mockSetup: func(r *mocks.Repository) {
+				r.EXPECT().CountUsers().Return(0, errors.New("db error"))
+			},
+			wantErr: true,
+			errMsg:  "db error",
+		},
+		{
+			name: "error - create admin fails",
+			command: &auth.SetupCommand{
+				Email:           testEmail,
+				Password:        testPassword,
+				ConfirmPassword: testPassword,
+			},
+			mockSetup: func(r *mocks.Repository) {
+				r.EXPECT().CountUsers().Return(0, nil)
+				r.EXPECT().CreateAdmin(testEmail, gomock.Any()).Return(errors.New("db error"))
+			},
+			wantErr: true,
+			errMsg:  "db error",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ctrl := gomock.NewController(t)
+			repo := mocks.NewRepository(ctrl)
+			tt.mockSetup(repo)
+
+			s := auth.NewService(repo)
+			err := s.Setup(tt.command)
+
+			if tt.wantErr {
+				assert.Error(t, err)
+				if tt.errMsg != "" {
+					assert.Contains(t, err.Error(), tt.errMsg)
+				}
+			} else {
+				assert.NoError(t, err)
+			}
+			ctrl.Finish()
+		})
+	}
+}
+
+func TestService_NeedsSetup(t *testing.T) {
+	tests := []struct {
+		name      string
+		mockSetup func(*mocks.Repository)
+		want      bool
+		wantErr   bool
+	}{
+		{
+			name: "needs setup - zero users",
+			mockSetup: func(r *mocks.Repository) {
+				r.EXPECT().CountUsers().Return(0, nil)
+			},
+			want:    true,
+			wantErr: false,
+		},
+		{
+			name: "does not need setup - users exist",
+			mockSetup: func(r *mocks.Repository) {
+				r.EXPECT().CountUsers().Return(1, nil)
+			},
+			want:    false,
+			wantErr: false,
+		},
+		{
+			name: "error counting users",
+			mockSetup: func(r *mocks.Repository) {
+				r.EXPECT().CountUsers().Return(0, errors.New("db error"))
+			},
+			want:    false,
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ctrl := gomock.NewController(t)
+			repo := mocks.NewRepository(ctrl)
+			tt.mockSetup(repo)
+
+			s := auth.NewService(repo)
+			got, err := s.NeedsSetup()
+
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, tt.want, got)
+			}
+			ctrl.Finish()
+		})
+	}
+}
+
+func TestService_IsSignupAllowed(t *testing.T) {
+	tests := []struct {
+		name      string
+		mockSetup func(*mocks.Repository)
+		want      bool
+		wantErr   bool
+	}{
+		{
+			name: "signup allowed",
+			mockSetup: func(r *mocks.Repository) {
+				r.EXPECT().GetSetting("allow_signup").Return("true", nil)
+			},
+			want:    true,
+			wantErr: false,
+		},
+		{
+			name: "signup not allowed",
+			mockSetup: func(r *mocks.Repository) {
+				r.EXPECT().GetSetting("allow_signup").Return("false", nil)
+			},
+			want:    false,
+			wantErr: false,
+		},
+		{
+			name: "error getting setting - defaults to false",
+			mockSetup: func(r *mocks.Repository) {
+				r.EXPECT().GetSetting("allow_signup").Return("", errors.New("not found"))
+			},
+			want:    false,
+			wantErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ctrl := gomock.NewController(t)
+			repo := mocks.NewRepository(ctrl)
+			tt.mockSetup(repo)
+
+			s := auth.NewService(repo)
+			got := s.IsSignupAllowed()
+
+			assert.Equal(t, tt.want, got)
+			ctrl.Finish()
+		})
+	}
+}
+
+func TestService_SetAllowSignup(t *testing.T) {
+	tests := []struct {
+		name      string
+		allow     bool
+		mockSetup func(*mocks.Repository)
+		wantErr   bool
+	}{
+		{
+			name:  "set allow signup to true",
+			allow: true,
+			mockSetup: func(r *mocks.Repository) {
+				r.EXPECT().SetSetting("allow_signup", "true").Return(nil)
+			},
+			wantErr: false,
+		},
+		{
+			name:  "set allow signup to false",
+			allow: false,
+			mockSetup: func(r *mocks.Repository) {
+				r.EXPECT().SetSetting("allow_signup", "false").Return(nil)
+			},
+			wantErr: false,
+		},
+		{
+			name:  "error setting",
+			allow: true,
+			mockSetup: func(r *mocks.Repository) {
+				r.EXPECT().SetSetting("allow_signup", "true").Return(errors.New("db error"))
+			},
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ctrl := gomock.NewController(t)
+			repo := mocks.NewRepository(ctrl)
+			tt.mockSetup(repo)
+
+			s := auth.NewService(repo)
+			err := s.SetAllowSignup(tt.allow)
+
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+			}
+			ctrl.Finish()
+		})
+	}
+}
+
+func TestService_Signup_GuardedByAllowSignup(t *testing.T) {
+	tests := []struct {
+		name      string
+		command   *auth.SignupCommand
+		mockSetup func(*mocks.Repository)
+		wantErr   bool
+		errMsg    string
+	}{
+		{
+			name: "signup allowed",
+			command: &auth.SignupCommand{
+				Email:    testEmail,
+				Password: testPassword,
+			},
+			mockSetup: func(r *mocks.Repository) {
+				r.EXPECT().GetSetting("allow_signup").Return("true", nil)
+				r.EXPECT().GetUserByEmail(testEmail).Return(nil, errors.New("not found"))
+				r.EXPECT().CreateUser(testEmail, gomock.Any()).Return(nil)
+			},
+			wantErr: false,
+		},
+		{
+			name: "signup not allowed",
+			command: &auth.SignupCommand{
+				Email:    testEmail,
+				Password: testPassword,
+			},
+			mockSetup: func(r *mocks.Repository) {
+				r.EXPECT().GetSetting("allow_signup").Return("false", nil)
+			},
+			wantErr: true,
+			errMsg:  "registration is currently disabled",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ctrl := gomock.NewController(t)
+			repo := mocks.NewRepository(ctrl)
+			tt.mockSetup(repo)
+
+			s := auth.NewService(repo)
+			err := s.Signup(tt.command)
+
+			if tt.wantErr {
+				assert.Error(t, err)
+				if tt.errMsg != "" {
+					assert.Contains(t, err.Error(), tt.errMsg)
+				}
+			} else {
+				assert.NoError(t, err)
 			}
 			ctrl.Finish()
 		})

@@ -24,7 +24,28 @@ type SignupCommand struct {
 	ConfirmPassword string `json:"confirm_password"`
 }
 
+// SetupCommand is used for the initial admin setup wizard.
+type SetupCommand struct {
+	Email           string `json:"email"`
+	Password        string `json:"password"`
+	ConfirmPassword string `json:"confirm_password"`
+	AllowSignup     bool   `json:"allow_signup"`
+}
+
 func (c *SignupCommand) Validate() error {
+	if c.Email == "" || c.Password == "" || c.ConfirmPassword == "" {
+		return errors.New("email and password are required")
+	}
+	if c.Password != c.ConfirmPassword {
+		return errors.New("password and confirm password do not match")
+	}
+	if len(c.Password) < minPasswordLength {
+		return errors.New("password must be at least 8 characters")
+	}
+	return nil
+}
+
+func (c *SetupCommand) Validate() error {
 	if c.Email == "" || c.Password == "" || c.ConfirmPassword == "" {
 		return errors.New("email and password are required")
 	}

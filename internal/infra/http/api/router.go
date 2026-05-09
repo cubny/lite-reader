@@ -53,6 +53,10 @@ type ItemService interface {
 type AuthService interface {
 	Login(command *auth.LoginCommand) (*auth.LoginResponse, error)
 	Signup(command *auth.SignupCommand) error
+	Setup(command *auth.SetupCommand) error
+	NeedsSetup() (bool, error)
+	IsSignupAllowed() bool
+	SetAllowSignup(allow bool) error
 	GetSession(token string) (*auth.Session, error)
 	GetAllUsers() ([]*auth.User, error)
 }
@@ -99,6 +103,11 @@ func New(itemService ItemService, feedService FeedService, authService AuthServi
 
 	router.POST("/login", chain.Wrap(h.login))
 	router.POST("/signup", chain.Wrap(h.signup))
+	router.POST("/setup", chain.Wrap(h.setup))
+	router.GET("/setup/status", chain.Wrap(h.needsSetup))
+
+	router.GET("/settings", chain.Wrap(h.getSettings))
+	router.PUT("/settings", chain.Wrap(h.updateSettings))
 	// Serve static frontend assets via NotFound. Restrict to GET/HEAD so a
 	// stray POST/PUT/DELETE to an unknown path returns 404 instead of the
 	// 405 that http.FileServer would emit, which would mask missing API
