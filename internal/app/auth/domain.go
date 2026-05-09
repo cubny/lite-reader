@@ -6,6 +6,7 @@ type User struct {
 	ID       int    `json:"id"`
 	Email    string `json:"email"`
 	Password string `json:"-"` // bcrypt hashed
+	IsAdmin  bool   `json:"is_admin"`
 }
 
 type Login struct {

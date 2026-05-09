@@ -32,8 +32,8 @@ func NewDB(client *sql.DB) *DB {
 func (d *DB) GetUserByEmail(email string) (*auth.User, error) {
 	var user auth.User
 	err := d.sqliteDB.
-		QueryRowContext(context.Background(), "SELECT id, email, password FROM users WHERE email = ?", email).
-		Scan(&user.ID, &user.Email, &user.Password)
+		QueryRowContext(context.Background(), "SELECT id, email, password, is_admin FROM users WHERE email = ?", email).
+		Scan(&user.ID, &user.Email, &user.Password, &user.IsAdmin)
 	if err != nil {
 		return nil, err
 	}
@@ -45,8 +45,13 @@ func (d *DB) CreateUser(email, password string) error {
 	return err
 }
 
+func (d *DB) CreateAdmin(email, password string) error {
+	_, err := d.sqliteDB.ExecContext(context.Background(), "INSERT INTO users (email, password, is_admin) VALUES (?, ?, 1)", email, password)
+	return err
+}
+
 func (d *DB) GetAllUsers() ([]*auth.User, error) {
-	rows, err := d.sqliteDB.QueryContext(context.Background(), "SELECT id, email, password FROM users")
+	rows, err := d.sqliteDB.QueryContext(context.Background(), "SELECT id, email, password, is_admin FROM users")
 	if err != nil {
 		return nil, err
 	}
@@ -60,13 +65,38 @@ func (d *DB) GetAllUsers() ([]*auth.User, error) {
 	users := make([]*auth.User, 0)
 	for rows.Next() {
 		var user auth.User
-		if err := rows.Scan(&user.ID, &user.Email, &user.Password); err != nil {
+		if err := rows.Scan(&user.ID, &user.Email, &user.Password, &user.IsAdmin); err != nil {
 			return nil, err
 		}
 		users = append(users, &user)
 	}
 
 	return users, nil
+}
+
+func (d *DB) CountUsers() (int, error) {
+	var count int
+	err := d.sqliteDB.QueryRowContext(context.Background(), "SELECT COUNT(*) FROM users").Scan(&count)
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
+func (d *DB) GetSetting(key string) (string, error) {
+	var value string
+	err := d.sqliteDB.QueryRowContext(context.Background(), "SELECT value FROM settings WHERE key = ?", key).Scan(&value)
+	if err != nil {
+		return "", err
+	}
+	return value, nil
+}
+
+func (d *DB) SetSetting(key, value string) error {
+	_, err := d.sqliteDB.ExecContext(context.Background(),
+		"INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value",
+		key, value)
+	return err
 }
 
 func (d *DB) Login(f *auth.LoginCommand) error {

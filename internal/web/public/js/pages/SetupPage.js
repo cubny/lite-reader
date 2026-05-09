@@ -1,29 +1,26 @@
 import { useState, useEffect } from 'preact/hooks';
 
 import { html } from '../util/html.js';
-import { signup, checkNeedsSetup } from '../api/auth.js';
+import { setupAdmin, checkNeedsSetup } from '../api/auth.js';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export function SignupPage() {
+export function SetupPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
+  const [allowSignup, setAllowSignup] = useState(false);
   const [error, setError] = useState('');
   const [pending, setPending] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     checkNeedsSetup().then((data) => {
-      if (data.needs_setup) {
-        location.assign('/setup.html');
-        return;
-      }
-      if (!data.allow_signup) {
+      if (!data.needs_setup) {
         location.assign('/login.html');
-        return;
+      } else {
+        setLoading(false);
       }
-      setLoading(false);
     }).catch(() => {
       setLoading(false);
     });
@@ -31,7 +28,7 @@ export function SignupPage() {
 
   function validate() {
     if (!EMAIL_RE.test(email.trim())) return 'Please enter a valid email address';
-    if (!password || password.length < 6) return 'Password must be at least 6 characters long';
+    if (!password || password.length < 8) return 'Password must be at least 8 characters long';
     if (password !== confirm) return 'Passwords do not match';
     return '';
   }
@@ -46,11 +43,16 @@ export function SignupPage() {
     setError('');
     setPending(true);
     try {
-      await signup({ email: email.trim(), password });
-      sessionStorage.setItem('signupSuccess', 'true');
+      await setupAdmin({
+        email: email.trim(),
+        password,
+        confirm_password: confirm,
+        allow_signup: allowSignup,
+      });
+      sessionStorage.setItem('setupSuccess', 'true');
       location.assign('/login.html');
     } catch (err) {
-      setError(err.message || 'Error creating account.');
+      setError(err.message || 'Setup failed');
       setPending(false);
     }
   }
@@ -61,8 +63,11 @@ export function SignupPage() {
 
   return html`
     <div class="login-container">
-      <h1>Sign Up for Lite Reader</h1>
-      <form class="login-form" novalidate onSubmit=${onSubmit} data-testid="signup-form">
+      <h1>Welcome to Lite Reader</h1>
+      <p style="text-align: center; color: #6e6a60; margin-bottom: 20px; font-size: 14px;">
+        Create your admin account to get started.
+      </p>
+      <form class="login-form" novalidate onSubmit=${onSubmit} data-testid="setup-form">
         <div class="form-group">
           <label for="email">Email:</label>
           <input
@@ -70,7 +75,7 @@ export function SignupPage() {
             id="email"
             name="email"
             class="form-control"
-            data-testid="signup-email"
+            data-testid="setup-email"
             value=${email}
             onInput=${(e) => setEmail(e.target.value)}
             required
@@ -83,7 +88,7 @@ export function SignupPage() {
             id="password"
             name="password"
             class="form-control"
-            data-testid="signup-password"
+            data-testid="setup-password"
             value=${password}
             onInput=${(e) => setPassword(e.target.value)}
             required
@@ -96,23 +101,34 @@ export function SignupPage() {
             id="confirm-password"
             name="confirm-password"
             class="form-control"
-            data-testid="signup-confirm-password"
+            data-testid="setup-confirm-password"
             value=${confirm}
             onInput=${(e) => setConfirm(e.target.value)}
             required
           />
         </div>
+        <div class="form-group" style="flex-direction: row; align-items: center; gap: 8px; margin-top: 4px;">
+          <input
+            type="checkbox"
+            id="allow-signup"
+            data-testid="setup-allow-signup"
+            checked=${allowSignup}
+            onChange=${(e) => setAllowSignup(e.target.checked)}
+            style="width: auto;"
+          />
+          <label for="allow-signup" style="font-size: 14px; color: #2a2a28;">
+            Allow other people to create accounts
+          </label>
+        </div>
         <button
           type="submit"
           class="btn-primary"
-          data-testid="signup-submit"
+          data-testid="setup-submit"
           disabled=${pending}
-        >Sign Up</button>
-        <div class="error-message" data-testid="signup-error" role="alert">${error}</div>
+          style="margin-top: 10px;"
+        >Create Account</button>
+        <div class="error-message" data-testid="setup-error" role="alert">${error}</div>
       </form>
-      <div style="text-align: center; margin-top: 20px;">
-        <a href="/login.html" style="color: #6C8A46;">Already have an account? Log in</a>
-      </div>
     </div>
   `;
 }

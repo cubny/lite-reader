@@ -62,8 +62,8 @@ func AuthMiddleware(authService AuthService) HandleFunc {
 			w.Header().Set("Content-Type", "application/json")
 			log.Printf("Request path: %s", r.URL.Path)
 
-			// Skip auth check for login and signup endpoints
-			if r.URL.Path == "/login" || r.URL.Path == "/signup" {
+			// Skip auth check for login, signup, and setup endpoints
+			if r.URL.Path == "/login" || r.URL.Path == "/signup" || r.URL.Path == "/setup" || r.URL.Path == "/setup/status" {
 				next(w, r, ps)
 				return
 			}

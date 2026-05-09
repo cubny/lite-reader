@@ -12,9 +12,8 @@ package mocks
 import (
 	reflect "reflect"
 
-	gomock "go.uber.org/mock/gomock"
-
 	auth "github.com/cubny/lite-reader/internal/app/auth"
+	gomock "go.uber.org/mock/gomock"
 )
 
 // Repository is a mock of Repository interface.
@@ -39,6 +38,35 @@ func NewRepository(ctrl *gomock.Controller) *Repository {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *Repository) EXPECT() *RepositoryMockRecorder {
 	return m.recorder
+}
+
+// CountUsers mocks base method.
+func (m *Repository) CountUsers() (int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CountUsers")
+	ret0, _ := ret[0].(int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CountUsers indicates an expected call of CountUsers.
+func (mr *RepositoryMockRecorder) CountUsers() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountUsers", reflect.TypeOf((*Repository)(nil).CountUsers))
+}
+
+// CreateAdmin mocks base method.
+func (m *Repository) CreateAdmin(email, password string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateAdmin", email, password)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateAdmin indicates an expected call of CreateAdmin.
+func (mr *RepositoryMockRecorder) CreateAdmin(email, password any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAdmin", reflect.TypeOf((*Repository)(nil).CreateAdmin), email, password)
 }
 
 // CreateSession mocks base method.
@@ -100,6 +128,21 @@ func (mr *RepositoryMockRecorder) GetSessionByToken(token any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSessionByToken", reflect.TypeOf((*Repository)(nil).GetSessionByToken), token)
 }
 
+// GetSetting mocks base method.
+func (m *Repository) GetSetting(key string) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetSetting", key)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetSetting indicates an expected call of GetSetting.
+func (mr *RepositoryMockRecorder) GetSetting(key any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSetting", reflect.TypeOf((*Repository)(nil).GetSetting), key)
+}
+
 // GetUserByEmail mocks base method.
 func (m *Repository) GetUserByEmail(email string) (*auth.User, error) {
 	m.ctrl.T.Helper()
@@ -113,4 +156,18 @@ func (m *Repository) GetUserByEmail(email string) (*auth.User, error) {
 func (mr *RepositoryMockRecorder) GetUserByEmail(email any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserByEmail", reflect.TypeOf((*Repository)(nil).GetUserByEmail), email)
+}
+
+// SetSetting mocks base method.
+func (m *Repository) SetSetting(key, value string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetSetting", key, value)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetSetting indicates an expected call of SetSetting.
+func (mr *RepositoryMockRecorder) SetSetting(key, value any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetSetting", reflect.TypeOf((*Repository)(nil).SetSetting), key, value)
 }
