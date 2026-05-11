@@ -719,15 +719,6 @@ background-color: #F5ECDE !important;
     border-color: #fff;
 }
 
-#feedbar .move-to-folder select:hover {
-    border-color: #999;
-}
-
-#feedbar .move-to-folder select:focus {
-    outline: none;
-    border-color: #6C8A46;
-}
-
 #feedbar .rename-folder {
     cursor: pointer;
 }
@@ -736,14 +727,4 @@ background-color: #F5ECDE !important;
     border: 1px solid #ccc;
     padding: 2px 4px;
     font: inherit;
-}
-
-/* Add folder button colour */
-.btn.btn-blue {
-    background: #4a7eb5;
-    color: #fff;
-}
-
-.btn.btn-blue:hover {
-    background: #3d6c9c;
 }

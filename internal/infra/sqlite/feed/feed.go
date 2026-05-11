@@ -77,30 +77,34 @@ func (r *DB) DeleteFeed(id int) error {
 	return err
 }
 
-func (r *DB) MoveFeed(feedID int, folderID *int) error {
+func (r *DB) MoveFeed(feedID, userID int, folderID *int) error {
 	_, err := r.sqliteDB.ExecContext(context.Background(),
-		"UPDATE rss SET folder_id = ? WHERE id = ?", nullableInt(folderID), feedID)
+		"UPDATE rss SET folder_id = ? WHERE id = ? AND user_id = ?",
+		nullableInt(folderID), feedID, userID)
 	return err
 }
 
-func (r *DB) ReorderFeed(feedID int, position int) error {
+func (r *DB) ReorderFeed(feedID, userID int, position int) error {
 	_, err := r.sqliteDB.ExecContext(context.Background(),
-		"UPDATE rss SET position = ? WHERE id = ?", position, feedID)
+		"UPDATE rss SET position = ? WHERE id = ? AND user_id = ?",
+		position, feedID, userID)
 	return err
 }
 
-func (r *DB) BulkMoveFeeds(feedIDs []int, folderID *int) error {
+func (r *DB) BulkMoveFeeds(feedIDs []int, userID int, folderID *int) error {
 	if len(feedIDs) == 0 {
 		return nil
 	}
 	placeholders := make([]string, len(feedIDs))
-	args := make([]interface{}, 0, len(feedIDs)+1)
+	args := make([]interface{}, 0, len(feedIDs)+2)
 	args = append(args, nullableInt(folderID))
 	for i, id := range feedIDs {
 		placeholders[i] = "?"
 		args = append(args, id)
 	}
-	q := fmt.Sprintf("UPDATE rss SET folder_id = ? WHERE id IN (%s)", strings.Join(placeholders, ","))
+	args = append(args, userID)
+	q := fmt.Sprintf("UPDATE rss SET folder_id = ? WHERE id IN (%s) AND user_id = ?",
+		strings.Join(placeholders, ","))
 	_, err := r.sqliteDB.ExecContext(context.Background(), q, args...)
 	return err
 }

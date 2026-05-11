@@ -1,6 +1,6 @@
 import Sortable from 'sortablejs';
 import { feeds, folders, folderCollapsed, persistCollapsed } from '../state.js';
-import { move as moveFeed, list as listFeeds } from '../api/feeds.js';
+import { move as moveFeed, reorder as reorderFeed, list as listFeeds } from '../api/feeds.js';
 import { reorder as reorderFolder, list as listFolders } from '../api/folders.js';
 
 const POSITION_GAP = 1024;
@@ -25,6 +25,19 @@ async function refreshAll() {
   const [freshFeeds, freshFolders] = await Promise.all([listFeeds(), listFolders()]);
   feeds.value = freshFeeds || [];
   folders.value = freshFolders || [];
+}
+
+// Rewrite positions of every feed in `listEl` based on its current DOM order.
+// Sparse integers (POSITION_GAP apart) leave room for future insertions
+// without renumbering. Sent in parallel; failures still fall back to a
+// listFeeds refresh.
+async function persistListPositions(listEl) {
+  const items = Array.from(listEl.querySelectorAll(':scope > li[data-feed-id]'));
+  await Promise.all(items.map((li, idx) => {
+    const feedId = readFeedId(li);
+    if (feedId == null) return Promise.resolve();
+    return reorderFeed(feedId, (idx + 1) * POSITION_GAP);
+  }));
 }
 
 // Auto-expand a folder while a feed is being dragged over its header. Mimics
@@ -90,12 +103,22 @@ export function attachFeedDnd(root) {
         if (feedId == null) return;
         const fromFolderId = parseFolderId(evt.from);
         const toFolderId = parseFolderId(evt.to);
-        if (fromFolderId !== toFolderId) {
-          try {
+        const moved = fromFolderId !== toFolderId;
+        const reordered = evt.newIndex !== evt.oldIndex;
+        if (!moved && !reordered) return;
+        try {
+          if (moved) {
             await moveFeed(feedId, toFolderId);
-          } finally {
-            await refreshAll();
           }
+          // Renumber positions of the destination list so the new order
+          // sticks across reloads. When a feed crossed lists, also renumber
+          // the source list to keep things tidy.
+          await persistListPositions(evt.to);
+          if (moved && evt.from !== evt.to) {
+            await persistListPositions(evt.from);
+          }
+        } finally {
+          await refreshAll();
         }
       },
     }));

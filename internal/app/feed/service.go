@@ -106,13 +106,13 @@ func (s *ServiceImpl) DeleteFeed(command *DeleteFeedCommand) error {
 }
 
 func (s *ServiceImpl) MoveFeed(command *MoveFeedCommand) error {
-	return s.repository.MoveFeed(command.FeedID, command.FolderID)
+	return s.repository.MoveFeed(command.FeedID, command.UserID, command.FolderID)
 }
 
 func (s *ServiceImpl) ReorderFeed(command *ReorderFeedCommand) error {
-	return s.repository.ReorderFeed(command.FeedID, command.Position)
+	return s.repository.ReorderFeed(command.FeedID, command.UserID, command.Position)
 }
 
 func (s *ServiceImpl) BulkMoveFeeds(command *BulkMoveFeedsCommand) error {
-	return s.repository.BulkMoveFeeds(command.FeedIDs, command.FolderID)
+	return s.repository.BulkMoveFeeds(command.FeedIDs, command.UserID, command.FolderID)
 }

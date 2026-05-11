@@ -1,4 +1,4 @@
-import { useState } from 'preact/hooks';
+import { useRef, useState } from 'preact/hooks';
 import { html } from '../util/html.js';
 import { selection, feeds, folders, items } from '../state.js';
 import {
@@ -57,6 +57,9 @@ export function FeedBar() {
   const [confirmingFolderDelete, setConfirmingFolderDelete] = useState(false);
   const [renamingFolder, setRenamingFolder] = useState(false);
   const [pendingFolderName, setPendingFolderName] = useState('');
+  // Track whether Escape was used to dismiss the rename so the
+  // subsequent blur (fired during input unmount) doesn't commit.
+  const renameCancelledRef = useRef(false);
   const sel = selection.value;
   const folderList = folders.value || [];
   const title = titleFor(sel, feeds.value, folderList);
@@ -148,6 +151,10 @@ export function FeedBar() {
 
   async function commitFolderRename(e) {
     e && e.preventDefault();
+    if (renameCancelledRef.current) {
+      renameCancelledRef.current = false;
+      return;
+    }
     const trimmed = (pendingFolderName || '').trim();
     setRenamingFolder(false);
     if (!isFolderScope || !trimmed) return;
@@ -158,6 +165,12 @@ export function FeedBar() {
     } catch {
       // toast handled elsewhere
     }
+  }
+
+  function cancelFolderRename() {
+    renameCancelledRef.current = true;
+    setRenamingFolder(false);
+    setPendingFolderName(title);
   }
 
   async function confirmFolderDelete() {
@@ -190,7 +203,7 @@ export function FeedBar() {
               autofocus
               onInput=${(e) => setPendingFolderName(e.target.value)}
               onBlur=${commitFolderRename}
-              onKeyDown=${(e) => { if (e.key === 'Enter') commitFolderRename(e); else if (e.key === 'Escape') setRenamingFolder(false); }}
+              onKeyDown=${(e) => { if (e.key === 'Enter') commitFolderRename(e); else if (e.key === 'Escape') cancelFolderRename(); }}
             />`
           : title}
       </div>

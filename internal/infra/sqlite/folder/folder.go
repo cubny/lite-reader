@@ -45,9 +45,12 @@ func (r *DB) GetFolder(id int) (*folder.Folder, error) {
 }
 
 func (r *DB) ListFolders(userID int) ([]*folder.Folder, error) {
+	// The subquery is scoped to r.user_id = f.user_id so unread counts can
+	// never bleed across users even if a stray rss row points at a folder
+	// outside its owner. f.user_id is also constrained below.
 	query := "SELECT f.id, f.name, f.position, f.user_id, " +
 		"(SELECT COUNT(*) FROM item i JOIN rss r ON i.rss_id = r.id " +
-		"WHERE r.folder_id = f.id AND i.is_new = 1) AS unread_count " +
+		"WHERE r.folder_id = f.id AND r.user_id = f.user_id AND i.is_new = 1) AS unread_count " +
 		"FROM folder f WHERE f.user_id = ? ORDER BY f.position, f.id"
 	rows, err := r.sqliteDB.QueryContext(context.Background(), query, userID)
 	if err != nil {

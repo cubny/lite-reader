@@ -57,17 +57,17 @@ func (mr *RepositoryMockRecorder) AddFeed(arg0 any) *gomock.Call {
 }
 
 // BulkMoveFeeds mocks base method.
-func (m *Repository) BulkMoveFeeds(feedIDs []int, folderID *int) error {
+func (m *Repository) BulkMoveFeeds(feedIDs []int, userID int, folderID *int) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "BulkMoveFeeds", feedIDs, folderID)
+	ret := m.ctrl.Call(m, "BulkMoveFeeds", feedIDs, userID, folderID)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // BulkMoveFeeds indicates an expected call of BulkMoveFeeds.
-func (mr *RepositoryMockRecorder) BulkMoveFeeds(feedIDs, folderID any) *gomock.Call {
+func (mr *RepositoryMockRecorder) BulkMoveFeeds(feedIDs, userID, folderID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BulkMoveFeeds", reflect.TypeOf((*Repository)(nil).BulkMoveFeeds), feedIDs, folderID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BulkMoveFeeds", reflect.TypeOf((*Repository)(nil).BulkMoveFeeds), feedIDs, userID, folderID)
 }
 
 // DeleteFeed mocks base method.
@@ -115,29 +115,29 @@ func (mr *RepositoryMockRecorder) ListFeeds(userID any) *gomock.Call {
 }
 
 // MoveFeed mocks base method.
-func (m *Repository) MoveFeed(feedID int, folderID *int) error {
+func (m *Repository) MoveFeed(feedID, userID int, folderID *int) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "MoveFeed", feedID, folderID)
+	ret := m.ctrl.Call(m, "MoveFeed", feedID, userID, folderID)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // MoveFeed indicates an expected call of MoveFeed.
-func (mr *RepositoryMockRecorder) MoveFeed(feedID, folderID any) *gomock.Call {
+func (mr *RepositoryMockRecorder) MoveFeed(feedID, userID, folderID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MoveFeed", reflect.TypeOf((*Repository)(nil).MoveFeed), feedID, folderID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MoveFeed", reflect.TypeOf((*Repository)(nil).MoveFeed), feedID, userID, folderID)
 }
 
 // ReorderFeed mocks base method.
-func (m *Repository) ReorderFeed(feedID, position int) error {
+func (m *Repository) ReorderFeed(feedID, userID, position int) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ReorderFeed", feedID, position)
+	ret := m.ctrl.Call(m, "ReorderFeed", feedID, userID, position)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // ReorderFeed indicates an expected call of ReorderFeed.
-func (mr *RepositoryMockRecorder) ReorderFeed(feedID, position any) *gomock.Call {
+func (mr *RepositoryMockRecorder) ReorderFeed(feedID, userID, position any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReorderFeed", reflect.TypeOf((*Repository)(nil).ReorderFeed), feedID, position)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReorderFeed", reflect.TypeOf((*Repository)(nil).ReorderFeed), feedID, userID, position)
 }
