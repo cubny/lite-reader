@@ -2,7 +2,6 @@ package item
 
 import (
 	"context"
-
 	"database/sql"
 	"time"
 
@@ -40,6 +39,17 @@ func (r *DB) GetStarredItems() ([]*item.Item, error) {
 func (r *DB) GetFeedItems(feedID int) ([]*item.Item, error) {
 	query := "SELECT id, is_new, desc, link, rss_id, title, dir, starred, timestamp FROM item WHERE rss_id = ? ORDER BY timestamp DESC"
 	result, err := r.sqliteDB.QueryContext(context.Background(), query, feedID)
+	if err != nil {
+		return nil, err
+	}
+	return resultToItems(result)
+}
+
+func (r *DB) GetFolderItems(folderID, userID int) ([]*item.Item, error) {
+	query := "SELECT i.id, i.is_new, i.desc, i.link, i.rss_id, i.title, i.dir, i.starred, i.timestamp " +
+		"FROM item i JOIN rss r ON i.rss_id = r.id " +
+		"WHERE r.folder_id = ? AND r.user_id = ? ORDER BY i.timestamp DESC"
+	result, err := r.sqliteDB.QueryContext(context.Background(), query, folderID, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -152,6 +162,13 @@ func (r *DB) UnreadFeedItems(feedID int) error {
 		return err
 	}
 	return nil
+}
+
+func (r *DB) ReadFolderItems(folderID, userID int) error {
+	q := "UPDATE item SET is_new = 0 WHERE rss_id IN " +
+		"(SELECT id FROM rss WHERE folder_id = ? AND user_id = ?)"
+	_, err := r.sqliteDB.ExecContext(context.Background(), q, folderID, userID)
+	return err
 }
 
 func (r *DB) GetUnreadItemsCount() (int, error) {

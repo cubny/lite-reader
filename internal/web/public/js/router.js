@@ -17,6 +17,12 @@ export function parse(hash) {
   const feed = path.match(/^\/feed\/([^/]+)$/);
   if (feed) return { name: 'feed', params: { id: feed[1] } };
 
+  const folderItem = path.match(/^\/folder\/([^/]+)\/item\/([^/]+)$/);
+  if (folderItem) return { name: 'folder-item', params: { id: folderItem[1], itemId: folderItem[2] } };
+
+  const folder = path.match(/^\/folder\/([^/]+)$/);
+  if (folder) return { name: 'folder', params: { id: folder[1] } };
+
   return { name: 'unknown', params: { path } };
 }
 

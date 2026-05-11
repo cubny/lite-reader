@@ -12,8 +12,9 @@ package mocks
 import (
 	reflect "reflect"
 
-	auth "github.com/cubny/lite-reader/internal/app/auth"
 	gomock "go.uber.org/mock/gomock"
+
+	auth "github.com/cubny/lite-reader/internal/app/auth"
 )
 
 // AuthService is a mock of AuthService interface.

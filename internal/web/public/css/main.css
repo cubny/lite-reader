@@ -257,7 +257,9 @@ background-color: #F5ECDE !important;
 }
 
 #feedbar .markread,
-#feedbar .update
+#feedbar .markunread,
+#feedbar .update,
+#feedbar .rename-folder
 {
   float: left;
   overflow: hidden;
@@ -266,7 +268,7 @@ background-color: #F5ECDE !important;
   text-align: center;
   color: #FFF;
   cursor: pointer;
-  display: none; 
+  display: none;
   padding: 5px 8px;
   border-radius: 4px;
   background-color: rgba(0,0,0,0.3);
@@ -276,7 +278,9 @@ background-color: #F5ECDE !important;
   margin-left:0px;
 }
 #feedbar .markread:hover,
-#feedbar .update:hover {
+#feedbar .markunread:hover,
+#feedbar .update:hover,
+#feedbar .rename-folder:hover {
   background-color: #000;
 }
 
@@ -465,3 +469,281 @@ background-color: #F5ECDE !important;
     margin-bottom: 20px;
 }
 
+
+/* ===== Folders ===== */
+#feeds .folder-list,
+#feeds .root-feed-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* The folder-wrap <li> would otherwise inherit #feeds ul li's
+   padding:10px + overflow:auto, producing a scrollbar around each row.
+   Reset those — the inner .folder-header owns padding/borders. */
+#feeds .folder-list > li.folder-wrap {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-bottom: none;
+    overflow: visible;
+    cursor: default;
+    position: relative;
+}
+
+#feeds .folder-header {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 6px;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    user-select: none;
+}
+
+#feeds .folder-header.selected {
+    background: #e6e6e6;
+}
+
+#feeds .folder-header:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+#feeds .folder-chevron {
+    background: transparent;
+    border: 0;
+    padding: 2px 4px;
+    cursor: pointer;
+    color: #555;
+    width: 22px;
+    text-align: center;
+}
+
+#feeds .folder-chevron-spacer {
+    display: inline-block;
+    width: 22px;
+}
+
+#feeds .folder-chevron:hover {
+    color: #000;
+}
+
+#feeds .folder-icon {
+    color: #6C8A46;
+    cursor: grab;
+}
+
+#feeds .folder-title {
+    flex: 1;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#feeds .folder-count {
+    color: #888;
+    font-size: 0.85em;
+    min-width: 1.5em;
+    text-align: right;
+}
+
+#feeds .folder-children {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 18px;
+    min-height: 6px;
+}
+
+/* Fully hide collapsed children. The drag-and-drop helper auto-expands
+   a folder on dragenter (hover-expand pattern), so users can still drop
+   into a collapsed folder by hovering over its header. */
+#feeds .folder-children.collapsed {
+    display: none;
+}
+
+/* DnD visual cues */
+#feeds .feed-drag-ghost {
+    opacity: 0.4;
+    background: #cfe1b8;
+}
+
+#feeds .feed-drag {
+    opacity: 0.95;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Sidebar footer holding the New Folder action — kept understated so the
+   feed list stays the visual focus. */
+#feeds .sidebar-footer {
+    margin-top: 6px;
+    padding: 8px 10px;
+}
+
+#feeds .sidebar-footer #addfolder {
+    width: 100%;
+}
+
+/* Resting state — full-width dashed ghost button. */
+#feeds .sidebar-footer #addfolder .btn {
+    float: none;
+    width: 100%;
+    text-align: center;
+    padding: 6px 10px;
+    box-sizing: border-box;
+    background: transparent;
+    color: #6b6b6b;
+    border: 1px dashed #c5c5c5;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    margin: 0;
+    transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+
+#feeds .sidebar-footer #addfolder .btn:hover {
+    background: rgba(108, 138, 70, 0.08);
+    color: #4a6630;
+    border-color: #9bb47a;
+}
+
+#feeds .sidebar-footer #addfolder .btn i {
+    opacity: 0.7;
+}
+
+#feeds .sidebar-footer #addfolder .btn:hover i {
+    opacity: 1;
+}
+
+#feeds .sidebar-footer #addfolder .btn span:not(:empty) {
+    margin-left: 4px;
+}
+
+/* Open state — flex row with the input on the left and a small green
+   submit button on the right, mirroring the add-feed affordance. */
+#feeds .sidebar-footer #addfolder.open {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 6px;
+    align-items: stretch;
+}
+
+#feeds .sidebar-footer #addfolder.open input {
+    flex: 1;
+    margin: 0;
+    box-sizing: border-box;
+    padding: 6px 8px;
+    font: inherit;
+    font-size: 13px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    min-width: 0;
+}
+
+#feeds .sidebar-footer #addfolder.open input:focus {
+    outline: none;
+    border-color: #6C8A46;
+}
+
+#feeds .sidebar-footer #addfolder.open .btn {
+    width: auto;
+    flex: 0 0 auto;
+    padding: 6px 10px;
+    background: #6C8A46;
+    color: #fff;
+    border: 1px solid #6C8A46;
+    border-radius: 4px;
+}
+
+#feeds .sidebar-footer #addfolder.open .btn:hover {
+    background: #5a7438;
+    border-color: #5a7438;
+    color: #fff;
+}
+
+#feeds .sidebar-footer #addfolder.open .btn i {
+    opacity: 1;
+}
+
+/* Move-to-folder dropdown in toolbar — vertically centered with the title */
+#feedbar .move-to-folder {
+    float: left;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 25px 10px;
+    height: 26px;
+    color: #fff;
+    font-size: 12px;
+    line-height: 26px;
+}
+
+#feedbar .move-to-folder i {
+    font-size: 14px;
+    opacity: 0.85;
+}
+
+#feedbar .move-to-folder select {
+    font-family: inherit;
+    font-size: 12px;
+    padding: 0 22px 0 8px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 3px;
+    background: rgba(0, 0, 0, 0.25);
+    color: #fff;
+    line-height: 24px;
+    height: 26px;
+    max-width: 200px;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='%23fff' d='M0 0l5 6 5-6z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+}
+
+#feedbar .move-to-folder select option {
+    color: #000;
+    background: #fff;
+}
+
+#feedbar .move-to-folder select:hover {
+    border-color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+#feedbar .move-to-folder select:focus {
+    outline: none;
+    border-color: #fff;
+}
+
+#feedbar .move-to-folder select:hover {
+    border-color: #999;
+}
+
+#feedbar .move-to-folder select:focus {
+    outline: none;
+    border-color: #6C8A46;
+}
+
+#feedbar .rename-folder {
+    cursor: pointer;
+}
+
+#feedbar .folder-rename {
+    border: 1px solid #ccc;
+    padding: 2px 4px;
+    font: inherit;
+}
+
+/* Add folder button colour */
+.btn.btn-blue {
+    background: #4a7eb5;
+    color: #fff;
+}
+
+.btn.btn-blue:hover {
+    background: #3d6c9c;
+}

@@ -104,3 +104,15 @@ func (s *ServiceImpl) FetchItems(feedID int) ([]*item.Item, error) {
 func (s *ServiceImpl) DeleteFeed(command *DeleteFeedCommand) error {
 	return s.repository.DeleteFeed(command.FeedID)
 }
+
+func (s *ServiceImpl) MoveFeed(command *MoveFeedCommand) error {
+	return s.repository.MoveFeed(command.FeedID, command.FolderID)
+}
+
+func (s *ServiceImpl) ReorderFeed(command *ReorderFeedCommand) error {
+	return s.repository.ReorderFeed(command.FeedID, command.Position)
+}
+
+func (s *ServiceImpl) BulkMoveFeeds(command *BulkMoveFeedsCommand) error {
+	return s.repository.BulkMoveFeeds(command.FeedIDs, command.FolderID)
+}

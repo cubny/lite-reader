@@ -12,8 +12,9 @@ package mocks
 import (
 	reflect "reflect"
 
-	item "github.com/cubny/lite-reader/internal/app/item"
 	gomock "go.uber.org/mock/gomock"
+
+	item "github.com/cubny/lite-reader/internal/app/item"
 )
 
 // ItemService is a mock of ItemService interface.
@@ -67,6 +68,21 @@ func (m *ItemService) GetFeedItems(arg0 *item.GetFeedItemsCommand) ([]*item.Item
 func (mr *ItemServiceMockRecorder) GetFeedItems(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFeedItems", reflect.TypeOf((*ItemService)(nil).GetFeedItems), arg0)
+}
+
+// GetFolderItems mocks base method.
+func (m *ItemService) GetFolderItems(arg0 *item.GetFolderItemsCommand) ([]*item.Item, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetFolderItems", arg0)
+	ret0, _ := ret[0].([]*item.Item)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetFolderItems indicates an expected call of GetFolderItems.
+func (mr *ItemServiceMockRecorder) GetFolderItems(arg0 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFolderItems", reflect.TypeOf((*ItemService)(nil).GetFolderItems), arg0)
 }
 
 // GetStarredItems mocks base method.
@@ -141,6 +157,20 @@ func (m *ItemService) ReadFeedItems(arg0 *item.ReadFeedItemsCommand) error {
 func (mr *ItemServiceMockRecorder) ReadFeedItems(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadFeedItems", reflect.TypeOf((*ItemService)(nil).ReadFeedItems), arg0)
+}
+
+// ReadFolderItems mocks base method.
+func (m *ItemService) ReadFolderItems(arg0 *item.ReadFolderItemsCommand) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ReadFolderItems", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ReadFolderItems indicates an expected call of ReadFolderItems.
+func (mr *ItemServiceMockRecorder) ReadFolderItems(arg0 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadFolderItems", reflect.TypeOf((*ItemService)(nil).ReadFolderItems), arg0)
 }
 
 // UnreadFeedItems mocks base method.

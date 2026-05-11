@@ -12,4 +12,6 @@ type Feed struct {
 	UpdatedAt   time.Time
 	UnreadCount int
 	UserID      int
+	FolderID    *int
+	Position    int
 }

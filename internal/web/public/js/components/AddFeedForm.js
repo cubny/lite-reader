@@ -1,4 +1,4 @@
-import { useRef, useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import { html } from '../util/html.js';
 import { add as addFeed, fetchNew, list as listFeeds } from '../api/feeds.js';
 import { feeds } from '../state.js';
@@ -17,6 +17,21 @@ export function AddFeedForm() {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState('');
   const inputRef = useRef(null);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    function onDocMouseDown(e) {
+      const root = containerRef.current;
+      if (root && !root.contains(e.target)) {
+        setOpen(false);
+        setError('');
+        if (inputRef.current) inputRef.current.value = '';
+      }
+    }
+    document.addEventListener('mousedown', onDocMouseDown);
+    return () => document.removeEventListener('mousedown', onDocMouseDown);
+  }, [open]);
 
   function reveal(e) {
     e.preventDefault();
@@ -82,7 +97,7 @@ export function AddFeedForm() {
   const iconClass = pending ? 'icon-spin icon-spinner' : 'icon-plus';
 
   return html`
-    <div id="addfeed" data-testid="add-feed-form">
+    <div id="addfeed" ref=${containerRef} data-testid="add-feed-form">
       <a class=${btnClass} href="#" onClick=${onButtonClick} data-testid="add-feed-submit">
         <i class=${iconClass}></i> <span>${open ? '' : 'Feed'}</span>
       </a>

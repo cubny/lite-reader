@@ -15,6 +15,7 @@ func TestRouter_signup(t *testing.T) {
 	feedService := mocks.NewFeedService(ctrl)
 	itemService := mocks.NewItemService(ctrl)
 	authService := mocks.NewAuthService(ctrl)
+	folderService := mocks.NewFolderService(ctrl)
 
 	specs := []spec{
 		{
@@ -24,7 +25,7 @@ func TestRouter_signup(t *testing.T) {
 			ReqBody:        `{"email":"test@example.com","password":"password123"}`,
 			ExpectedStatus: http.StatusCreated,
 			ExpectedBody:   ``,
-			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService) {
+			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService, _ *mocks.FolderService) {
 				a.EXPECT().Signup(gomock.Any()).Return(nil)
 			},
 		},
@@ -35,7 +36,7 @@ func TestRouter_signup(t *testing.T) {
 			ReqBody:        `{"email":"test@example.com","password":"password123"`,
 			ExpectedStatus: http.StatusBadRequest,
 			ExpectedBody:   respInvalidReqBody,
-			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {},
+			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService, _ *mocks.FolderService) {},
 		},
 		{
 			Name:           "missing required fields",
@@ -44,7 +45,7 @@ func TestRouter_signup(t *testing.T) {
 			ReqBody:        `{"email":"","password":""}`,
 			ExpectedStatus: http.StatusBadRequest,
 			ExpectedBody:   respInvalidReqBody,
-			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {},
+			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService, _ *mocks.FolderService) {},
 		},
 		{
 			Name:           tcServiceErr,
@@ -53,7 +54,7 @@ func TestRouter_signup(t *testing.T) {
 			ReqBody:        `{"email":"test@example.com","password":"password123"}`,
 			ExpectedStatus: http.StatusBadRequest,
 			ExpectedBody:   `{"error":{"code":400,"details":"Bad Request - user already exists"}}`,
-			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService) {
+			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService, _ *mocks.FolderService) {
 				a.EXPECT().Signup(gomock.Any()).Return(fmt.Errorf("user already exists"))
 			},
 		},
@@ -64,11 +65,11 @@ func TestRouter_signup(t *testing.T) {
 			ReqBody:        ``,
 			ExpectedStatus: http.StatusBadRequest,
 			ExpectedBody:   respInvalidReqBody,
-			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {},
+			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService, _ *mocks.FolderService) {},
 		},
 	}
 
 	for _, s := range specs {
-		t.Run(s.Name, s.execHTTPTestCases(itemService, feedService, authService))
+		t.Run(s.Name, s.execHTTPTestCases(itemService, feedService, authService, folderService))
 	}
 }

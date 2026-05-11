@@ -3,10 +3,12 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
 
+	"github.com/cubny/lite-reader/internal/app/feed"
 	"github.com/cubny/lite-reader/internal/app/item"
 	"github.com/cubny/lite-reader/internal/infra/http/api/cxutil"
 )
@@ -147,6 +149,69 @@ func (h *Router) unreadFeedItems(w http.ResponseWriter, r *http.Request, p httpr
 		return
 	}
 
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func (h *Router) patchFeed(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	feedIDStr := p.ByName("id")
+	feedID, err := strconv.Atoi(feedIDStr)
+	if err != nil {
+		_ = InvalidParams(w, "invalid feed id")
+		return
+	}
+	userID := r.Context().Value(cxutil.UserIDKey).(int)
+
+	request := &UpdateFeedRequest{}
+	if err := json.NewDecoder(r.Body).Decode(request); err != nil {
+		_ = BadRequest(w, "cannot decode request body")
+		return
+	}
+
+	if request.FolderID != nil || request.UnsetFolder {
+		var fid *int
+		if !request.UnsetFolder {
+			fid = request.FolderID
+		}
+		if err := h.feedService.MoveFeed(&feed.MoveFeedCommand{
+			FeedID: feedID, UserID: userID, FolderID: fid,
+		}); err != nil {
+			log.WithError(err).Error("patchFeed: move")
+			_ = InternalError(w, "cannot move feed")
+			return
+		}
+	}
+
+	if request.Position != nil {
+		if err := h.feedService.ReorderFeed(&feed.ReorderFeedCommand{
+			FeedID: feedID, UserID: userID, Position: *request.Position,
+		}); err != nil {
+			log.WithError(err).Error("patchFeed: reorder")
+			_ = InternalError(w, "cannot reorder feed")
+			return
+		}
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func (h *Router) bulkMoveFeeds(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	userID := r.Context().Value(cxutil.UserIDKey).(int)
+	request := &BulkMoveFeedsRequest{}
+	if err := json.NewDecoder(r.Body).Decode(request); err != nil {
+		_ = BadRequest(w, "cannot decode request body")
+		return
+	}
+	var fid *int
+	if !request.UnsetFolder {
+		fid = request.FolderID
+	}
+	if err := h.feedService.BulkMoveFeeds(&feed.BulkMoveFeedsCommand{
+		FeedIDs: request.FeedIDs, UserID: userID, FolderID: fid,
+	}); err != nil {
+		log.WithError(err).Error("bulkMoveFeeds: service")
+		_ = InternalError(w, "cannot move feeds")
+		return
+	}
 	w.WriteHeader(http.StatusNoContent)
 }
 

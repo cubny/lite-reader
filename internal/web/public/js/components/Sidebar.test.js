@@ -12,6 +12,18 @@ vi.mock('../api/items.js', () => ({
   unreadCount: () => Promise.resolve({ count: 0 }),
   starredCount: () => Promise.resolve({ count: 0 }),
 }));
+vi.mock('../api/folders.js', () => ({
+  list: () => Promise.resolve([]),
+  create: vi.fn(),
+  rename: vi.fn(),
+  remove: vi.fn(),
+  reorder: vi.fn(),
+  items: vi.fn(),
+  markRead: vi.fn(),
+}));
+vi.mock('../dnd/feedDnd.js', () => ({
+  attachFeedDnd: () => () => {},
+}));
 
 const { Sidebar } = await import('./Sidebar.js');
 const { feeds } = await import('../state.js');

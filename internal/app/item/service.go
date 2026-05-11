@@ -20,6 +20,10 @@ func (s *ServiceImpl) GetFeedItems(command *GetFeedItemsCommand) ([]*Item, error
 	return s.repository.GetFeedItems(command.FeedID)
 }
 
+func (s *ServiceImpl) GetFolderItems(command *GetFolderItemsCommand) ([]*Item, error) {
+	return s.repository.GetFolderItems(command.FolderID, command.UserID)
+}
+
 func (s *ServiceImpl) UpsertItems(command *UpsertItemsCommand) error {
 	return s.repository.UpsertItems(command.FeedID, command.Items)
 }
@@ -34,6 +38,10 @@ func (s *ServiceImpl) ReadFeedItems(command *ReadFeedItemsCommand) error {
 
 func (s *ServiceImpl) UnreadFeedItems(command *UnreadFeedItemsCommand) error {
 	return s.repository.UnreadFeedItems(command.FeedID)
+}
+
+func (s *ServiceImpl) ReadFolderItems(command *ReadFolderItemsCommand) error {
+	return s.repository.ReadFolderItems(command.FolderID, command.UserID)
 }
 
 func (s *ServiceImpl) GetStarredItemsCount() (int, error) {

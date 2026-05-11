@@ -27,3 +27,19 @@ export function markUnread(id) {
 export function items(id) {
   return request('GET', `/feeds/${id}/items`);
 }
+
+export function move(id, folderId) {
+  const body = folderId == null ? { unset_folder: true } : { folder_id: folderId };
+  return request('PATCH', `/feeds/${id}`, { body });
+}
+
+export function reorder(id, position) {
+  return request('PATCH', `/feeds/${id}`, { body: { position } });
+}
+
+export function bulkMove(feedIds, folderId) {
+  const body = folderId == null
+    ? { feed_ids: feedIds, unset_folder: true }
+    : { feed_ids: feedIds, folder_id: folderId };
+  return request('POST', '/feeds-bulk-move', { body });
+}
