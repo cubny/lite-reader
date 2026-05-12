@@ -3,6 +3,7 @@ import { html } from '../util/html.js';
 import { selection, items, currentItem } from '../state.js';
 import { unread as unreadItems, starred as starredItems } from '../api/items.js';
 import { items as feedItems } from '../api/feeds.js';
+import { items as folderItems } from '../api/folders.js';
 import { ItemRow } from './ItemRow.js';
 
 async function loadFor(sel) {
@@ -10,6 +11,7 @@ async function loadFor(sel) {
   if (sel.kind === 'unread') return (await unreadItems()) || [];
   if (sel.kind === 'starred') return (await starredItems()) || [];
   if (sel.kind === 'feed') return (await feedItems(sel.id)) || [];
+  if (sel.kind === 'folder') return (await folderItems(sel.id)) || [];
   return [];
 }
 

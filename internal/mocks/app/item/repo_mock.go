@@ -12,8 +12,9 @@ package mocks
 import (
 	reflect "reflect"
 
-	item "github.com/cubny/lite-reader/internal/app/item"
 	gomock "go.uber.org/mock/gomock"
+
+	item "github.com/cubny/lite-reader/internal/app/item"
 )
 
 // Repository is a mock of Repository interface.
@@ -67,6 +68,21 @@ func (m *Repository) GetFeedItems(feedID int) ([]*item.Item, error) {
 func (mr *RepositoryMockRecorder) GetFeedItems(feedID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFeedItems", reflect.TypeOf((*Repository)(nil).GetFeedItems), feedID)
+}
+
+// GetFolderItems mocks base method.
+func (m *Repository) GetFolderItems(folderID, userID int) ([]*item.Item, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetFolderItems", folderID, userID)
+	ret0, _ := ret[0].([]*item.Item)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetFolderItems indicates an expected call of GetFolderItems.
+func (mr *RepositoryMockRecorder) GetFolderItems(folderID, userID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFolderItems", reflect.TypeOf((*Repository)(nil).GetFolderItems), folderID, userID)
 }
 
 // GetStarredItems mocks base method.
@@ -141,6 +157,20 @@ func (m *Repository) ReadFeedItems(feedID int) error {
 func (mr *RepositoryMockRecorder) ReadFeedItems(feedID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadFeedItems", reflect.TypeOf((*Repository)(nil).ReadFeedItems), feedID)
+}
+
+// ReadFolderItems mocks base method.
+func (m *Repository) ReadFolderItems(folderID, userID int) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ReadFolderItems", folderID, userID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ReadFolderItems indicates an expected call of ReadFolderItems.
+func (mr *RepositoryMockRecorder) ReadFolderItems(folderID, userID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadFolderItems", reflect.TypeOf((*Repository)(nil).ReadFolderItems), folderID, userID)
 }
 
 // UnreadFeedItems mocks base method.

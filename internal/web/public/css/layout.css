@@ -99,6 +99,17 @@ html, body {
   display: block;
 }
 
+#feedbar.has-feed #actions .move-to-folder {
+  display: flex;
+}
+
+#feedbar.has-folder #actions .action.markread,
+#feedbar.has-folder #actions .action.rename-folder,
+#feedbar.has-folder #actions .action.remove,
+#feedbar.has-folder #actions .action.logout {
+  display: block;
+}
+
 /*
  * Item row inline expansion. Legacy starts .desc and .dir hidden, plus
  * .item-link hidden until the row is .selected.

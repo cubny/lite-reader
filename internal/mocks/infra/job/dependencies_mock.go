@@ -12,10 +12,11 @@ package mocks
 import (
 	reflect "reflect"
 
+	gomock "go.uber.org/mock/gomock"
+
 	auth "github.com/cubny/lite-reader/internal/app/auth"
 	feed "github.com/cubny/lite-reader/internal/app/feed"
 	item "github.com/cubny/lite-reader/internal/app/item"
-	gomock "go.uber.org/mock/gomock"
 )
 
 // FeedService is a mock of FeedService interface.

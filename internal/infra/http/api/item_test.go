@@ -17,6 +17,7 @@ func TestRouter_updateItem(t *testing.T) {
 	feedService := mocks.NewFeedService(ctrl)
 	itemService := mocks.NewItemService(ctrl)
 	authService := mocks.NewAuthService(ctrl)
+	folderService := mocks.NewFolderService(ctrl)
 	authService.EXPECT().GetSession(gomock.Any()).Return(&auth.Session{}, nil).AnyTimes()
 
 	specs := []spec{
@@ -27,7 +28,7 @@ func TestRouter_updateItem(t *testing.T) {
 			ExpectedBody:   ``,
 			Method:         http.MethodPut,
 			Target:         item1Path,
-			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {
+			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService, _ *mocks.FolderService) {
 				i.EXPECT().UpdateItem(gomock.Any()).Return(nil)
 			},
 		},
@@ -38,11 +39,11 @@ func TestRouter_updateItem(t *testing.T) {
 			ExpectedBody:   `{"error":{"code":422, "details":"Invalid params - invalid item id"}}`,
 			Method:         http.MethodPut,
 			Target:         "/items/a",
-			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {},
+			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService, _ *mocks.FolderService) {},
 		},
 		{
 			Name:           "bad request",
-			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {},
+			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService, _ *mocks.FolderService) {},
 			ReqBody:        ``,
 			ExpectedStatus: http.StatusBadRequest,
 			ExpectedBody:   `{"error":{"code":400, "details":"Bad Request - cannot decode request body"}}`,
@@ -56,14 +57,14 @@ func TestRouter_updateItem(t *testing.T) {
 			ExpectedBody:   `{"error":{"code":500, "details":"Internal error - cannot update item"}}`,
 			Method:         http.MethodPut,
 			Target:         item1Path,
-			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {
+			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService, _ *mocks.FolderService) {
 				i.EXPECT().UpdateItem(gomock.Any()).Return(assert.AnError)
 			},
 		},
 	}
 
 	for _, s := range specs {
-		t.Run(s.Name, s.execHTTPTestCases(itemService, feedService, authService))
+		t.Run(s.Name, s.execHTTPTestCases(itemService, feedService, authService, folderService))
 	}
 }
 
@@ -72,6 +73,7 @@ func TestRouter_getStarredItems(t *testing.T) {
 	feedService := mocks.NewFeedService(ctrl)
 	itemService := mocks.NewItemService(ctrl)
 	authService := mocks.NewAuthService(ctrl)
+	folderService := mocks.NewFolderService(ctrl)
 	authService.EXPECT().GetSession(gomock.Any()).Return(&auth.Session{}, nil).AnyTimes()
 
 	specs := []spec{
@@ -81,7 +83,7 @@ func TestRouter_getStarredItems(t *testing.T) {
 			ExpectedBody:   `[]`,
 			Method:         http.MethodGet,
 			Target:         "/items/starred",
-			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {
+			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService, _ *mocks.FolderService) {
 				i.EXPECT().GetStarredItems().Return([]*item.Item{}, nil)
 			},
 		},
@@ -91,14 +93,14 @@ func TestRouter_getStarredItems(t *testing.T) {
 			ExpectedBody:   respInternalUnread,
 			Method:         http.MethodGet,
 			Target:         "/items/starred",
-			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {
+			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService, _ *mocks.FolderService) {
 				i.EXPECT().GetStarredItems().Return(nil, assert.AnError)
 			},
 		},
 	}
 
 	for _, s := range specs {
-		t.Run(s.Name, s.execHTTPTestCases(itemService, feedService, authService))
+		t.Run(s.Name, s.execHTTPTestCases(itemService, feedService, authService, folderService))
 	}
 }
 
@@ -107,6 +109,7 @@ func TestRouter_getUnreadItems(t *testing.T) {
 	feedService := mocks.NewFeedService(ctrl)
 	itemService := mocks.NewItemService(ctrl)
 	authService := mocks.NewAuthService(ctrl)
+	folderService := mocks.NewFolderService(ctrl)
 	authService.EXPECT().GetSession(gomock.Any()).Return(&auth.Session{}, nil).AnyTimes()
 
 	specs := []spec{
@@ -116,7 +119,7 @@ func TestRouter_getUnreadItems(t *testing.T) {
 			ExpectedBody:   `[]`,
 			Method:         http.MethodGet,
 			Target:         "/items/unread",
-			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {
+			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService, _ *mocks.FolderService) {
 				i.EXPECT().GetUnreadItems().Return([]*item.Item{}, nil)
 			},
 		},
@@ -126,14 +129,14 @@ func TestRouter_getUnreadItems(t *testing.T) {
 			ExpectedBody:   respInternalUnread,
 			Method:         http.MethodGet,
 			Target:         "/items/unread",
-			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {
+			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService, _ *mocks.FolderService) {
 				i.EXPECT().GetUnreadItems().Return(nil, assert.AnError)
 			},
 		},
 	}
 
 	for _, s := range specs {
-		t.Run(s.Name, s.execHTTPTestCases(itemService, feedService, authService))
+		t.Run(s.Name, s.execHTTPTestCases(itemService, feedService, authService, folderService))
 	}
 }
 
@@ -142,6 +145,7 @@ func TestRouter_getUnreadItemsCount(t *testing.T) {
 	feedService := mocks.NewFeedService(ctrl)
 	itemService := mocks.NewItemService(ctrl)
 	authService := mocks.NewAuthService(ctrl)
+	folderService := mocks.NewFolderService(ctrl)
 	authService.EXPECT().GetSession(gomock.Any()).Return(&auth.Session{}, nil).AnyTimes()
 
 	specs := []spec{
@@ -151,7 +155,7 @@ func TestRouter_getUnreadItemsCount(t *testing.T) {
 			ExpectedBody:   `{"count":0}`,
 			Method:         http.MethodGet,
 			Target:         "/items/unread/count",
-			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {
+			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService, _ *mocks.FolderService) {
 				i.EXPECT().GetUnreadItemsCount().Return(0, nil)
 			},
 		},
@@ -161,14 +165,14 @@ func TestRouter_getUnreadItemsCount(t *testing.T) {
 			ExpectedBody:   respInternalUnread,
 			Method:         http.MethodGet,
 			Target:         "/items/unread/count",
-			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {
+			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService, _ *mocks.FolderService) {
 				i.EXPECT().GetUnreadItemsCount().Return(0, assert.AnError)
 			},
 		},
 	}
 
 	for _, s := range specs {
-		t.Run(s.Name, s.execHTTPTestCases(itemService, feedService, authService))
+		t.Run(s.Name, s.execHTTPTestCases(itemService, feedService, authService, folderService))
 	}
 }
 
@@ -177,6 +181,7 @@ func TestRouter_getStarredItemsCount(t *testing.T) {
 	feedService := mocks.NewFeedService(ctrl)
 	itemService := mocks.NewItemService(ctrl)
 	authService := mocks.NewAuthService(ctrl)
+	folderService := mocks.NewFolderService(ctrl)
 	authService.EXPECT().GetSession(gomock.Any()).Return(&auth.Session{}, nil).AnyTimes()
 
 	specs := []spec{
@@ -186,7 +191,7 @@ func TestRouter_getStarredItemsCount(t *testing.T) {
 			ExpectedBody:   `{"count":0}`,
 			Method:         http.MethodGet,
 			Target:         "/items/starred/count",
-			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {
+			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService, _ *mocks.FolderService) {
 				i.EXPECT().GetStarredItemsCount().Return(0, nil)
 			},
 		},
@@ -196,13 +201,13 @@ func TestRouter_getStarredItemsCount(t *testing.T) {
 			ExpectedBody:   respInternalUnread,
 			Method:         http.MethodGet,
 			Target:         "/items/starred/count",
-			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {
+			MockFn: func(i *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService, _ *mocks.FolderService) {
 				i.EXPECT().GetStarredItemsCount().Return(0, assert.AnError)
 			},
 		},
 	}
 
 	for _, s := range specs {
-		t.Run(s.Name, s.execHTTPTestCases(itemService, feedService, authService))
+		t.Run(s.Name, s.execHTTPTestCases(itemService, feedService, authService, folderService))
 	}
 }

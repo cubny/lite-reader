@@ -4,6 +4,11 @@ type GetFeedItemsCommand struct {
 	FeedID int
 }
 
+type GetFolderItemsCommand struct {
+	FolderID int
+	UserID   int
+}
+
 type UpsertItemsCommand struct {
 	FeedID int
 	Items  []*Item
@@ -21,6 +26,11 @@ type FetchFeedNewItemsCommand struct {
 
 type ReadFeedItemsCommand struct {
 	FeedID int
+}
+
+type ReadFolderItemsCommand struct {
+	FolderID int
+	UserID   int
 }
 
 type UnreadFeedItemsCommand struct {

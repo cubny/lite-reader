@@ -27,6 +27,13 @@ vi.mock('../api/items.js', () => ({
 vi.mock('../api/auth.js', () => ({
   logout: (...a) => logoutMock(...a),
 }));
+vi.mock('../api/folders.js', () => ({
+  list: () => Promise.resolve([]),
+  items: () => Promise.resolve([]),
+  markRead: () => Promise.resolve(null),
+  remove: () => Promise.resolve(null),
+  rename: () => Promise.resolve(null),
+}));
 
 const { FeedBar } = await import('./FeedBar.js');
 const { selection, feeds, items } = await import('../state.js');

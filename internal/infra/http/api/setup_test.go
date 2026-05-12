@@ -28,6 +28,7 @@ func TestRouter_setup(t *testing.T) {
 	feedService := mocks.NewFeedService(ctrl)
 	itemService := mocks.NewItemService(ctrl)
 	authService := mocks.NewAuthService(ctrl)
+	folderService := mocks.NewFolderService(ctrl)
 
 	specs := []spec{
 		{
@@ -36,7 +37,7 @@ func TestRouter_setup(t *testing.T) {
 			Target:         setupPath,
 			ReqBody:        `{"email":"admin@example.com","password":"password123","confirm_password":"password123","allow_signup":false}`,
 			ExpectedStatus: http.StatusCreated,
-			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService) {
+			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService, _ *mocks.FolderService) {
 				a.EXPECT().Setup(gomock.Any()).Return(nil)
 			},
 		},
@@ -47,7 +48,7 @@ func TestRouter_setup(t *testing.T) {
 			ReqBody:        `{"email":"admin@example.com","password":"password123","confirm_password":"password123"}`,
 			ExpectedStatus: http.StatusBadRequest,
 			ExpectedBody:   `{"error":{"code":400,"details":"Bad Request - setup has already been completed"}}`,
-			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService) {
+			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService, _ *mocks.FolderService) {
 				a.EXPECT().Setup(gomock.Any()).Return(errors.New("setup has already been completed"))
 			},
 		},
@@ -58,7 +59,7 @@ func TestRouter_setup(t *testing.T) {
 			ReqBody:        `{invalid`,
 			ExpectedStatus: http.StatusBadRequest,
 			ExpectedBody:   respInvalidReqBody,
-			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {},
+			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService, _ *mocks.FolderService) {},
 		},
 		{
 			Name:           "validation error - passwords don't match",
@@ -67,7 +68,7 @@ func TestRouter_setup(t *testing.T) {
 			ReqBody:        `{"email":"admin@example.com","password":"password123","confirm_password":"different"}`,
 			ExpectedStatus: http.StatusBadRequest,
 			ExpectedBody:   `{"error":{"code":400,"details":"Bad Request - password and confirm password do not match"}}`,
-			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {},
+			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService, _ *mocks.FolderService) {},
 		},
 		{
 			Name:           "validation error - missing fields",
@@ -75,12 +76,12 @@ func TestRouter_setup(t *testing.T) {
 			Target:         setupPath,
 			ReqBody:        `{"email":"","password":"","confirm_password":""}`,
 			ExpectedStatus: http.StatusBadRequest,
-			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService) {},
+			MockFn:         func(_ *mocks.ItemService, _ *mocks.FeedService, _ *mocks.AuthService, _ *mocks.FolderService) {},
 		},
 	}
 
 	for _, s := range specs {
-		t.Run(s.Name, s.execHTTPTestCases(itemService, feedService, authService))
+		t.Run(s.Name, s.execHTTPTestCases(itemService, feedService, authService, folderService))
 	}
 }
 
@@ -89,6 +90,7 @@ func TestRouter_needsSetup(t *testing.T) {
 	feedService := mocks.NewFeedService(ctrl)
 	itemService := mocks.NewItemService(ctrl)
 	authService := mocks.NewAuthService(ctrl)
+	folderService := mocks.NewFolderService(ctrl)
 
 	specs := []spec{
 		{
@@ -97,7 +99,7 @@ func TestRouter_needsSetup(t *testing.T) {
 			Target:         setupStatusPath,
 			ExpectedStatus: http.StatusOK,
 			ExpectedBody:   `{"allow_signup":false,"needs_setup":true}`,
-			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService) {
+			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService, _ *mocks.FolderService) {
 				a.EXPECT().NeedsSetup().Return(true, nil)
 				a.EXPECT().IsSignupAllowed().Return(false)
 			},
@@ -108,7 +110,7 @@ func TestRouter_needsSetup(t *testing.T) {
 			Target:         setupStatusPath,
 			ExpectedStatus: http.StatusOK,
 			ExpectedBody:   `{"allow_signup":true,"needs_setup":false}`,
-			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService) {
+			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService, _ *mocks.FolderService) {
 				a.EXPECT().NeedsSetup().Return(false, nil)
 				a.EXPECT().IsSignupAllowed().Return(true)
 			},
@@ -118,14 +120,14 @@ func TestRouter_needsSetup(t *testing.T) {
 			Method:         http.MethodGet,
 			Target:         setupStatusPath,
 			ExpectedStatus: http.StatusInternalServerError,
-			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService) {
+			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService, _ *mocks.FolderService) {
 				a.EXPECT().NeedsSetup().Return(false, errors.New("db error"))
 			},
 		},
 	}
 
 	for _, s := range specs {
-		t.Run(s.Name, s.execHTTPTestCases(itemService, feedService, authService))
+		t.Run(s.Name, s.execHTTPTestCases(itemService, feedService, authService, folderService))
 	}
 }
 
@@ -134,6 +136,7 @@ func TestRouter_getSettings(t *testing.T) {
 	feedService := mocks.NewFeedService(ctrl)
 	itemService := mocks.NewItemService(ctrl)
 	authService := mocks.NewAuthService(ctrl)
+	folderService := mocks.NewFolderService(ctrl)
 
 	specs := []spec{
 		{
@@ -142,7 +145,7 @@ func TestRouter_getSettings(t *testing.T) {
 			Target:         settingsPath,
 			ExpectedStatus: http.StatusOK,
 			ExpectedBody:   respAllowSignupTrue,
-			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService) {
+			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService, _ *mocks.FolderService) {
 				a.EXPECT().GetSession("test").Return(testSession(), nil)
 				a.EXPECT().IsSignupAllowed().Return(true)
 			},
@@ -150,7 +153,7 @@ func TestRouter_getSettings(t *testing.T) {
 	}
 
 	for _, s := range specs {
-		t.Run(s.Name, s.execHTTPTestCases(itemService, feedService, authService))
+		t.Run(s.Name, s.execHTTPTestCases(itemService, feedService, authService, folderService))
 	}
 }
 
@@ -159,6 +162,7 @@ func TestRouter_updateSettings(t *testing.T) {
 	feedService := mocks.NewFeedService(ctrl)
 	itemService := mocks.NewItemService(ctrl)
 	authService := mocks.NewAuthService(ctrl)
+	folderService := mocks.NewFolderService(ctrl)
 
 	specs := []spec{
 		{
@@ -168,7 +172,7 @@ func TestRouter_updateSettings(t *testing.T) {
 			ReqBody:        respAllowSignupTrue,
 			ExpectedStatus: http.StatusOK,
 			ExpectedBody:   respAllowSignupTrue,
-			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService) {
+			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService, _ *mocks.FolderService) {
 				a.EXPECT().GetSession("test").Return(testSession(), nil)
 				a.EXPECT().SetAllowSignup(true).Return(nil)
 			},
@@ -180,7 +184,7 @@ func TestRouter_updateSettings(t *testing.T) {
 			ReqBody:        respAllowSignupFalse,
 			ExpectedStatus: http.StatusOK,
 			ExpectedBody:   respAllowSignupFalse,
-			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService) {
+			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService, _ *mocks.FolderService) {
 				a.EXPECT().GetSession("test").Return(testSession(), nil)
 				a.EXPECT().SetAllowSignup(false).Return(nil)
 			},
@@ -191,7 +195,7 @@ func TestRouter_updateSettings(t *testing.T) {
 			Target:         settingsPath,
 			ReqBody:        respAllowSignupTrue,
 			ExpectedStatus: http.StatusInternalServerError,
-			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService) {
+			MockFn: func(_ *mocks.ItemService, _ *mocks.FeedService, a *mocks.AuthService, _ *mocks.FolderService) {
 				a.EXPECT().GetSession("test").Return(testSession(), nil)
 				a.EXPECT().SetAllowSignup(true).Return(errors.New("db error"))
 			},
@@ -199,6 +203,6 @@ func TestRouter_updateSettings(t *testing.T) {
 	}
 
 	for _, s := range specs {
-		t.Run(s.Name, s.execHTTPTestCases(itemService, feedService, authService))
+		t.Run(s.Name, s.execHTTPTestCases(itemService, feedService, authService, folderService))
 	}
 }

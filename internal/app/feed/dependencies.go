@@ -7,6 +7,9 @@ type Repository interface {
 	GetFeed(id int) (*Feed, error)
 	ListFeeds(userID int) ([]*Feed, error)
 	DeleteFeed(id int) error
+	MoveFeed(feedID, userID int, folderID *int) error
+	ReorderFeed(feedID, userID, position int) error
+	BulkMoveFeeds(feedIDs []int, userID int, folderID *int) error
 }
 
 type Parser interface {

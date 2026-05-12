@@ -25,14 +25,19 @@ type spec struct {
 	Method         string
 	Target         string
 	AuthToken      string
-	MockFn         func(i *mocks.ItemService, f *mocks.FeedService, a *mocks.AuthService)
+	MockFn         func(i *mocks.ItemService, f *mocks.FeedService, a *mocks.AuthService, fo *mocks.FolderService)
 }
 
-func (s *spec) execHTTPTestCases(i *mocks.ItemService, f *mocks.FeedService, a *mocks.AuthService) func(t *testing.T) {
+func (s *spec) execHTTPTestCases(
+	i *mocks.ItemService,
+	f *mocks.FeedService,
+	a *mocks.AuthService,
+	fo *mocks.FolderService,
+) func(t *testing.T) {
 	return func(t *testing.T) {
-		s.MockFn(i, f, a)
+		s.MockFn(i, f, a, fo)
 		s.AuthToken = "test"
-		handler, err := api.New(i, f, a, emptyStaticFS())
+		handler, err := api.New(i, f, a, fo, emptyStaticFS())
 		assert.Nil(t, err)
 		s.HandlerTest(t, handler)
 	}

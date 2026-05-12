@@ -13,6 +13,7 @@ import (
 
 	"github.com/cubny/lite-reader/internal/app/auth"
 	"github.com/cubny/lite-reader/internal/app/feed"
+	"github.com/cubny/lite-reader/internal/app/folder"
 	"github.com/cubny/lite-reader/internal/app/item"
 	"github.com/cubny/lite-reader/internal/infra/http/api/cxutil"
 )
@@ -37,6 +38,8 @@ type AddFeedResponse struct {
 	UpdatedAt   time.Time `json:"updated_at"`
 	Lang        string    `json:"lang"`
 	UnreadCount int       `json:"unread_count"`
+	FolderID    *int      `json:"folder_id"`
+	Position    int       `json:"position"`
 }
 
 type ListFeedResponse []*AddFeedResponse
@@ -59,7 +62,78 @@ func toAddFeedResponse(f *feed.Feed) *AddFeedResponse {
 		UpdatedAt:   f.UpdatedAt,
 		Lang:        f.Lang,
 		UnreadCount: f.UnreadCount,
+		FolderID:    f.FolderID,
+		Position:    f.Position,
 	}
+}
+
+type FolderResponse struct {
+	ID          int    `json:"id"`
+	Name        string `json:"name"`
+	Position    int    `json:"position"`
+	UnreadCount int    `json:"unread_count"`
+}
+
+type ListFolderResponse []*FolderResponse
+
+func toFolderResponse(f *folder.Folder) *FolderResponse {
+	return &FolderResponse{
+		ID:          f.ID,
+		Name:        f.Name,
+		Position:    f.Position,
+		UnreadCount: f.UnreadCount,
+	}
+}
+
+func toListFolderResponse(folders []*folder.Folder) *ListFolderResponse {
+	resp := make(ListFolderResponse, 0)
+	for _, f := range folders {
+		resp = append(resp, toFolderResponse(f))
+	}
+	return &resp
+}
+
+type AddFolderRequest struct {
+	Name string `json:"name"`
+}
+
+type UpdateFolderRequest struct {
+	Name     *string `json:"name,omitempty"`
+	Position *int    `json:"position,omitempty"`
+}
+
+func toAddFolderCommand(w http.ResponseWriter, r *http.Request, _ httprouter.Params) (*folder.AddFolderCommand, error) {
+	request := &AddFolderRequest{}
+	if err := json.NewDecoder(r.Body).Decode(request); err != nil {
+		_ = BadRequest(w, "cannot decode request body")
+		return nil, err
+	}
+	return &folder.AddFolderCommand{
+		Name:   request.Name,
+		UserID: r.Context().Value(cxutil.UserIDKey).(int),
+	}, nil
+}
+
+func folderIDAndUser(w http.ResponseWriter, r *http.Request, p httprouter.Params) (folderID, userID int, ok bool) {
+	idStr := p.ByName("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		_ = InvalidParams(w, "invalid folder id")
+		return 0, 0, false
+	}
+	return id, r.Context().Value(cxutil.UserIDKey).(int), true
+}
+
+type UpdateFeedRequest struct {
+	FolderID    *int `json:"folder_id,omitempty"`
+	UnsetFolder bool `json:"unset_folder,omitempty"`
+	Position    *int `json:"position,omitempty"`
+}
+
+type BulkMoveFeedsRequest struct {
+	FeedIDs     []int `json:"feed_ids"`
+	FolderID    *int  `json:"folder_id,omitempty"`
+	UnsetFolder bool  `json:"unset_folder,omitempty"`
 }
 
 type ItemResponse struct {

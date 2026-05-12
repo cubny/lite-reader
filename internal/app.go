@@ -22,12 +22,14 @@ import (
 
 	"github.com/cubny/lite-reader/internal/app/auth"
 	"github.com/cubny/lite-reader/internal/app/feed"
+	"github.com/cubny/lite-reader/internal/app/folder"
 	"github.com/cubny/lite-reader/internal/app/item"
 	"github.com/cubny/lite-reader/internal/config"
 	"github.com/cubny/lite-reader/internal/infra/http/api"
 	"github.com/cubny/lite-reader/internal/infra/job"
 	authRepo "github.com/cubny/lite-reader/internal/infra/sqlite/auth"
 	feedRepo "github.com/cubny/lite-reader/internal/infra/sqlite/feed"
+	folderRepo "github.com/cubny/lite-reader/internal/infra/sqlite/folder"
 	itemRepo "github.com/cubny/lite-reader/internal/infra/sqlite/item"
 	"github.com/cubny/lite-reader/internal/web"
 )
@@ -36,17 +38,19 @@ type App struct {
 	ctx context.Context
 	cfg *config.Config
 
-	feedService    api.FeedService
-	jobFeedService job.FeedService
-	itemService    api.ItemService
-	jobItemService job.ItemService
-	authService    api.AuthService
-	apiServer      *http.Server
-	sqlClient      *sql.DB
-	feedRepository feed.Repository
-	itemRepository item.Repository
-	authRepository auth.Repository
-	scheduler      *job.Scheduler
+	feedService      api.FeedService
+	jobFeedService   job.FeedService
+	itemService      api.ItemService
+	jobItemService   job.ItemService
+	authService      api.AuthService
+	folderService    api.FolderService
+	apiServer        *http.Server
+	sqlClient        *sql.DB
+	feedRepository   feed.Repository
+	itemRepository   item.Repository
+	authRepository   auth.Repository
+	folderRepository folder.Repository
+	scheduler        *job.Scheduler
 
 	err error
 }
@@ -125,6 +129,7 @@ func (a *App) initRepo() *App {
 		a.feedRepository = feedRepo.NewDB(a.sqlClient)
 		a.itemRepository = itemRepo.NewDB(a.sqlClient)
 		a.authRepository = authRepo.NewDB(a.sqlClient)
+		a.folderRepository = folderRepo.NewDB(a.sqlClient)
 		return a
 	})
 }
@@ -173,6 +178,8 @@ func (a *App) initServices() *App {
 		itemService := item.NewService(a.itemRepository)
 		a.itemService = itemService
 		a.jobItemService = itemService
+
+		a.folderService = folder.NewService(a.folderRepository)
 		return a
 	})
 }
@@ -202,7 +209,7 @@ func (a *App) stopAPIServer() *App {
 
 func (a *App) initAPIServer() *App {
 	return a.ifNoError(func() *App {
-		handler, err := api.New(a.itemService, a.feedService, a.authService, staticFS())
+		handler, err := api.New(a.itemService, a.feedService, a.authService, a.folderService, staticFS())
 		if err != nil {
 			a.err = fmt.Errorf("cannot create handler, %w", err)
 			return a

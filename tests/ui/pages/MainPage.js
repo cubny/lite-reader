@@ -138,4 +138,51 @@ export class MainPage {
     const item = this.items.nth(itemIndex);
     return await item.getByTestId('item-row-title').textContent();
   }
+
+  // ----- Folders -----
+
+  async addFolder(name) {
+    await this.page.getByTestId('add-folder-submit').click();
+    const input = this.page.getByTestId('add-folder-name');
+    await input.fill(name);
+    await input.press('Enter');
+    await this.page.waitForSelector(`[data-testid="folder-row"]`, { timeout: 5000 });
+  }
+
+  folderRowByName(name) {
+    return this.page.getByTestId('folder-row').filter({
+      has: this.page.getByTestId('folder-title').filter({ hasText: name }),
+    });
+  }
+
+  async clickFolder(name) {
+    await this.folderRowByName(name).getByTestId('folder-title').first().click();
+    await this.page.waitForTimeout(300);
+  }
+
+  async toggleFolder(name) {
+    await this.folderRowByName(name).getByTestId('folder-toggle').first().click();
+    await this.page.waitForTimeout(150);
+  }
+
+  async moveSelectedFeedToFolder(folderId) {
+    const select = this.page.getByTestId('toolbar-move-select');
+    await select.waitFor({ state: 'visible', timeout: 3000 });
+    await select.selectOption(String(folderId == null ? '' : folderId));
+    await this.page.waitForTimeout(400);
+  }
+
+  async getFolderUnreadCount(name) {
+    const row = this.folderRowByName(name);
+    const count = row.getByTestId('folder-unread-count').first();
+    if (!(await count.isVisible().catch(() => false))) return 0;
+    const t = (await count.textContent()) || '0';
+    return parseInt(t, 10) || 0;
+  }
+
+  async getFolderId(name) {
+    const row = this.folderRowByName(name).first();
+    const id = await row.getAttribute('data-folder-id');
+    return id ? Number(id) : null;
+  }
 }
