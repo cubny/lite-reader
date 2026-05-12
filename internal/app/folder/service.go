@@ -9,10 +9,10 @@ import (
 const maxNameLen = 100
 
 var (
-	ErrEmptyName     = errors.New("folder name cannot be empty")
-	ErrNameTooLong   = errors.New("folder name is too long")
-	ErrNotFound      = errors.New("folder not found")
-	ErrNotOwner      = errors.New("folder does not belong to user")
+	ErrEmptyName   = errors.New("folder name cannot be empty")
+	ErrNameTooLong = errors.New("folder name is too long")
+	ErrNotFound    = errors.New("folder not found")
+	ErrNotOwner    = errors.New("folder does not belong to user")
 )
 
 type ServiceImpl struct {

@@ -114,21 +114,20 @@ func toAddFolderCommand(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 	}, nil
 }
 
-func folderIDAndUser(w http.ResponseWriter, r *http.Request, p httprouter.Params) (int, int, bool) {
+func folderIDAndUser(w http.ResponseWriter, r *http.Request, p httprouter.Params) (folderID, userID int, ok bool) {
 	idStr := p.ByName("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		_ = InvalidParams(w, "invalid folder id")
 		return 0, 0, false
 	}
-	userID := r.Context().Value(cxutil.UserIDKey).(int)
-	return id, userID, true
+	return id, r.Context().Value(cxutil.UserIDKey).(int), true
 }
 
 type UpdateFeedRequest struct {
-	FolderID    *int  `json:"folder_id,omitempty"`
-	UnsetFolder bool  `json:"unset_folder,omitempty"`
-	Position    *int  `json:"position,omitempty"`
+	FolderID    *int `json:"folder_id,omitempty"`
+	UnsetFolder bool `json:"unset_folder,omitempty"`
+	Position    *int `json:"position,omitempty"`
 }
 
 type BulkMoveFeedsRequest struct {

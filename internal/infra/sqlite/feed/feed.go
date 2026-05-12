@@ -84,7 +84,7 @@ func (r *DB) MoveFeed(feedID, userID int, folderID *int) error {
 	return err
 }
 
-func (r *DB) ReorderFeed(feedID, userID int, position int) error {
+func (r *DB) ReorderFeed(feedID, userID, position int) error {
 	_, err := r.sqliteDB.ExecContext(context.Background(),
 		"UPDATE rss SET position = ? WHERE id = ? AND user_id = ?",
 		position, feedID, userID)
@@ -96,20 +96,22 @@ func (r *DB) BulkMoveFeeds(feedIDs []int, userID int, folderID *int) error {
 		return nil
 	}
 	placeholders := make([]string, len(feedIDs))
-	args := make([]interface{}, 0, len(feedIDs)+2)
+	args := make([]any, 0, len(feedIDs)+2)
 	args = append(args, nullableInt(folderID))
 	for i, id := range feedIDs {
 		placeholders[i] = "?"
 		args = append(args, id)
 	}
 	args = append(args, userID)
+	// #nosec G201 -- placeholders is a fixed-length "?" list built from
+	// len(feedIDs); values are bound via ExecContext args.
 	q := fmt.Sprintf("UPDATE rss SET folder_id = ? WHERE id IN (%s) AND user_id = ?",
 		strings.Join(placeholders, ","))
 	_, err := r.sqliteDB.ExecContext(context.Background(), q, args...)
 	return err
 }
 
-func nullableInt(p *int) interface{} {
+func nullableInt(p *int) any {
 	if p == nil {
 		return nil
 	}

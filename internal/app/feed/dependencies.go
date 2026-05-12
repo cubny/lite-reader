@@ -8,7 +8,7 @@ type Repository interface {
 	ListFeeds(userID int) ([]*Feed, error)
 	DeleteFeed(id int) error
 	MoveFeed(feedID, userID int, folderID *int) error
-	ReorderFeed(feedID, userID int, position int) error
+	ReorderFeed(feedID, userID, position int) error
 	BulkMoveFeeds(feedIDs []int, userID int, folderID *int) error
 }
 

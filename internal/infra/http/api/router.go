@@ -87,7 +87,13 @@ type Router struct {
 
 // New creates a new handler to handle http requests. staticFS serves the
 // frontend assets at "/" via the NotFound fallback.
-func New(itemService ItemService, feedService FeedService, authService AuthService, folderService FolderService, staticFS fs.FS) (*Router, error) {
+func New(
+	itemService ItemService,
+	feedService FeedService,
+	authService AuthService,
+	folderService FolderService,
+	staticFS fs.FS,
+) (*Router, error) {
 	if staticFS == nil {
 		return nil, errors.New("staticFS must not be nil")
 	}

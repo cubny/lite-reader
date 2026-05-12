@@ -28,7 +28,12 @@ type spec struct {
 	MockFn         func(i *mocks.ItemService, f *mocks.FeedService, a *mocks.AuthService, fo *mocks.FolderService)
 }
 
-func (s *spec) execHTTPTestCases(i *mocks.ItemService, f *mocks.FeedService, a *mocks.AuthService, fo *mocks.FolderService) func(t *testing.T) {
+func (s *spec) execHTTPTestCases(
+	i *mocks.ItemService,
+	f *mocks.FeedService,
+	a *mocks.AuthService,
+	fo *mocks.FolderService,
+) func(t *testing.T) {
 	return func(t *testing.T) {
 		s.MockFn(i, f, a, fo)
 		s.AuthToken = "test"

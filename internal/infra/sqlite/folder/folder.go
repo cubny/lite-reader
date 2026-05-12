@@ -78,7 +78,7 @@ func (r *DB) RenameFolder(id int, name string) error {
 	return err
 }
 
-func (r *DB) ReorderFolder(id int, position int) error {
+func (r *DB) ReorderFolder(id, position int) error {
 	_, err := r.sqliteDB.ExecContext(context.Background(),
 		"UPDATE folder SET position = ? WHERE id = ?", position, id)
 	return err

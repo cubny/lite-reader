@@ -5,6 +5,6 @@ type Repository interface {
 	GetFolder(id int) (*Folder, error)
 	ListFolders(userID int) ([]*Folder, error)
 	RenameFolder(id int, name string) error
-	ReorderFolder(id int, position int) error
+	ReorderFolder(id, position int) error
 	DeleteFolder(id int) error
 }
