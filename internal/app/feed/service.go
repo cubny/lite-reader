@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"time"
+	"unicode"
 
 	"github.com/mmcdole/gofeed"
 
@@ -86,13 +87,22 @@ func (s *ServiceImpl) FetchItems(feedID int) ([]*item.Item, error) {
 	items := make([]*item.Item, 0)
 	for _, t := range parsedFeed.Items {
 		log.Printf("Processing item %s", t.Title)
-		timestamp := t.PublishedParsed
+		var timestamp time.Time
+		if t.PublishedParsed != nil {
+			timestamp = *t.PublishedParsed
+		} else if t.UpdatedParsed != nil {
+			timestamp = *t.UpdatedParsed
+		}
+		desc := t.Content
+		if desc == "" {
+			desc = t.Description
+		}
 		items = append(items, &item.Item{
 			Title:     t.Title,
-			Desc:      t.Content,
+			Desc:      desc,
 			Link:      t.Link,
-			Timestamp: *timestamp,
-			Dir:       t.Description,
+			Timestamp: timestamp,
+			Dir:       detectTextDir(t.Title + " " + desc),
 			IsNew:     true,
 			Starred:   false,
 		})
@@ -115,4 +125,15 @@ func (s *ServiceImpl) ReorderFeed(command *ReorderFeedCommand) error {
 
 func (s *ServiceImpl) BulkMoveFeeds(command *BulkMoveFeedsCommand) error {
 	return s.repository.BulkMoveFeeds(command.FeedIDs, command.UserID, command.FolderID)
+}
+
+// detectTextDir returns "rtl" if the text contains RTL characters, otherwise "ltr".
+func detectTextDir(text string) string {
+	for _, r := range text {
+		if unicode.Is(unicode.Arabic, r) || unicode.Is(unicode.Hebrew, r) ||
+			unicode.Is(unicode.Thaana, r) || unicode.Is(unicode.Syriac, r) {
+			return "rtl"
+		}
+	}
+	return "ltr"
 }
