@@ -102,16 +102,39 @@ test.describe('Item Management', () => {
 
   test('should display item details', async ({ page }) => {
     const mainPage = new MainPage(page);
-    
+
     // Click on feed to view items
     await mainPage.clickFeed('Tech News');
     await mainPage.waitForItems(1, 10000);
-    
+
     // Get first item title
     const itemTitle = await mainPage.getItemTitle(0);
-    
+
     // Title should not be empty
     expect(itemTitle).toBeTruthy();
     expect(itemTitle.length).toBeGreaterThan(0);
+  });
+
+  test('should not render direction token as visible text in item description', async ({ page }) => {
+    const mainPage = new MainPage(page);
+
+    await mainPage.clickFeed('Tech News');
+    await mainPage.waitForItems(1, 10000);
+
+    // Expand the first item to reveal its description
+    await mainPage.items.first().getByTestId('item-row-title').click();
+    await page.waitForTimeout(500);
+
+    const descDiv = mainPage.items.first().locator('.desc');
+
+    // The description container must carry a dir attribute (ltr or rtl)
+    const dirAttr = await descDiv.getAttribute('dir');
+    expect(['ltr', 'rtl']).toContain(dirAttr);
+
+    // The raw direction token must not appear as visible text anywhere in the item
+    const itemText = await mainPage.items.first().textContent();
+    expect(itemText).not.toMatch(/^\s*(ltr|rtl)\s*$/m);
+    expect(itemText).not.toContain('\nltr\n');
+    expect(itemText).not.toContain('\nrtl\n');
   });
 });
