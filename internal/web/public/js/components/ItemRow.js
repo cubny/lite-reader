@@ -92,8 +92,7 @@ export function ItemRow({ item, isSelected, onToggle, onChanged }) {
         `}
         <span class="timestamp" data-testid="item-row-time">${ts}</span>
       </div>
-      <div class="dir">${dir}</div>
-      <div class="desc" dangerouslySetInnerHTML=${{ __html: item.desc || '' }}></div>
+      <div class="desc" dir=${dir} dangerouslySetInnerHTML=${{ __html: item.desc || '' }}></div>
     </li>
   `;
 }

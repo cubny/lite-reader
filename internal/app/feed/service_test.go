@@ -58,8 +58,10 @@ func TestServiceImpl_AddFeed(t *testing.T) {
 			want: &feed.Feed{
 				ID:          1,
 				Title:       exampleFeedTitle,
-				Link:        exampleFeedLinkTypo,
+				Description: exampleFeedDesc,
+				Link:        exampleFeedLink,
 				URL:         exampleFeedURL,
+				Lang:        exampleFeedLang,
 				UnreadCount: 0,
 			},
 			wantErr: false,
@@ -139,7 +141,10 @@ func TestServiceImpl_AddFeed(t *testing.T) {
 				t.Errorf("ServiceImpl.AddFeed() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			assert.ObjectsAreEqualValues(got, tt.want)
+			if got != nil {
+				got.UpdatedAt = time.Time{}
+			}
+			assert.Equal(t, tt.want, got)
 		})
 	}
 
@@ -249,7 +254,7 @@ func TestServiceImpl_FetchItems(t *testing.T) {
 					Desc:      exampleFeedDesc,
 					Link:      "https://example.com/item",
 					Timestamp: samplePublishedParsed,
-					Dir:       exampleFeedDesc,
+					Dir:       "ltr",
 					IsNew:     true,
 					Starred:   false,
 				},
@@ -258,7 +263,7 @@ func TestServiceImpl_FetchItems(t *testing.T) {
 					Desc:      exampleFeedDesc2,
 					Link:      "https://example.com/item2",
 					Timestamp: samplePublishedParsed,
-					Dir:       exampleFeedDesc2,
+					Dir:       "ltr",
 					IsNew:     true,
 					Starred:   false,
 				},
@@ -319,7 +324,7 @@ func TestServiceImpl_FetchItems(t *testing.T) {
 				t.Errorf("ServiceImpl.FetchItems() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			assert.ObjectsAreEqualValues(got, tt.want)
+			assert.Equal(t, tt.want, got)
 		})
 	}
 }
