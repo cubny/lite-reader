@@ -53,4 +53,27 @@ test.describe('Article Scraper', () => {
     // 15s for the synchronous fetch + readability extraction.
     await expect(mainPage.itemBody(0)).toContainText(fullArticleSentence, { timeout: 15000 });
   });
+
+  test('shows inline error when the source 404s and keeps the row usable', async ({ page }) => {
+    const mainPage = new MainPage(page);
+
+    await mainPage.clickFeed('Tech News');
+    await mainPage.waitForItems(1, 10000);
+
+    // Item index 1 ("The Future of Cloud Computing") links to
+    // /articles/cloud-future — that fixture does not exist on the mock
+    // server, so the scraper will get a 404.
+    const item = mainPage.items.nth(1);
+    await item.getByTestId('item-row-title').click();
+    await expect(mainPage.itemBody(1)).toBeVisible();
+
+    // Capture the body text before scraping so we can assert it stays put.
+    const bodyBefore = (await mainPage.itemBody(1).textContent()) || '';
+
+    await mainPage.loadFullArticle(1);
+
+    // Inline error surfaces, body still shows the original feed desc.
+    await expect(item.getByTestId('item-row-scrape-error')).toBeVisible({ timeout: 15000 });
+    expect((await mainPage.itemBody(1).textContent()) || '').toBe(bodyBefore);
+  });
 });

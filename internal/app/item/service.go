@@ -3,6 +3,7 @@ package item
 import (
 	"context"
 	"errors"
+	"fmt"
 	"time"
 )
 
@@ -85,10 +86,13 @@ func (s *ServiceImpl) ScrapeItem(ctx context.Context, command *ScrapeItemCommand
 
 	now := s.now()
 	content, scrapeErr := s.scraper.Scrape(ctx, existing.Link)
-	status := "ok"
+	status := ScrapeStatusOK
 	if scrapeErr != nil {
-		status = "error"
+		status = ScrapeStatusError
 		content = ""
+		// Wrap with the URL and item ID so the handler's log line carries
+		// enough context for an operator to triage which page failed.
+		scrapeErr = fmt.Errorf("item %d url=%q: %w", existing.ID, existing.Link, scrapeErr)
 	}
 	if err := s.repository.UpdateItemContent(existing.ID, content, status, now); err != nil {
 		return nil, err
