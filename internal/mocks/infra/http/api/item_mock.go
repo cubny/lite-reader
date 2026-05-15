@@ -10,6 +10,7 @@
 package mocks
 
 import (
+	context "context"
 	reflect "reflect"
 
 	gomock "go.uber.org/mock/gomock"
@@ -171,6 +172,21 @@ func (m *ItemService) ReadFolderItems(arg0 *item.ReadFolderItemsCommand) error {
 func (mr *ItemServiceMockRecorder) ReadFolderItems(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadFolderItems", reflect.TypeOf((*ItemService)(nil).ReadFolderItems), arg0)
+}
+
+// ScrapeItem mocks base method.
+func (m *ItemService) ScrapeItem(ctx context.Context, command *item.ScrapeItemCommand) (*item.Item, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ScrapeItem", ctx, command)
+	ret0, _ := ret[0].(*item.Item)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ScrapeItem indicates an expected call of ScrapeItem.
+func (mr *ItemServiceMockRecorder) ScrapeItem(ctx, command any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ScrapeItem", reflect.TypeOf((*ItemService)(nil).ScrapeItem), ctx, command)
 }
 
 // UnreadFeedItems mocks base method.

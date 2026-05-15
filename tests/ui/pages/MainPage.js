@@ -139,6 +139,15 @@ export class MainPage {
     return await item.getByTestId('item-row-title').textContent();
   }
 
+  async loadFullArticle(itemIndex = 0) {
+    const item = this.items.nth(itemIndex);
+    await item.getByTestId('item-row-load-full').click();
+  }
+
+  itemBody(itemIndex = 0) {
+    return this.items.nth(itemIndex).getByTestId('item-row-body');
+  }
+
   // ----- Folders -----
 
   async addFolder(name) {

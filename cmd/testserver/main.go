@@ -16,6 +16,10 @@ func main() {
 	log.SetLevel(log.DebugLevel)
 	log.SetFormatter(&log.JSONFormatter{})
 
+	// The mock article server runs on localhost:3001, so the scraper would
+	// otherwise refuse it as a loopback destination. Test-only escape hatch.
+	_ = os.Setenv("LITEREADER_SCRAPE_ALLOW_LOOPBACK", "1")
+
 	ctx, cancel := context.WithCancel(context.Background())
 
 	// Start mock feed server on port 3001

@@ -40,3 +40,8 @@ type UnreadFeedItemsCommand struct {
 type DeleteFeedItemsCommand struct {
 	FeedID int
 }
+
+type ScrapeItemCommand struct {
+	ID     int
+	UserID int
+}

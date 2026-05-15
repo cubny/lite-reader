@@ -137,14 +137,31 @@ type BulkMoveFeedsRequest struct {
 }
 
 type ItemResponse struct {
-	ID        int       `json:"id"`
-	Title     string    `json:"title"`
-	Dir       string    `json:"dir"`
-	Desc      string    `json:"desc"`
-	Link      string    `json:"link"`
-	IsNew     bool      `json:"is_new"`
-	Starred   bool      `json:"starred"`
-	Timestamp time.Time `json:"timestamp"`
+	ID           int       `json:"id"`
+	Title        string    `json:"title"`
+	Dir          string    `json:"dir"`
+	Desc         string    `json:"desc"`
+	Link         string    `json:"link"`
+	IsNew        bool      `json:"is_new"`
+	Starred      bool      `json:"starred"`
+	Timestamp    time.Time `json:"timestamp"`
+	FullContent  string    `json:"full_content,omitempty"`
+	ScrapeStatus string    `json:"scrape_status,omitempty"`
+}
+
+func toItemResponse(i *item.Item) *ItemResponse {
+	return &ItemResponse{
+		ID:           i.ID,
+		Title:        i.Title,
+		Dir:          i.Dir,
+		Desc:         i.Desc,
+		Link:         i.Link,
+		IsNew:        i.IsNew,
+		Starred:      i.Starred,
+		Timestamp:    i.Timestamp,
+		FullContent:  i.FullContent,
+		ScrapeStatus: i.ScrapeStatus,
+	}
 }
 
 type GetUnreadItemsResponse struct {
@@ -154,16 +171,7 @@ type GetUnreadItemsResponse struct {
 func toGetItemsResponse(items []*item.Item) []*ItemResponse {
 	resp := make([]*ItemResponse, 0)
 	for _, i := range items {
-		resp = append(resp, &ItemResponse{
-			ID:        i.ID,
-			Title:     i.Title,
-			Dir:       i.Dir,
-			Desc:      i.Desc,
-			Link:      i.Link,
-			IsNew:     i.IsNew,
-			Starred:   i.Starred,
-			Timestamp: i.Timestamp,
-		})
+		resp = append(resp, toItemResponse(i))
 	}
 	return resp
 }
@@ -224,6 +232,19 @@ func toUpdateItemCommand(w http.ResponseWriter, r *http.Request, p httprouter.Pa
 		ID:      itemID,
 		Starred: request.Starred,
 		IsNew:   request.IsNew,
+	}, nil
+}
+
+func toScrapeItemCommand(w http.ResponseWriter, r *http.Request, p httprouter.Params) (*item.ScrapeItemCommand, error) {
+	itemIDString := p.ByName("id")
+	itemID, err := strconv.Atoi(itemIDString)
+	if err != nil {
+		_ = InvalidParams(w, "invalid item id")
+		return nil, err
+	}
+	return &item.ScrapeItemCommand{
+		ID:     itemID,
+		UserID: r.Context().Value(cxutil.UserIDKey).(int),
 	}, nil
 }
 

@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Understanding Modern Web Development — Full Article</title>
+</head>
+<body>
+  <header><nav><a href="/">Home</a> | <a href="/about">About</a></nav></header>
+  <article>
+    <h1>Understanding Modern Web Development</h1>
+    <p>The full article body covers progressive web apps, server-side rendering, and the trade-offs of API-first design in production systems serving millions of requests every day. The discussion goes far beyond the short summary that ships in the RSS feed teaser.</p>
+    <p>Server-side rendering is back, and for good reason: hydration costs have become measurable, search engines reward fast time-to-first-byte, and the operational story for SSR has matured considerably. Frameworks like Next, Remix, and SvelteKit converge on similar primitives.</p>
+    <p>Edge runtimes change the latency calculus for read-heavy workloads. When you can run handlers within fifty milliseconds of the user, you stop paying for round trips to a single origin region. That is the real unlock, not the marketing copy about "global functions".</p>
+    <p>None of this matters without operational maturity. Observability, load shedding, structured logging, and replay-friendly idempotency keys remain the unsexy work that determines whether a system survives its first real traffic spike.</p>
+    <script>console.log('not in extracted output');</script>
+  </article>
+  <footer>Footer junk that should be stripped</footer>
+</body>
+</html>

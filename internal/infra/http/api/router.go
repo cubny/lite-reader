@@ -17,6 +17,7 @@
 package api
 
 import (
+	"context"
 	"errors"
 	"io/fs"
 	"net/http"
@@ -63,6 +64,7 @@ type ItemService interface {
 	GetStarredItemsCount() (int, error)
 	GetUnreadItemsCount() (int, error)
 	DeleteFeedItems(*item.DeleteFeedItemsCommand) error
+	ScrapeItem(ctx context.Context, command *item.ScrapeItemCommand) (*item.Item, error)
 }
 
 type AuthService interface {
@@ -128,6 +130,7 @@ func New(
 	router.POST("/folders/:id/read", chain.Wrap(h.readFolderItems))
 
 	router.PUT("/items/:id", chain.Wrap(h.updateItem))
+	router.POST("/items/:id/scrape", chain.Wrap(h.scrapeItem))
 	router.GET("/items/unread", chain.Wrap(h.getUnreadItems))
 	router.GET("/items/starred", chain.Wrap(h.getStarredItems))
 	router.GET("/items/unread/count", chain.Wrap(h.getUnreadItemsCount))

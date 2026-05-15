@@ -19,3 +19,7 @@ export function starredCount() {
 export function update(id, patch) {
   return request('PUT', `/items/${id}`, { body: patch });
 }
+
+export function scrape(id) {
+  return request('POST', `/items/${id}/scrape`);
+}

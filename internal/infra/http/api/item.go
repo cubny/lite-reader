@@ -2,11 +2,37 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
 	log "github.com/sirupsen/logrus"
+
+	"github.com/cubny/lite-reader/internal/app/item"
 )
+
+func (h *Router) scrapeItem(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	command, err := toScrapeItemCommand(w, r, p)
+	if err != nil {
+		return
+	}
+
+	updated, err := h.itemService.ScrapeItem(r.Context(), command)
+	if err != nil {
+		if errors.Is(err, item.ErrItemNotFound) {
+			_ = NotFound(w, "item not found")
+			return
+		}
+		log.WithError(err).Errorf("scrapeItem: %s", err)
+		_ = InternalError(w, "cannot scrape item")
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(toItemResponse(updated)); err != nil {
+		log.WithError(err).Errorf("scrapeItem: encoder %s", err)
+	}
+}
 
 func (h *Router) updateItem(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	command, err := toUpdateItemCommand(w, r, p)

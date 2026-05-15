@@ -1,11 +1,26 @@
 package item
 
+import (
+	"context"
+	"errors"
+	"fmt"
+	"time"
+)
+
+var ErrItemNotFound = errors.New("item not found")
+
 type ServiceImpl struct {
 	repository Repository
+	scraper    Scraper
+	now        func() time.Time
 }
 
-func NewService(repository Repository) *ServiceImpl {
-	return &ServiceImpl{repository: repository}
+func NewService(repository Repository, scraper Scraper) *ServiceImpl {
+	return &ServiceImpl{
+		repository: repository,
+		scraper:    scraper,
+		now:        time.Now,
+	}
 }
 
 func (s *ServiceImpl) GetUnreadItems() ([]*Item, error) {
@@ -54,4 +69,40 @@ func (s *ServiceImpl) GetUnreadItemsCount() (int, error) {
 
 func (s *ServiceImpl) DeleteFeedItems(command *DeleteFeedItemsCommand) error {
 	return s.repository.DeleteFeedItems(command.FeedID)
+}
+
+// ScrapeItem fetches the full article body for the given item, persists it,
+// and returns the refreshed item. Errors from the scraper are recorded as
+// scrape_status='error' on the row before being returned so the UI can
+// distinguish "never tried" from "tried and failed".
+func (s *ServiceImpl) ScrapeItem(ctx context.Context, command *ScrapeItemCommand) (*Item, error) {
+	existing, err := s.repository.GetItemForUser(command.ID, command.UserID)
+	if err != nil {
+		return nil, err
+	}
+	if existing == nil {
+		return nil, ErrItemNotFound
+	}
+
+	now := s.now()
+	content, scrapeErr := s.scraper.Scrape(ctx, existing.Link)
+	status := ScrapeStatusOK
+	if scrapeErr != nil {
+		status = ScrapeStatusError
+		content = ""
+		// Wrap with the URL and item ID so the handler's log line carries
+		// enough context for an operator to triage which page failed.
+		scrapeErr = fmt.Errorf("item %d url=%q: %w", existing.ID, existing.Link, scrapeErr)
+	}
+	if err := s.repository.UpdateItemContent(existing.ID, content, status, now); err != nil {
+		return nil, err
+	}
+	if scrapeErr != nil {
+		return nil, scrapeErr
+	}
+
+	existing.FullContent = content
+	existing.ScrapeStatus = status
+	existing.ScrapedAt = &now
+	return existing, nil
 }

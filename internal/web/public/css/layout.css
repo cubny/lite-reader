@@ -124,13 +124,7 @@ html, body {
   display: block;
 }
 
-#items li .title a.item-action.item-link {
-  display: none;
-}
-
-#items li.selected .title a.item-action.item-link {
-  display: inline-block;
-}
+/* selected-only display + chip styling lives in main.css (.item-link, .item-load-full) */
 
 /*
  * Star and read toggles must be clickable always (legacy behaviour).
