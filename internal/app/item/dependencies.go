@@ -1,5 +1,10 @@
 package item
 
+import (
+	"context"
+	"time"
+)
+
 type Repository interface {
 	UpsertItems(feedID int, items []*Item) error
 	GetUnreadItems() ([]*Item, error)
@@ -13,4 +18,10 @@ type Repository interface {
 	GetStarredItemsCount() (int, error)
 	GetUnreadItemsCount() (int, error)
 	DeleteFeedItems(feedID int) error
+	GetItemForUser(id, userID int) (*Item, error)
+	UpdateItemContent(id int, fullContent, status string, scrapedAt time.Time) error
+}
+
+type Scraper interface {
+	Scrape(ctx context.Context, url string) (string, error)
 }

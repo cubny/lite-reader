@@ -11,7 +11,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-//go:embed fixtures/*.xml
+//go:embed fixtures/*.xml fixtures/articles/*.html
 var feedFixtures embed.FS
 
 // MockFeedServer serves mock RSS and Atom feeds for testing
@@ -39,6 +39,8 @@ func (m *MockFeedServer) Start() error {
 
 	// Serve feed fixtures
 	mux.HandleFunc("/feeds/", m.serveFeed)
+	// Serve mock article HTML pages for scraper tests
+	mux.HandleFunc("/articles/", m.serveArticle)
 
 	m.server = &http.Server{
 		Addr:              fmt.Sprintf(":%d", m.port),
@@ -67,6 +69,27 @@ func (m *MockFeedServer) Stop() error {
 // GetURL returns the base URL for a feed
 func (m *MockFeedServer) GetURL(feedName string) string {
 	return fmt.Sprintf("http://localhost:%d/feeds/%s", m.port, feedName)
+}
+
+func (m *MockFeedServer) serveArticle(w http.ResponseWriter, r *http.Request) {
+	name := strings.TrimPrefix(r.URL.Path, "/articles/")
+	if name == "" {
+		http.Error(w, "Article name required", http.StatusBadRequest)
+		return
+	}
+	if !strings.HasSuffix(name, ".html") {
+		name += ".html"
+	}
+	path := filepath.Join("fixtures", "articles", name)
+	content, err := feedFixtures.ReadFile(path)
+	if err != nil {
+		log.Warnf("Article not found: %s", name)
+		http.Error(w, "Article not found", http.StatusNotFound)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write(content) //nolint:gosec // G705: test-only mock article server
 }
 
 func (m *MockFeedServer) serveFeed(w http.ResponseWriter, r *http.Request) {

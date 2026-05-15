@@ -11,6 +11,7 @@ package mocks
 
 import (
 	reflect "reflect"
+	time "time"
 
 	gomock "go.uber.org/mock/gomock"
 
@@ -83,6 +84,21 @@ func (m *Repository) GetFolderItems(folderID, userID int) ([]*item.Item, error) 
 func (mr *RepositoryMockRecorder) GetFolderItems(folderID, userID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFolderItems", reflect.TypeOf((*Repository)(nil).GetFolderItems), folderID, userID)
+}
+
+// GetItemForUser mocks base method.
+func (m *Repository) GetItemForUser(id, userID int) (*item.Item, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetItemForUser", id, userID)
+	ret0, _ := ret[0].(*item.Item)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetItemForUser indicates an expected call of GetItemForUser.
+func (mr *RepositoryMockRecorder) GetItemForUser(id, userID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetItemForUser", reflect.TypeOf((*Repository)(nil).GetItemForUser), id, userID)
 }
 
 // GetStarredItems mocks base method.
@@ -199,6 +215,20 @@ func (m *Repository) UpdateItem(id int, starred, isNew bool) error {
 func (mr *RepositoryMockRecorder) UpdateItem(id, starred, isNew any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateItem", reflect.TypeOf((*Repository)(nil).UpdateItem), id, starred, isNew)
+}
+
+// UpdateItemContent mocks base method.
+func (m *Repository) UpdateItemContent(id int, fullContent, status string, scrapedAt time.Time) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateItemContent", id, fullContent, status, scrapedAt)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateItemContent indicates an expected call of UpdateItemContent.
+func (mr *RepositoryMockRecorder) UpdateItemContent(id, fullContent, status, scrapedAt any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateItemContent", reflect.TypeOf((*Repository)(nil).UpdateItemContent), id, fullContent, status, scrapedAt)
 }
 
 // UpsertItems mocks base method.

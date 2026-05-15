@@ -3,12 +3,15 @@ package item
 import "time"
 
 type Item struct {
-	ID        int
-	Title     string
-	Desc      string
-	Dir       string
-	Link      string
-	IsNew     bool
-	Starred   bool
-	Timestamp time.Time
+	ID           int
+	Title        string
+	Desc         string
+	Dir          string
+	Link         string
+	IsNew        bool
+	Starred      bool
+	Timestamp    time.Time
+	FullContent  string
+	ScrapedAt    *time.Time
+	ScrapeStatus string
 }

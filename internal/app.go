@@ -27,6 +27,7 @@ import (
 	"github.com/cubny/lite-reader/internal/config"
 	"github.com/cubny/lite-reader/internal/infra/http/api"
 	"github.com/cubny/lite-reader/internal/infra/job"
+	"github.com/cubny/lite-reader/internal/infra/scraper"
 	authRepo "github.com/cubny/lite-reader/internal/infra/sqlite/auth"
 	feedRepo "github.com/cubny/lite-reader/internal/infra/sqlite/feed"
 	folderRepo "github.com/cubny/lite-reader/internal/infra/sqlite/folder"
@@ -175,7 +176,7 @@ func (a *App) initServices() *App {
 		authService := auth.NewService(a.authRepository)
 		a.authService = authService
 
-		itemService := item.NewService(a.itemRepository)
+		itemService := item.NewService(a.itemRepository, scraper.NewReadability())
 		a.itemService = itemService
 		a.jobItemService = itemService
 
