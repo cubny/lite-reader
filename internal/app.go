@@ -234,6 +234,9 @@ func (a *App) Stop() error {
 	if a.apiServer != nil {
 		a.stopAPIServer()
 	}
+	if a.scheduler != nil {
+		a.scheduler.Stop()
+	}
 	if a.sqlClient != nil {
 		if err := a.sqlClient.Close(); err != nil {
 			log.Warnf("failed to close db: %v", err)

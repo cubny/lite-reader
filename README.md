@@ -87,7 +87,15 @@ For detailed testing documentation, see [TEST.md](TEST.md).
 ## Migration from Legacy Lite Reader
 If you are using the legacy Lite Reader, you can migrate your data to the new Lite Reader.
 1. Download the latest release of Lite Reader.
-2. Copy the data folder consisting of the `agg.db` file from the legacy Lite Reader to the new Lite Reader folder.
+2. Copy your existing `agg.db` to the new default location:
+   - Linux: `~/.config/lite-reader/agg.db`
+   - macOS: `~/Library/Application Support/lite-reader/agg.db`
+   - Windows: `%AppData%\lite-reader\agg.db`
+
+   Alternatively, point the binary at the old file with an absolute path:
+   ```sh
+   DB_PATH=/path/to/old/agg.db ./lite-reader
+   ```
 3. Run the new Lite Reader.
 
 ## Contributing
