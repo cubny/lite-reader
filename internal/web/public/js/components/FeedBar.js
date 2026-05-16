@@ -1,6 +1,7 @@
 import { useRef, useState } from 'preact/hooks';
 import { html } from '../util/html.js';
 import { selection, feeds, folders, items } from '../state.js';
+import { hostFromUrl } from '../util/url.js';
 import {
   fetchNew as fetchFeed,
   markRead,
@@ -71,10 +72,6 @@ export function FeedBar() {
   const currentFeed = isFeedScope ? (feeds.value || []).find((x) => x.id === sel.id) : null;
   const currentFolderId = currentFeed ? (currentFeed.folder_id == null ? '' : String(currentFeed.folder_id)) : '';
 
-  function hostFromUrl(u) {
-    try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return ''; }
-  }
-
   let subtitle = '';
   if (isFeedScope && currentFeed) {
     const host = hostFromUrl(currentFeed.url);
@@ -84,9 +81,12 @@ export function FeedBar() {
     const childFeeds = (feeds.value || []).filter((f) => f.folder_id === sel.id);
     const unread = childFeeds.reduce((acc, f) => acc + (f.unread_count || 0), 0);
     subtitle = `${childFeeds.length} feed${childFeeds.length === 1 ? '' : 's'}${unread ? ` · ${unread} unread` : ''}`;
-  } else if (sel.kind === 'unread' || sel.kind === 'starred') {
+  } else if (sel.kind === 'unread') {
     const count = (items.value || []).length;
-    subtitle = `${count} item${count === 1 ? '' : 's'}`;
+    subtitle = `${count} unread`;
+  } else if (sel.kind === 'starred') {
+    const count = (items.value || []).length;
+    subtitle = `${count} starred`;
   }
 
   async function refresh() {

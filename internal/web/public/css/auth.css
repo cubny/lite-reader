@@ -1,19 +1,4 @@
-:root {
-    --paper: #FFFFFF;
-    --paper-2: #F4F4F4;
-    --paper-3: #ECECEC;
-    --ink: #000000;
-    --ink-2: #111111;
-    --ink-muted: #555555;
-    --ink-faint: #888888;
-    --rule: #000000;
-    --rule-soft: #999999;
-    --rule-hair: #D8D8D8;
-
-    --font-sans: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-    --font-serif: "Source Serif 4", "Source Serif Pro", "Iowan Old Style", Georgia, serif;
-    --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
-}
+/* Auth pages (login / signup / setup). Design tokens come from tokens.css. */
 
 html, body {
     margin: 0;
@@ -78,9 +63,19 @@ html, body {
 }
 
 .form-control:focus {
-    outline: none;
     border-color: var(--ink);
     box-shadow: 3px 3px 0 0 var(--ink);
+}
+
+/* Distinct keyboard-focus ring — visually separable from the resting state. */
+.form-control:focus-visible {
+    outline: 2px solid var(--ink-muted);
+    outline-offset: 3px;
+}
+
+.btn-primary:focus-visible {
+    outline: 2px solid var(--ink-muted);
+    outline-offset: 3px;
 }
 
 .btn-primary {

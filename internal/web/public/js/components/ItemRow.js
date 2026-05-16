@@ -3,21 +3,29 @@ import { html } from '../util/html.js';
 import { update as updateItem, scrape as scrapeItem } from '../api/items.js';
 import { relativeTime } from '../util/time.js';
 import { detectDir } from '../util/dom.js';
+import { hostFromUrl } from '../util/url.js';
 
-function sourceHostFromLink(link) {
-  if (!link) return '';
-  try {
-    return new URL(link).hostname.replace(/^www\./, '');
-  } catch {
-    return '';
-  }
-}
-
+// Lightweight HTML-strip for inbox previews — avoids spinning up a full
+// DOMParser per row on long feeds. We only need readable text for a
+// 220-char snippet, so a regex pass plus a small entity-decode is enough.
+const ENTITIES = {
+  amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ',
+};
 function stripHtml(s) {
   if (!s) return '';
-  if (typeof DOMParser === 'undefined') return s;
-  const doc = new DOMParser().parseFromString(s, 'text/html');
-  return (doc.body && doc.body.textContent || '').replace(/\s+/g, ' ').trim();
+  return s
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&(#\d+|#x[0-9a-fA-F]+|\w+);/g, (m, code) => {
+      if (code[0] === '#') {
+        const n = code[1] === 'x' || code[1] === 'X'
+          ? parseInt(code.slice(2), 16)
+          : parseInt(code.slice(1), 10);
+        return Number.isFinite(n) ? String.fromCodePoint(n) : m;
+      }
+      return Object.prototype.hasOwnProperty.call(ENTITIES, code) ? ENTITIES[code] : m;
+    })
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 export function ItemRow({ item, isSelected, onToggle, onChanged, feedTitle }) {
@@ -89,7 +97,7 @@ export function ItemRow({ item, isSelected, onToggle, onChanged, feedTitle }) {
   const starIcon = item.starred ? 'icon-star' : 'icon-star-empty';
   const readIcon = item.is_new ? 'icon-circle' : 'icon-circle-blank';
   const ts = item.timestamp ? relativeTime(item.timestamp) : '';
-  const sourceHost = sourceHostFromLink(item.link);
+  const sourceHost = hostFromUrl(item.link);
 
   if (isSelected) {
     return html`
@@ -101,7 +109,7 @@ export function ItemRow({ item, isSelected, onToggle, onChanged, feedTitle }) {
       >
         <div class="lr-article-head">
           <div class="lr-article-eyebrow">
-            <span class="lr-pill lr-pill-status">${item.is_new ? 'Unread' : 'Read'}</span>
+            ${item.is_new && html`<span class="lr-pill lr-pill-status">Unread</span>`}
             ${sourceHost && html`<span class="lr-article-meta lr-article-source">${sourceHost}</span>`}
             <span class="lr-article-meta lr-article-when" data-testid="item-row-time">${ts}</span>
           </div>

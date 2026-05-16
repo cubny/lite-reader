@@ -80,4 +80,5 @@ export const MOCK_FEEDS = {
   techNews: 'http://localhost:3001/feeds/tech-news.xml',
   scienceBlog: 'http://localhost:3001/feeds/science-blog.xml',
   empty: 'http://localhost:3001/feeds/empty.xml',
+  farsi: 'http://localhost:3001/feeds/farsi.xml',
 };

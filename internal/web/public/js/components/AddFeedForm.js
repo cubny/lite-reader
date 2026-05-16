@@ -96,8 +96,10 @@ export function AddFeedForm() {
   const btnClass = open ? 'add btn btn-green' : 'add btn btn-purple';
   const submitIcon = pending ? 'icon-spin icon-spinner' : (open ? 'icon-ok' : 'icon-plus');
 
+  const containerClass = open ? 'is-open' : '';
+
   return html`
-    <div id="addfeed" ref=${containerRef} data-testid="add-feed-form">
+    <div id="addfeed" class=${containerClass} ref=${containerRef} data-testid="add-feed-form">
       ${open && html`<i class="addfeed-lead icon-plus" aria-hidden="true"></i>`}
       <input
         ref=${inputRef}
