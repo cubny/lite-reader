@@ -34,9 +34,16 @@ Read your feeds on your own machine with a simple and lite application.
    ```sh
    ./lite-reader
    ```
+   By default the SQLite database is stored in your OS user config directory (see [Usage](#usage)). To store it somewhere else, set `DB_PATH` to an absolute path:
+   ```sh
+   DB_PATH=/var/lib/lite-reader/agg.db ./lite-reader
+   ```
 
 ## Usage
 - Access the application via `http://localhost:3000` (or your specified port).
+- The SQLite database lives in your OS user config directory by default:
+  `~/.config/lite-reader/agg.db` (Linux), `~/Library/Application Support/lite-reader/agg.db` (macOS), `%AppData%\lite-reader\agg.db` (Windows).
+  Override with an absolute path via `DB_PATH=/absolute/path/agg.db`.
 
 ## Testing
 
@@ -80,7 +87,15 @@ For detailed testing documentation, see [TEST.md](TEST.md).
 ## Migration from Legacy Lite Reader
 If you are using the legacy Lite Reader, you can migrate your data to the new Lite Reader.
 1. Download the latest release of Lite Reader.
-2. Copy the data folder consisting of the `agg.db` file from the legacy Lite Reader to the new Lite Reader folder.
+2. Copy your existing `agg.db` to the new default location:
+   - Linux: `~/.config/lite-reader/agg.db`
+   - macOS: `~/Library/Application Support/lite-reader/agg.db`
+   - Windows: `%AppData%\lite-reader\agg.db`
+
+   Alternatively, point the binary at the old file with an absolute path:
+   ```sh
+   DB_PATH=/path/to/old/agg.db ./lite-reader
+   ```
 3. Run the new Lite Reader.
 
 ## Contributing

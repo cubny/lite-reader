@@ -3,6 +3,7 @@ package internal
 import (
 	"context"
 	"fmt"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -10,6 +11,7 @@ import (
 )
 
 func TestWithContext(t *testing.T) {
+	t.Setenv("DB_PATH", filepath.Join(t.TempDir(), "agg.db"))
 	app, err := Init(context.Background(), false)
 	if err != nil {
 		t.Fatal(err)

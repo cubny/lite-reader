@@ -10,7 +10,6 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
-	"runtime"
 	"syscall"
 	"time"
 
@@ -90,21 +89,19 @@ func (a *App) ifNoError(fn func() *App) *App {
 
 func (a *App) initDBFile() *App {
 	return a.ifNoError(func() *App {
-		if _, err := os.Stat(a.cfg.DB.Path); os.IsNotExist(err) {
-			_, b, _, _ := runtime.Caller(0)
-			basePath := filepath.Dir(filepath.Dir(b))
-			dbPath := filepath.Join(basePath, a.cfg.DB.Path)
-			dirName := filepath.Dir(dbPath)
-			if _, statErr := os.Stat(dirName); os.IsNotExist(statErr) {
-				mkdirErr := os.MkdirAll(dirName, os.ModePerm)
-				if mkdirErr != nil {
-					a.err = fmt.Errorf("failed to create db directory: %w", mkdirErr)
-					return a
-				}
+		dbPath := a.cfg.DB.Path
+		if _, err := os.Stat(dbPath); os.IsNotExist(err) {
+			if mkdirErr := os.MkdirAll(filepath.Dir(dbPath), 0o755); mkdirErr != nil {
+				a.err = fmt.Errorf("failed to create db directory: %w", mkdirErr)
+				return a
 			}
-			_, createErr := os.Create(dbPath)
+			f, createErr := os.Create(dbPath)
 			if createErr != nil {
 				a.err = fmt.Errorf("failed to create db file: %w", createErr)
+				return a
+			}
+			if closeErr := f.Close(); closeErr != nil {
+				a.err = fmt.Errorf("failed to close db file: %w", closeErr)
 				return a
 			}
 		}
@@ -236,6 +233,14 @@ func (a *App) Stop() error {
 	a.err = a.ctx.Err()
 	if a.apiServer != nil {
 		a.stopAPIServer()
+	}
+	if a.scheduler != nil {
+		a.scheduler.Stop()
+	}
+	if a.sqlClient != nil {
+		if err := a.sqlClient.Close(); err != nil {
+			log.Warnf("failed to close db: %v", err)
+		}
 	}
 	return nil
 }
