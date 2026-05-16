@@ -72,17 +72,19 @@ export function AddFolderButton() {
 
   return html`
     <div id="addfolder" class=${containerClass} ref=${containerRef} data-testid="add-folder-form">
-      <a class=${btnClass} href="#" onClick=${onButtonClick} data-testid="add-folder-submit">
-        <i class=${iconClass}></i> <span>${open ? '' : 'New folder'}</span>
-      </a>
+      ${open && html`<i class="addfolder-lead icon-folder-close" aria-hidden="true"></i>`}
       <input
         ref=${inputRef}
         type="text"
         data-testid="add-folder-name"
+        placeholder="Folder name"
         style=${open ? '' : 'display: none'}
         onKeyDown=${onKey}
         disabled=${pending}
       />
+      <a class=${btnClass} href="#" onClick=${onButtonClick} data-testid="add-folder-submit">
+        <i class=${iconClass}></i> <span>${open ? '' : 'New folder'}</span>
+      </a>
       ${error && html`<div class="add-feed-form-error" data-testid="add-folder-error">${error}</div>`}
     </div>
   `;

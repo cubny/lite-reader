@@ -94,22 +94,26 @@ export function AddFeedForm() {
   }
 
   const btnClass = open ? 'add btn btn-green' : 'add btn btn-purple';
-  const iconClass = pending ? 'icon-spin icon-spinner' : 'icon-plus';
+  const submitIcon = pending ? 'icon-spin icon-spinner' : (open ? 'icon-ok' : 'icon-plus');
+
+  const containerClass = open ? 'is-open' : '';
 
   return html`
-    <div id="addfeed" ref=${containerRef} data-testid="add-feed-form">
-      <a class=${btnClass} href="#" onClick=${onButtonClick} data-testid="add-feed-submit">
-        <i class=${iconClass}></i> <span>${open ? '' : 'Feed'}</span>
-      </a>
+    <div id="addfeed" class=${containerClass} ref=${containerRef} data-testid="add-feed-form">
+      ${open && html`<i class="addfeed-lead icon-plus" aria-hidden="true"></i>`}
       <input
         ref=${inputRef}
         type="text"
         id="urlToAdd"
         data-testid="add-feed-url"
+        placeholder="https://"
         style=${open ? '' : 'display: none'}
         onKeyDown=${onKey}
         disabled=${pending}
       />
+      <a class=${btnClass} href="#" onClick=${onButtonClick} data-testid="add-feed-submit">
+        <i class=${submitIcon}></i> <span>${open ? '' : 'Add Feed'}</span>
+      </a>
       ${error && html`<div class="add-feed-form-error" data-testid="add-feed-error">${error}</div>`}
     </div>
   `;

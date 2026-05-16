@@ -1,92 +1,138 @@
+/* Auth pages (login / signup / setup). Design tokens come from tokens.css. */
+
 html, body {
     margin: 0;
     padding: 0;
     height: 100%;
-    background: #f5f5f3;
-    color: #2a2a28;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    letter-spacing: -0.003em;
+    font-feature-settings: "ss01", "cv11", "tnum" 0;
 }
 
 .login-container {
-    max-width: 380px;
-    margin: 80px auto;
-    padding: 32px 28px;
-    background: #ffffff;
-    border: 1px solid #d9d6cf;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    max-width: 400px;
+    margin: 90px auto;
+    padding: 36px 32px 32px;
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    border-radius: 0;
+    box-shadow: 4px 4px 0 0 var(--ink);
 }
 
 .login-container h1 {
-    margin: 0 0 18px;
-    font-size: 22px;
+    margin: 0 0 24px;
+    font-family: var(--font-serif);
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1;
     text-align: center;
-    color: #2a2a28;
+    color: var(--ink);
 }
 
 .form-group {
-    margin-bottom: 14px;
+    margin-bottom: 16px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
 }
 
 .form-group label {
-    font-size: 13px;
-    color: #6e6a60;
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
 }
 
 .form-control {
     width: 100%;
-    padding: 8px 10px;
+    padding: 9px 10px;
     box-sizing: border-box;
-    border: 1px solid #d9d6cf;
-    border-radius: 4px;
-    font-size: 14px;
+    border: 1px solid var(--ink);
+    border-radius: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: -0.005em;
 }
 
 .form-control:focus {
-    outline: none;
-    border-color: #6c8a46;
+    border-color: var(--ink);
+    box-shadow: 3px 3px 0 0 var(--ink);
+}
+
+/* Distinct keyboard-focus ring — visually separable from the resting state. */
+.form-control:focus-visible {
+    outline: 2px solid var(--ink-muted);
+    outline-offset: 3px;
+}
+
+.btn-primary:focus-visible {
+    outline: 2px solid var(--ink-muted);
+    outline-offset: 3px;
 }
 
 .btn-primary {
     width: 100%;
-    padding: 10px;
-    background: #6c8a46;
-    color: #ffffff;
-    border: none;
-    border-radius: 4px;
-    font-size: 14px;
+    padding: 12px;
+    background: var(--ink);
+    color: var(--paper);
+    border: 1px solid var(--ink);
+    border-radius: 0;
+    font-family: var(--font-sans);
+    font-size: 11px;
     font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
     cursor: pointer;
+    transition: background 0.12s ease, color 0.12s ease;
+    margin-top: 4px;
 }
 
 .btn-primary:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
 }
 
 .btn-primary:hover:not(:disabled) {
-    background: #5a7338;
+    background: var(--paper);
+    color: var(--ink);
 }
 
 .error-message {
-    color: #b03030;
-    font-size: 13px;
-    margin-top: 10px;
-    min-height: 18px;
+    color: var(--ink);
+    background: var(--paper-3);
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding: 8px 10px;
+    margin-top: 12px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+.error-message:empty {
+    display: none;
 }
 
 .alert {
-    padding: 8px 10px;
-    border-radius: 4px;
-    margin-bottom: 14px;
-    font-size: 13px;
+    padding: 10px 12px;
+    border-radius: 0;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    margin-bottom: 18px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
 }
 
 .alert-success {
-    background: #e7f1d8;
-    color: #4a6a26;
-    border: 1px solid #c9dfa4;
+    background: var(--paper-3);
+    color: var(--ink);
 }

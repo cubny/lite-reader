@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>اخبار فارسی</title>
+    <link>http://localhost:3001/feeds/farsi</link>
+    <description>یک فید آزمایشی به زبان فارسی</description>
+    <language>fa</language>
+    <lastBuildDate>Mon, 14 Nov 2025 12:00:00 GMT</lastBuildDate>
+    <atom:link href="http://localhost:3001/feeds/farsi.xml" rel="self" type="application/rss+xml" />
+
+    <item>
+      <title>استقرار هزاران مامور پلیس در لندن برای مدیریت دو تظاهرات بزرگ</title>
+      <link>http://bbc.com/persian/articles/example</link>
+      <description>هزاران مامور پلیس در لندن مستقر شده‌اند تا دو راهپیمایی بزرگ با گرایش‌های مخالف هم را مدیریت کنند.</description>
+      <pubDate>Mon, 14 Nov 2025 10:00:00 GMT</pubDate>
+      <guid>http://bbc.com/persian/articles/example</guid>
+    </item>
+
+    <item>
+      <title>کشف یک ساختار باستانی در ایران</title>
+      <link>http://bbc.com/persian/articles/example2</link>
+      <description>باستان‌شناسان ساختاری ناشناخته از دوره هخامنشی را در نزدیکی پرسپولیس کشف کرده‌اند.</description>
+      <pubDate>Sun, 13 Nov 2025 14:00:00 GMT</pubDate>
+      <guid>http://bbc.com/persian/articles/example2</guid>
+    </item>
+  </channel>
+</rss>

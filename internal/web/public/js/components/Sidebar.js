@@ -36,15 +36,21 @@ export function Sidebar() {
 
   return html`
     <div data-testid="sidebar" ref=${rootRef}>
-      <div id="toolbar" class="ui-layout-north">
-        <${AddFeedForm} />
-      </div>
-      <ul class="smart-folders">
-        <${SmartFolders} />
-      </ul>
-      <${FeedList} />
-      <div class="sidebar-footer">
+      <a class="lr-brand" href="#/" data-testid="sidebar-brand">
+        <span class="lr-brand-name">Lite Reader</span>
+      </a>
+      <div class="sidebar-scroll">
+        <ul class="smart-folders">
+          <${SmartFolders} />
+        </ul>
+        <div class="lr-divider"></div>
+        <${FeedList} />
         <${AddFolderButton} />
+      </div>
+      <div class="sidebar-footer">
+        <div id="toolbar">
+          <${AddFeedForm} />
+        </div>
       </div>
     </div>
   `;

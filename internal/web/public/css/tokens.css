@@ -1,0 +1,21 @@
+/* Design tokens — single source of truth for the brutal-newspaper palette
+   and type system. Included by main.css consumers and the auth pages. */
+
+:root {
+  --paper: #FFFFFF;
+  --paper-2: #F4F4F4;
+  --paper-3: #ECECEC;
+  --paper-edge: #E0E0E0;
+  --ink: #000000;
+  --ink-2: #111111;
+  --ink-muted: #555555;
+  --ink-faint: #888888;
+  --ink-ghost: #BBBBBB;
+  --rule: #000000;
+  --rule-soft: #999999;
+  --rule-hair: #D8D8D8;
+
+  --font-sans: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-serif: "Source Serif 4", "Source Serif Pro", "Iowan Old Style", Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}

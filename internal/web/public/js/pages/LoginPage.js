@@ -101,7 +101,7 @@ export function LoginPage() {
       </form>
       ${allowSignup && html`
         <div style="text-align: center; margin-top: 20px;">
-          <a href="/signup.html" style="color: #6C8A46;">Don't have an account? Sign up</a>
+          <a href="/signup.html" style="color: #000000; text-decoration: underline; text-underline-offset: 3px;">Don't have an account? Sign up</a>
         </div>
       `}
     </div>

@@ -1,787 +1,1442 @@
+/* Lite Reader — Brutal Newspaper revision (B&W)
+   Selectors preserved from the legacy stylesheet so Preact / Playwright /
+   jQuery Layout keep working; declarations rewritten to the noir palette.
+   Design tokens (palette + type stack) live in tokens.css. */
+
 body {
-  font-family: Tahoma, sans-serif;
+  font-family: var(--font-sans);
   font-size: 14px;
+  color: var(--ink);
+  background: var(--paper);
+  letter-spacing: -0.003em;
+  font-feature-settings: "ss01", "cv11", "tnum" 0;
 }
 
-a {
-  text-decoration: none;
+#app, #app * { box-sizing: border-box; }
+
+a { text-decoration: none; color: inherit; }
+
+::selection { background: var(--ink); color: var(--paper); }
+::-moz-selection { background: var(--ink); color: var(--paper); }
+
+#content .ui-layout-north { z-index: 4 !important; }
+
+/* The Sidebar Preact wrapper sits between #feeds and its visual children
+   (brand / scroll region / footer). Make it a flex column so the footer
+   can pin to the bottom regardless of content height. */
+#feeds > [data-testid="sidebar"] {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  height: 100%;
+  min-height: 0;
 }
 
-::selection {
-  background: rgba(0,0,0,0.05);
-}
-
-::-moz-selection {
-  background: rgba(0,0,0,0.05);
-}
-
-#content .ui-layout-north {
-  z-index: 4 !important;
-}
-
-#toolbar {
-  /*font-size: .7em;*/
-  padding: 10px;
-  height: 30px;
-  clear: both;
-  overflow: hidden;
-  background-color: #f6f6f6;
-  border-bottom: 1px solid #ddd;
-}
-
-#toolbar div {
-  float: left;
-}
-
-#urlToAdd {
-  float: right;
-  border: 1px solid #ccc;
-  padding: 6px;
-  color: #666;
-  width:170px;
-}
-
-.add {
-  font-weight:bold;
-  color: #456445;
+/* ===================================================================
+   Sidebar masthead — brand at top of the column
+   =================================================================== */
+#feeds .lr-brand {
   display: block;
-  float: left;
-  padding-right: 5px;
+  padding: 24px 22px 18px;
+  border-bottom: 1px solid var(--rule);
+  text-decoration: none;
+  color: var(--ink);
+  flex: 0 0 auto;
 }
 
-li.button input {
-  float: left;
-  width: 150px;
-  margin: 5px 8px 5px 5px;
-  border: 1px solid #ccc;
+#feeds .lr-brand-name {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1;
+  color: var(--ink);
 }
 
-.ui-layout-pane {
-/* all 'panes' */
-  background: #FFF;
-  overflow: auto;
+/* Middle region — scrolls within its own area while the footer stays pinned. */
+#feeds .sidebar-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px 0 0;
 }
 
-.ui-layout-resizer {
-/* all 'resizer-bars' */
-  background: #eee;
-  width: 4px !important;
+/* Hairline divider between sections */
+#feeds .lr-divider {
+  height: 1px;
+  background: var(--rule);
+  margin: 18px 14px;
 }
 
-.ui-layout-toggler {
-/* all 'toggler-buttons' */
-  background: #AAA;
+/* Add Feed area — always pinned to the bottom of the sidebar viewport.
+   Feed list above scrolls in its own region. */
+#feeds .sidebar-footer {
+  flex: 0 0 auto;
+  padding: 14px 14px 18px;
+  margin-top: 0;
+  background: var(--paper-2);
+  border-top: 1px solid var(--rule);
 }
 
-#items, #feeds ul {
-  list-style: none;
-  font-size: 13px;
+#feeds .sidebar-footer #toolbar,
+#feeds #toolbar {
   padding: 0;
   margin: 0;
-  transition: all .2s ease-in-out; 
+  min-height: 0;
+  background: transparent;
+  border: none;
+  clear: none;
+  overflow: visible;
+}
+
+#feeds #toolbar div { float: none; }
+
+#urlToAdd {
+  flex: 1 1 auto;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 0 8px;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: -0.01em;
+  min-width: 0;
+}
+
+#urlToAdd::placeholder {
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+#addfeed {
+  display: block;
+  width: 100%;
+}
+
+#addfeed.is-open {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0;
+}
+
+#addfeed .addfeed-lead {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  font-size: 12px;
+  padding-left: 12px;
+  padding-right: 6px;
+}
+
+/* Closed state — full-width black bar */
+.add {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  float: none !important;
+  height: 38px;
+  padding: 0 12px;
+  background: var(--ink);
+  color: var(--paper);
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.add:hover { background: var(--paper); color: var(--ink); }
+
+/* Open state — input wrapper + small ink "go" button */
+#addfeed.is-open {
+  height: 38px;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  box-shadow: 3px 3px 0 0 var(--ink);
+  padding: 0 4px 0 0;
+  box-sizing: border-box;
+}
+
+#addfeed.is-open .add {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  flex: 0 0 30px;
+  gap: 0;
+}
+
+#addfeed.is-open .add span { display: none; }
+
+.add-feed-form-error {
+  flex-basis: 100%;
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px 10px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: var(--paper-3);
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  border-left: none;
+  border-right: none;
+  border-radius: 0;
+}
+
+/* ===================================================================
+   Sidebar list & rows
+   =================================================================== */
+.ui-layout-pane {
+  background: var(--paper);
+  overflow: auto;
+}
+.ui-layout-resizer { background: var(--paper-edge); width: 1px !important; }
+.ui-layout-toggler { background: var(--ink); }
+
+#feeds {
+  background: var(--paper-2);
+  height: 20px;
+}
+
+#feeds ul,
+.smart-folders {
+  list-style: none;
+  font-size: 13.5px;
+  padding: 0;
+  margin: 0;
+}
+
+/* Feed row — sidebar item (smart folder, root feed, or folder child) */
+#feeds .feed,
+#feeds ul li.feed {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 30px;
+  padding: 0 12px 0 14px;
+  margin: 0;
+  border-bottom: none;
+  border-left: 2px solid transparent;
+  border-radius: 0;
+  color: var(--ink-2);
+  font-size: 13.5px;
+  font-weight: 400;
+  overflow: hidden;
+  transition: background 0.08s ease, color 0.08s ease;
+}
+
+#feeds .feed:hover,
+#feeds ul li:hover {
+  background: var(--paper-3) !important;
+}
+
+#feeds .feed.selected,
+#feeds li.selected {
+  background: var(--ink) !important;
+  color: var(--paper);
+  border-bottom: none;
+  border-left: 2px solid var(--ink);
+}
+
+#feeds .feed.selected i,
+#feeds .feed.selected .feedtitle,
+#feeds .feed.selected .count span {
+  color: var(--paper);
+}
+
+/* Icon column — reset legacy float */
+#feeds li.feed i,
+#feeds .feed i,
+#feeds li.feed img {
+  float: none;
+  width: 14px;
+  padding: 0;
+  margin: 0;
+  display: inline-flex;
+  justify-content: center;
+  color: var(--ink-muted);
+  flex-shrink: 0;
+}
+
+#feeds .feedtitle {
+  float: none;
+  flex: 1;
+  min-width: 0;
+  max-width: none;
+  padding: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.4;
+  letter-spacing: -0.003em;
+}
+
+/* Unread count pill — mono numerals, hairline outline */
+#feeds .count { order: 2; }
+#feeds .count span {
+  position: static;
+  float: none;
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 10px;
+  font-weight: 500;
+  padding: 1px 6px;
+  border: 1px solid var(--rule-soft);
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink-muted);
+  min-width: 22px;
+  text-align: center;
+  line-height: 1.4;
+  margin: 0;
+}
+
+#feeds .feed.selected .count span {
+  border-color: var(--paper);
+  color: var(--paper);
+  background: transparent;
+}
+
+#feeds .new { background: transparent; }
+
+/* Smart folders — quick-pick rows below the masthead */
+.smart-folders { margin: 0 0 0; padding: 0 14px; }
+
+/* ===================================================================
+   Folders
+   =================================================================== */
+#feeds .folder-list,
+#feeds .root-feed-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#feeds .folder-list { margin-top: 0; padding: 0 14px; }
+#feeds .root-feed-list { padding: 0 14px; }
+
+#feeds .folder-list > li.folder-wrap {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  border-bottom: none;
+  overflow: visible;
+  cursor: default;
+  position: relative;
+}
+
+#feeds .folder-list > li.folder-wrap:first-child { margin-top: 0; }
+
+#feeds .folder-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 12px 0 8px;
+  margin: 0 0 4px;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink);
+  border-bottom: 1px solid var(--rule);
+  border-radius: 0;
+  user-select: none;
+}
+
+#feeds .folder-header.selected {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+#feeds .folder-header.selected .folder-icon,
+#feeds .folder-header.selected .folder-chevron,
+#feeds .folder-header.selected .folder-count {
+  color: var(--paper);
+}
+
+#feeds .folder-header:hover { background: var(--paper-3); }
+#feeds .folder-header.selected:hover { background: var(--ink); }
+
+#feeds .folder-chevron {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: var(--ink);
+  width: 14px;
+  text-align: center;
+  font-size: 10px;
+}
+#feeds .folder-chevron-spacer { display: inline-block; width: 14px; }
+#feeds .folder-chevron:hover { color: var(--ink); }
+
+#feeds .folder-icon {
+  color: var(--ink);
+  cursor: grab;
+  font-size: 11px;
+}
+
+#feeds .folder-title {
+  flex: 1;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: 0.14em;
+}
+
+#feeds .folder-count {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-faint);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0;
+  min-width: 1.5em;
+  text-align: right;
+}
+
+#feeds .folder-children {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  min-height: 6px;
+}
+
+#feeds .folder-children.collapsed { display: none; }
+
+#feeds .folder-children .feed { padding-left: 30px; font-size: 13px; }
+#feeds .folder-children .feed i { color: var(--ink-faint); }
+
+/* Drag-and-drop visuals */
+#feeds .feed-drag-ghost { opacity: 0.35; background: var(--paper-3); }
+#feeds .feed-drag {
+  opacity: 0.95;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  box-shadow: 3px 3px 0 0 var(--ink);
+}
+
+/* ===================================================================
+   Add Folder — small left-aligned muted button under the folder list
+   =================================================================== */
+#feeds #addfolder {
+  width: auto;
+  margin: 14px 14px 18px;
+  padding: 12px 4px 0;
+  border-top: 1px dashed var(--rule-soft);
+}
+
+#feeds #addfolder .btn {
+  float: none;
+  width: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  height: 28px;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  color: var(--ink-muted);
+  border: none;
+  border-radius: 0;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: color 0.12s ease;
+}
+
+#feeds #addfolder .btn:hover {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
+#feeds #addfolder .btn i { opacity: 0.85; font-size: 11px; }
+
+#feeds #addfolder.open {
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  align-items: center;
+  height: 38px;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  box-shadow: 3px 3px 0 0 var(--ink);
+  padding: 0 4px 0 0;
+  box-sizing: border-box;
+  border-top: 1px solid var(--ink);
+}
+
+#feeds #addfolder.open .addfolder-lead {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  font-size: 12px;
+  padding-left: 12px;
+  padding-right: 6px;
+}
+
+#feeds #addfolder.open input {
+  flex: 1 1 auto;
+  width: auto;
+  margin: 0;
+  border: none;
+  outline: none;
+  padding: 0 8px;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: -0.01em;
+  min-width: 0;
+}
+
+#feeds #addfolder.open input::placeholder {
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+#feeds #addfolder.open .btn {
+  width: 30px;
+  flex: 0 0 30px;
+  height: 30px;
+  align-self: center;
+  padding: 0;
+  background: var(--ink);
+  color: var(--paper);
+  border: none;
+  font-size: 11px;
+}
+
+#feeds #addfolder.open .btn:hover {
+  background: var(--paper);
+  color: var(--ink);
+  border: none;
+}
+
+#feeds #addfolder.open .btn i { opacity: 1; }
+
+#feeds #addfolder.open .btn span { display: none; }
+
+/* ===================================================================
+   Top bar — newspaper section banner
+   =================================================================== */
+.ui-layout-north {
+  overflow: hidden;
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+}
+
+#feedbar {
+  height: 96px;
+  width: 100%;
+  padding: 0 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  overflow: hidden;
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  letter-spacing: -0.003em;
+}
+
+#feedbar #title-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+#feedbar #title {
+  color: var(--ink);
+  float: none;
+  padding: 0;
+  font-family: var(--font-serif);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+#feedbar #subtitle {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-muted);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+#feedbar #actions {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-shrink: 0;
+}
+
+#feedbar .action {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 30px;
+  padding: 0 7px;
+  margin: 0;
+  float: none;
+  background: transparent !important;
+  color: var(--ink-muted);
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: background 0.1s ease, color 0.1s ease;
+  overflow: visible;
+}
+
+#feedbar .action i { color: currentColor; font-size: 11px; width: 12px; height: 12px; }
+
+#feedbar .action:hover {
+  background: var(--ink) !important;
+  color: var(--paper);
+}
+
+#feedbar .action.remove { color: var(--ink); }
+#feedbar .action.remove:hover { background: var(--ink) !important; color: var(--paper); }
+
+/* Move-to-folder inline select inside toolbar */
+#feedbar .move-to-folder {
+  float: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  margin: 0;
+  padding: 0 8px;
+  color: var(--ink-muted);
+  font-family: var(--font-sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 30px;
+  background: transparent;
+}
+
+#feedbar .move-to-folder i { font-size: 11px; opacity: 1; color: currentColor; }
+
+#feedbar .move-to-folder select {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0;
+  text-transform: none;
+  padding: 0 22px 0 8px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 24px;
+  height: 26px;
+  max-width: 200px;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='%23000' d='M0 0l5 6 5-6z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+}
+
+#feedbar .move-to-folder select option { color: var(--ink); background: var(--paper); }
+#feedbar .move-to-folder select:hover { background-color: var(--paper-3); }
+#feedbar .move-to-folder select:focus { outline: none; border-color: var(--ink); }
+
+#feedbar .folder-rename {
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  padding: 4px 8px;
+  font: inherit;
+  font-family: var(--font-serif);
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--ink);
+  outline: none;
+  border-radius: 0;
+}
+
+/* ===================================================================
+   Item list — newspaper briefs with leading-zero numbering
+   =================================================================== */
+#items {
+  list-style: none;
+  padding: 32px 36px 36px;
+  margin: 0;
+  max-width: 980px;
+  margin-left: auto;
+  margin-right: auto;
+  counter-reset: items;
+  font-size: 14px;
 }
 
 #items > li {
-  color: #888;
-  border: 1px solid #e5e5e5;
-  transition: all .2s ease-in-out;
-  background: #f4f4f4;
-  margin: 10px;
-  border-radius: 5px;
+  position: relative;
+  display: block;
+  color: var(--ink-2);
+  background: transparent;
+  margin: 0;
+  border: none;
+  border-bottom: 1px solid var(--rule-hair);
+  border-radius: 0;
+  padding: 18px 0 18px 56px;
+  counter-increment: items;
+  transition: background 0.08s ease, opacity 0.08s ease;
 }
 
-#feeds ul li {
-  cursor: pointer;
-  /*color: #888;*/
-  border-bottom: 1px solid #ddd;
-  transition: all .2s ease-in-out;
-  padding: 10px;
-  overflow: auto;
-  transition: all .2s ease-in-out; 
-}
-.btn {
-  cursor: pointer;
-  float:right;
-  padding:5px 8px;
-  border-radius: 4px;
-  margin:2px;
-  transition: all .2s ease-in-out;
-}
-.btn:hover {  background-color: #000; }
-.btn-small {
-  padding:2px;
-  border-radius: 2px;
-  margin:2px;
-}
-.btn-purple {  background-color: #585A6B;  color:white;}
-.btn-green {  background-color: #6C8A46;  color:white;}
+#items > li:not(.selected):hover { background: var(--paper-3); }
 
-#items li .title:hover {
-  background-color: #eee !important;
+#items > li::before {
+  content: counter(items, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 24px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-faint);
+  letter-spacing: 0.04em;
 }
 
-#items li.new .title:hover {
-  background-color: #F5ECDE !important;
-  color: #6F5B3D;
+#items > li:last-child { border-bottom: none; }
+
+#items > li.new { background: transparent; color: var(--ink); font-weight: 400; }
+
+/* Selected item expands inline as a focused article — siblings stay visible.
+   No counter or left indent on the article; constrained to a 760px reading
+   column centered within the inbox, per the design. */
+#items > li.selected {
+  background: transparent;
+  color: var(--ink);
+  padding: 32px 0 36px;
+  border-bottom: 1px solid var(--rule);
+  border-top: 1px solid var(--rule);
+  margin: 12px auto;
+  max-width: 760px;
 }
 
-#items li.selected .title:hover {
-background-color: #F5ECDE !important;
+#items > li.selected::before { content: none; }
+
+/* ===================================================================
+   Article reading view (.lr-article-*)
+   =================================================================== */
+.lr-article-head {
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 28px;
+  margin-bottom: 30px;
+  position: relative;
 }
 
-#items .selected {
-  background-color: #FFFCF7 !important;
-  border-bottom: 2px solid rgba(0,0,0,0.1);
-  border: 1px solid #DBD4C8;
-}
-
-#items .new {
-  color: #000;
-  font-weight: bold;
-  background: #fff;
-}
-
-#items li .title {
+.lr-article-eyebrow {
   display: flex;
-  align-items: baseline;
-  gap: 12px;
-  padding: 12px 16px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background-color .1s ease-in-out;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--rule-hair);
+  flex-wrap: wrap;
 }
+
+.lr-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 18px;
+  border-radius: 0;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.lr-pill-status {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0 8px;
+}
+.lr-pill-status::before { content: "◆"; font-size: 7px; margin-right: 2px; }
+
+.lr-article-meta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.lr-article-source { color: var(--ink); font-weight: 500; }
+.lr-article-when { color: var(--ink-muted); }
+
+.lr-article-eyebrow .lr-article-meta:not(:last-child)::after {
+  content: "·";
+  margin-left: 14px;
+  color: var(--ink-faint);
+}
+
+.lr-article-title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 44px;
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  text-wrap: balance;
+  max-width: 22ch;
+  cursor: pointer;
+}
+
+.lr-article-actions {
+  display: flex;
+  gap: 0;
+  margin-top: 26px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule-hair);
+  flex-wrap: wrap;
+}
+
+.lr-link-btn,
+.lr-link-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 16px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  font-family: var(--font-sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-right: -1px;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+  text-decoration: none;
+}
+
+.lr-article-actions > :last-child { margin-right: 0; }
+
+.lr-link-btn {
+  background: var(--ink);
+  color: var(--paper);
+}
+.lr-link-btn:hover { background: var(--paper); color: var(--ink); }
+
+.lr-link-btn-ghost {
+  background: transparent;
+  color: var(--ink);
+}
+.lr-link-btn-ghost:hover { background: var(--ink); color: var(--paper); }
+
+.lr-link-btn i,
+.lr-link-btn-ghost i {
+  font-size: 11px;
+  width: 12px;
+  height: 12px;
+}
+
+.lr-link-btn-ghost[aria-busy="true"] {
+  cursor: wait;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* Article body inside the selected li — matches the head width (760px),
+   not the narrower reading-column max-width. */
+#items > li.selected .desc {
+  margin: 0;
+  padding: 0 0 36px;
+  max-width: none;
+  width: 100%;
+  font-family: var(--font-serif);
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--ink);
+  text-align: left;
+}
+
+#items > li.selected .desc > p:first-child::first-letter {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 56px;
+  line-height: 0.85;
+  float: left;
+  margin: 6px 8px 0 0;
+  color: var(--ink);
+}
+
+/* Title row — grid: marks | body (title + preview + source) | when */
+#items li .title {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: start;
+  gap: 14px;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--font-serif);
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+  color: inherit;
+  border: none;
+  border-radius: 0;
+  transition: none;
+}
+
+#items li .title .title-body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+#items li .title .title-preview {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink-muted);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-width: 70ch;
+  letter-spacing: -0.003em;
+  font-weight: 400;
+}
+#items li .title .title-source {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+#items li:not(.selected) .title:hover { background: transparent; }
+#items li.selected .title:hover { background: var(--ink) !important; }
 
 #items li .title .title-toggles {
   flex: 0 0 auto;
   display: inline-flex;
-  align-items: baseline;
-  gap: 4px;
+  align-items: center;
+  gap: 10px;
+  align-self: start;
+  padding-top: 6px;
 }
 
 #items li .title .title-text {
   flex: 1 1 auto;
   min-width: 0;
-  line-height: 1.4;
+  font-family: var(--font-serif);
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+  color: inherit;
   word-break: break-word;
 }
 
 #items li .title .title-meta {
   flex: 0 0 auto;
   display: inline-flex;
-  align-items: baseline;
-  gap: 12px;
+  align-items: center;
+  gap: 14px;
 }
 
 #items li .title .title-actions {
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
   gap: 6px;
 }
 
-#items li .desc {
-  margin-top: 5px;
-  padding: 5px 0;
-  text-align: justify;
-}
-
-#items li .dir {
-  margin: 5px;
-  padding: 5px;
-  text-align: justify;
-}
-
 #items li .title span.timestamp {
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: normal;
-  color: #998a73;
+  color: var(--ink-muted);
   white-space: nowrap;
-  letter-spacing: 0.01em;
-}
-#items li.new .title span.timestamp { color: #6F5B3D; }
-#items li.rtl .title .title-meta { order: -1; }
-
-#items li.selected .title {
-  color: #000;
-  font-size: 14px;
-  border-bottom: 2px solid rgba(0,0,0,0.1);
-  padding: 20px 20px;
-  background: #F5ECDE;
-  border-radius: 5px 5px 0 0;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
-#items li.selected .desc {
-  color: rgba(0,0,0,0.65);
-  margin-top: 0px;
-  padding: 20px 30px;
-  line-height: 24px;
-  font-size: 14px;
-  text-shadow: 0 1px #fff;
-  width: 70%;
-  margin: auto;
+#items li.new .title span.timestamp { color: var(--ink); }
+#items li.selected .title span.timestamp { color: var(--ink-ghost); }
+/* Compact title for RTL: the grid flips naturally via direction:rtl on the
+   row. Keep the timestamp readable left-to-right. */
+#items > li.rtl .title { direction: rtl; }
+#items > li.rtl .title .title-meta { direction: ltr; text-align: right; }
+
+#items li.selected .title { color: var(--paper); }
+
+/* Item action chips inside title row */
+#items li .title a.item-action {
+  font-family: var(--font-sans);
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 0;
+  transition: background 0.1s ease, color 0.1s ease;
 }
 
-#items li.selected .desc img {
-  clear: both;
-  text-align: center;
-  border: 1px solid #ccc;
-  margin: auto;
-  /*display: block;*/
-  padding: 4px;
-  max-width: 100%;
-}
-
-#feeds li.feed i,
-#feeds li.feed img {
-  float: left;
+#items li .title a.item-action.item-star,
+#items li .title a.item-action.item-read {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 16px;
-  padding: 0 -15px;
-  margin: 5px;
+  height: 16px;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: none;
+  color: var(--ink-faint);
+  font-size: 13px;
 }
 
-#feeds .feedtitle {
-  float: left;
-  max-width: 75%;
-  padding-right: 2px;
-  overflow: hidden;
-  display: inline;
-  white-space: nowrap;
-  line-height: 20px;
+#items li .title a.item-action.item-star:hover,
+#items li .title a.item-action.item-read:hover {
+  color: var(--ink);
+  background: transparent;
 }
 
-#feeds li.selected {
-  background-color: #f9f9f9 !important;
-  border-bottom: 1px solid #ccc; 
-}
-
-#feeds ul li:hover {
-  background-color: #f3f3f3 !important;
-}
-
-#feeds ul li#feeds-actions{
-  cursor: default;
-  padding:5px;
-  font-size: 10px;
-}
-#feeds ul li#feeds-actions:hover{
-  background-color:inherit !important;
-}
-.ui-layout-north {
-  overflow: hidden;
-  background: #fafafa;
-  border-bottom: 3px solid #eee;
-}
-
-#feedbar {
-  height: 65px;
-  width: 100%;
-  font-size: 30px;
-  overflow: hidden;
-  font-family: arial;
-}
-
-#feedbar #title {
-  color: #000;
-  float: left;
-  line-height: 60px;
-  letter-spacing: -2px;
-  padding: 5px 10px 0 30px;
-}
-
-#feedbar .markread,
-#feedbar .markunread,
-#feedbar .update,
-#feedbar .rename-folder
-{
-  float: left;
-  overflow: hidden;
-  font-size: 12px;
-  margin: 25px 10px;
-  text-align: center;
-  color: #FFF;
-  cursor: pointer;
-  display: none;
-  padding: 5px 8px;
-  border-radius: 4px;
-  background-color: rgba(0,0,0,0.3);
-  transition: all .2s ease-in-out;
-}
-#feedbar .markread{
-  margin-left:0px;
-}
-#feedbar .markread:hover,
-#feedbar .markunread:hover,
-#feedbar .update:hover,
-#feedbar .rename-folder:hover {
-  background-color: #000;
-}
-
-#feedbar .remove {
-  float: right;
-  overflow: hidden;
-  background-color: #ab1111;
-  font-size: 12px;
-  margin: 25px 0px;
-  text-align: center;
-  color: #FFF;
-  cursor: pointer;
-  display: none;
-  padding: 5px 8px;
-  border-radius: 4px;
-  transition: all .2s ease-in-out;
-}
-
-#feedbar .remove:hover {
-  background-color: red;
-}
-
-#feedbar .logout {
-  float: right;
-  overflow: hidden;
-  background-color: #6C8A46;
-  font-size: 12px;
-  margin: 25px 10px 25px 5px;
-  text-align: center;
-  color: #FFF;
-  cursor: pointer;
-  padding: 5px 8px;
-  border-radius: 4px;
-  transition: all .2s ease-in-out;
-}
-
-#feeds {
-  height: 20px;
-}
-
-#feeds .count span{
-  float: left;
-  position: absolute;
-  right: 2px;
-  background: #666;
-  border-radius: 5px;
-  color: #fff;
-  padding: 3px;
-  font-size: 10px;
-  margin: 0 5px;
-}
-
-#feeds .new {
-  background-color: #6C8A46;
-}
-
-#msg {
-  position: absolute;
-  float: left;
-  z-index: 3;
-  top: -20px;
-  right: 50%;
-  color: #FFF;
-  font-size: 16px;
-  border-radius: 10px;
-  padding: 20px 20px 10px 15px;
-  background: #6C8A46 url(../images/loading1.gif) no-repeat 95% 70%;
-}
-
-#south.ui-layout-south {
-  font-size: 20px;
-}
+#items li.new .title a.item-action.item-read { color: var(--ink); }
+#items li.selected .title a.item-action.item-star,
+#items li.selected .title a.item-action.item-read { color: var(--paper); }
+#items li.selected .title a.item-action.item-star:hover,
+#items li.selected .title a.item-action.item-read:hover { color: var(--ink-ghost); }
 
 #items li .title a.item-action.item-link,
 #items li .title a.item-action.item-load-full {
   display: none;
-  align-items: baseline;
-  gap: 5px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: lowercase;
-  text-decoration: none;
+  align-items: center;
+  gap: 6px;
+  height: 22px;
+  padding: 0 8px;
   margin: 0;
-  padding: 4px 10px;
-  border-radius: 4px;
+  font-family: var(--font-sans);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border: 1px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
   white-space: nowrap;
-  cursor: pointer;
-  transition: background-color .12s ease;
-}
-#items li.selected .title a.item-action.item-link,
-#items li.selected .title a.item-action.item-load-full {
-  display: inline-flex;
-}
-#items li .title a.item-action.item-link {
-  background-color: #659165;
-  color: #FFF;
-}
-#items li .title a.item-action.item-link:hover {
-  background-color: #557751;
-}
-#items li .title a.item-action.item-load-full {
-  background-color: #4a6ea0;
-  color: #FFF;
-}
-#items li .title a.item-action.item-load-full:hover {
-  background-color: #3d5e8c;
-}
-#items li .title a.item-action.item-load-full[aria-busy="true"] {
-  background-color: #8a8a8a;
-  cursor: wait;
-  pointer-events: none;
-}
-#items li .title a.item-action.item-read,
-#items li .title a.item-action.item-star {
-  background-color: none;
-  display:inline;
-  margin:0;
-  padding:0;
-  font-size:14px;
-  color:#666;
-}
-#items li .title a.item-action.item-read:hover,
-#items li .title a.item-action.item-star:hover {
-  color:#333;
-}
-#items li .title a.item-action.item-read {
-  font-size:13px;
-  padding-bottom:2px;
-  margin:0 5px 0 2px;
 }
 
-.rtl {
-  direction : rtl;
+#items li.selected .title a.item-action.item-link,
+#items li.selected .title a.item-action.item-load-full { display: inline-flex; }
+
+#items li.selected .title a.item-action.item-link,
+#items li.selected .title a.item-action.item-load-full {
+  border-color: var(--paper);
+  color: var(--paper);
+  background: transparent;
+}
+
+#items li .title a.item-action.item-link:hover,
+#items li .title a.item-action.item-load-full:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+#items li.selected .title a.item-action.item-link:hover,
+#items li.selected .title a.item-action.item-load-full:hover {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+#items li .title a.item-action.item-load-full[aria-busy="true"] {
+  cursor: wait;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+#items li .title a.item-action.item-link i,
+#items li .title a.item-action.item-load-full i { font-size: 10px; }
+
+/* Article body */
+#items li .desc {
+  margin: 22px auto 0;
+  padding: 0;
+  max-width: 64ch;
+  font-family: var(--font-serif);
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--ink);
+  text-align: left;
+  letter-spacing: -0.003em;
+  width: auto;
+  text-shadow: none;
+}
+
+#items li .desc p { margin: 0 0 18px; }
+
+/* Lists in the body — use logical padding so RTL inverts naturally. */
+#items li .desc ul,
+#items li .desc ol {
+  margin: 0 0 18px;
+  padding: 0;
+  padding-inline-start: 28px;
+  list-style-position: outside;
+}
+#items li .desc li { margin: 4px 0; }
+#items li .desc ul ul,
+#items li .desc ol ol,
+#items li .desc ul ol,
+#items li .desc ol ul { margin: 6px 0; }
+
+/* Hide the outer marker when an <li> exists only to wrap a nested list —
+   prevents the doubled bullets you see on some publisher articles. */
+#items li .desc ul > li:has(> ul:only-child),
+#items li .desc ol > li:has(> ol:only-child),
+#items li .desc ul > li:has(> ol:only-child),
+#items li .desc ol > li:has(> ul:only-child) {
+  list-style: none;
+}
+
+/* Figures / image captions. */
+#items li .desc figure { margin: 18px 0; }
+#items li .desc figcaption {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-top: 6px;
+}
+
+/* Block quotes — newspaper-style indented serif. */
+#items li .desc blockquote {
+  margin: 22px 0;
+  padding: 0;
+  padding-inline-start: 18px;
+  border-inline-start: 2px solid var(--ink);
+  font-style: italic;
+  color: var(--ink-2);
+}
+
+#items li .desc h2 {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  margin: 32px 0 14px;
+  padding-top: 16px;
+  line-height: 1.2;
+  border-top: 1px solid currentColor;
+}
+
+#items li .desc h2::before {
+  content: "§ ";
+  font-weight: 400;
+  color: var(--ink-faint);
+  margin-right: 6px;
+}
+
+#items li.selected .desc h2::before { color: var(--ink-faint); }
+
+#items li .desc a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+#items li .desc a:hover { background: var(--ink); color: var(--paper); text-decoration: none; }
+#items li.selected .desc a:hover { background: var(--ink); color: var(--paper); }
+
+#items li .desc img {
+  display: block;
+  margin: 18px auto;
+  padding: 0;
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--rule-hair);
+}
+
+#items li .desc em { font-style: italic; }
+
+#items li .dir { margin: 5px; padding: 5px; text-align: left; }
+
+.rtl { direction: rtl; text-align: right; }
+
+/* RTL items: keep eyebrow and action chips in LTR order (they hold
+   English metadata + UI labels). Only the title and body should flow RTL. */
+#items > li.rtl .lr-article-eyebrow,
+#items > li.rtl .lr-article-actions {
+  direction: ltr;
+  text-align: left;
+}
+#items > li.rtl .lr-article-title,
+#items > li.rtl .desc {
+  direction: rtl;
+  text-align: right;
+}
+#items > li.rtl .lr-article-title {
+  max-width: none;
+}
+/* Compact-row variant: keep the toggles and timestamp in their visual
+   spots; just align the title-body content to the right. */
+#items > li.rtl .title .title-body {
+  direction: rtl;
   text-align: right;
 }
 
+/* Mirror the drop cap for RTL bodies. */
+#items > li.selected.rtl .desc > p:first-child::first-letter {
+  float: right;
+  margin: 6px 0 0 8px;
+}
+
+/* Inline scrape error banner */
+.scrape-error {
+  margin-top: 12px;
+  padding: 10px 12px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: var(--paper-3);
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  border-left: none;
+  border-right: none;
+  border-radius: 0;
+}
+
+#items li.selected .scrape-error {
+  color: var(--ink);
+  background: var(--paper-3);
+  border-color: var(--ink);
+}
+
+/* ===================================================================
+   Empty-state callout (no items)
+   =================================================================== */
+.lr-empty-callout {
+  max-width: 760px;
+  margin: 8px auto 0;
+  padding: 0 36px;
+}
+
+.lr-callout-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--rule);
+  font-weight: 500;
+}
+
+.lr-callout-title {
+  font-family: var(--font-serif);
+  font-size: 44px;
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  margin: 0 0 16px;
+  max-width: 18ch;
+  font-weight: 700;
+  text-wrap: balance;
+}
+
+.lr-callout-sub {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--ink-2);
+  max-width: 56ch;
+  margin: 0;
+}
+
+.lr-callout-sub strong { color: var(--ink); font-weight: 700; }
+
+/* ===================================================================
+   Generic button — preserved class names, restyled to the new system
+   =================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 0;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+  margin: 2px;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: background 0.12s ease, color 0.12s ease;
+  float: none;
+}
+
+.btn:hover { background: var(--paper); color: var(--ink); }
+.btn-small { padding: 4px 8px; font-size: 10px; }
+.btn-purple, .btn-green { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.btn-purple:hover, .btn-green:hover { background: var(--paper); color: var(--ink); }
+
+/* ===================================================================
+   Toast / loader message
+   =================================================================== */
+#msg {
+  position: absolute;
+  z-index: 3;
+  top: -20px;
+  right: 50%;
+  color: var(--paper);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border-radius: 0;
+  padding: 14px 18px;
+  background: var(--ink);
+}
+
+#south.ui-layout-south { font-size: 14px; }
+
+/* ===================================================================
+   Auth / login fallback (mostly handled by auth.css for those pages)
+   =================================================================== */
 .login-container {
   width: 400px;
   margin: 100px auto;
-  padding: 30px;
-  background-color: #fff;
-  border-radius: 5px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.login-container .alert {
-  padding: 10px;
-  margin-bottom: 20px;
-  border-radius: 4px;
-}
-
-.login-container .alert-success {
-  background-color: #DFF0D8;
-  color: #3C763D;
+  padding: 32px 28px;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  box-shadow: 4px 4px 0 0 var(--ink);
 }
 
 .login-container h1 {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
   text-align: center;
-  color: #333;
-  margin-bottom: 30px;
+  margin-bottom: 28px;
 }
 
-.login-form .form-group {
-  margin-bottom: 20px;
-}
+.login-container .alert { padding: 10px 12px; margin-bottom: 18px; border-radius: 0; border: 1px solid var(--ink); }
+.login-container .alert-success { background: var(--paper-3); color: var(--ink); }
 
+.login-form .form-group { margin-bottom: 16px; }
 .login-form label {
   display: block;
-  margin-bottom: 5px;
-  color: #666;
+  margin-bottom: 6px;
+  color: var(--ink-muted);
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 600;
 }
-
 .login-form .form-control {
   width: 100%;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: 8px 10px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  font-family: var(--font-mono);
   font-size: 14px;
+  background: var(--paper);
+  color: var(--ink);
+  box-sizing: border-box;
 }
-
-.login-form .form-control:focus {
-  border-color: #6C8A46;
-  outline: none;
-}
+.login-form .form-control:focus { outline: none; border-color: var(--ink); box-shadow: 3px 3px 0 0 var(--ink); }
 
 .login-form .btn-primary {
   width: 100%;
-  padding: 10px;
-  background-color: #6C8A46;
-  border: none;
-  border-radius: 4px;
-  color: white;
-  font-size: 16px;
+  padding: 12px;
+  background: var(--ink);
+  color: var(--paper);
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   cursor: pointer;
 }
+.login-form .btn-primary:hover { background: var(--paper); color: var(--ink); }
 
-.login-form .btn-primary:hover {
-  background-color: #597238;
-}
-
-.hidden {
-  display: none;
-}
+.hidden { display: none; }
 
 .error-message {
-    color: #a94442;
-    background-color: #f2dede;
-    border: 1px solid #ebccd1;
-    border-radius: 4px;
-    padding: 10px;
-    margin-bottom: 20px;
-}
-
-
-/* ===== Folders ===== */
-#feeds .folder-list,
-#feeds .root-feed-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-/* The folder-wrap <li> would otherwise inherit #feeds ul li's
-   padding:10px + overflow:auto, producing a scrollbar around each row.
-   Reset those — the inner .folder-header owns padding/borders. */
-#feeds .folder-list > li.folder-wrap {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    border-bottom: none;
-    overflow: visible;
-    cursor: default;
-    position: relative;
-}
-
-#feeds .folder-header {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 6px;
-    cursor: pointer;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    user-select: none;
-}
-
-#feeds .folder-header.selected {
-    background: #e6e6e6;
-}
-
-#feeds .folder-header:hover {
-    background: rgba(0, 0, 0, 0.04);
-}
-
-#feeds .folder-chevron {
-    background: transparent;
-    border: 0;
-    padding: 2px 4px;
-    cursor: pointer;
-    color: #555;
-    width: 22px;
-    text-align: center;
-}
-
-#feeds .folder-chevron-spacer {
-    display: inline-block;
-    width: 22px;
-}
-
-#feeds .folder-chevron:hover {
-    color: #000;
-}
-
-#feeds .folder-icon {
-    color: #6C8A46;
-    cursor: grab;
-}
-
-#feeds .folder-title {
-    flex: 1;
-    font-weight: 600;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-#feeds .folder-count {
-    color: #888;
-    font-size: 0.85em;
-    min-width: 1.5em;
-    text-align: right;
-}
-
-#feeds .folder-children {
-    list-style: none;
-    margin: 0;
-    padding: 0 0 0 18px;
-    min-height: 6px;
-}
-
-/* Fully hide collapsed children. The drag-and-drop helper auto-expands
-   a folder on dragenter (hover-expand pattern), so users can still drop
-   into a collapsed folder by hovering over its header. */
-#feeds .folder-children.collapsed {
-    display: none;
-}
-
-/* DnD visual cues */
-#feeds .feed-drag-ghost {
-    opacity: 0.4;
-    background: #cfe1b8;
-}
-
-#feeds .feed-drag {
-    opacity: 0.95;
-    background: #fff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-/* Sidebar footer holding the New Folder action — kept understated so the
-   feed list stays the visual focus. */
-#feeds .sidebar-footer {
-    margin-top: 6px;
-    padding: 8px 10px;
-}
-
-#feeds .sidebar-footer #addfolder {
-    width: 100%;
-}
-
-/* Resting state — full-width dashed ghost button. */
-#feeds .sidebar-footer #addfolder .btn {
-    float: none;
-    width: 100%;
-    text-align: center;
-    padding: 6px 10px;
-    box-sizing: border-box;
-    background: transparent;
-    color: #6b6b6b;
-    border: 1px dashed #c5c5c5;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 500;
-    margin: 0;
-    transition: background-color .15s ease, color .15s ease, border-color .15s ease;
-}
-
-#feeds .sidebar-footer #addfolder .btn:hover {
-    background: rgba(108, 138, 70, 0.08);
-    color: #4a6630;
-    border-color: #9bb47a;
-}
-
-#feeds .sidebar-footer #addfolder .btn i {
-    opacity: 0.7;
-}
-
-#feeds .sidebar-footer #addfolder .btn:hover i {
-    opacity: 1;
-}
-
-#feeds .sidebar-footer #addfolder .btn span:not(:empty) {
-    margin-left: 4px;
-}
-
-/* Open state — flex row with the input on the left and a small green
-   submit button on the right, mirroring the add-feed affordance. */
-#feeds .sidebar-footer #addfolder.open {
-    display: flex;
-    flex-direction: row-reverse;
-    gap: 6px;
-    align-items: stretch;
-}
-
-#feeds .sidebar-footer #addfolder.open input {
-    flex: 1;
-    margin: 0;
-    box-sizing: border-box;
-    padding: 6px 8px;
-    font: inherit;
-    font-size: 13px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    min-width: 0;
-}
-
-#feeds .sidebar-footer #addfolder.open input:focus {
-    outline: none;
-    border-color: #6C8A46;
-}
-
-#feeds .sidebar-footer #addfolder.open .btn {
-    width: auto;
-    flex: 0 0 auto;
-    padding: 6px 10px;
-    background: #6C8A46;
-    color: #fff;
-    border: 1px solid #6C8A46;
-    border-radius: 4px;
-}
-
-#feeds .sidebar-footer #addfolder.open .btn:hover {
-    background: #5a7438;
-    border-color: #5a7438;
-    color: #fff;
-}
-
-#feeds .sidebar-footer #addfolder.open .btn i {
-    opacity: 1;
-}
-
-/* Move-to-folder dropdown in toolbar — vertically centered with the title */
-#feedbar .move-to-folder {
-    float: left;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin: 25px 10px;
-    height: 26px;
-    color: #fff;
-    font-size: 12px;
-    line-height: 26px;
-}
-
-#feedbar .move-to-folder i {
-    font-size: 14px;
-    opacity: 0.85;
-}
-
-#feedbar .move-to-folder select {
-    font-family: inherit;
-    font-size: 12px;
-    padding: 0 22px 0 8px;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    border-radius: 3px;
-    background: rgba(0, 0, 0, 0.25);
-    color: #fff;
-    line-height: 24px;
-    height: 26px;
-    max-width: 200px;
-    cursor: pointer;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='%23fff' d='M0 0l5 6 5-6z'/></svg>");
-    background-repeat: no-repeat;
-    background-position: right 8px center;
-}
-
-#feedbar .move-to-folder select option {
-    color: #000;
-    background: #fff;
-}
-
-#feedbar .move-to-folder select:hover {
-    border-color: rgba(255, 255, 255, 0.7);
-    background-color: rgba(0, 0, 0, 0.4);
-}
-
-#feedbar .move-to-folder select:focus {
-    outline: none;
-    border-color: #fff;
-}
-
-#feedbar .rename-folder {
-    cursor: pointer;
-}
-
-#feedbar .folder-rename {
-    border: 1px solid #ccc;
-    padding: 2px 4px;
-    font: inherit;
+  color: var(--ink);
+  background: var(--paper-3);
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  padding: 10px 12px;
+  margin-bottom: 18px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
 }
