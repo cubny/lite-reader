@@ -95,8 +95,13 @@ func (a *App) initDBFile() *App {
 				a.err = fmt.Errorf("failed to create db directory: %w", mkdirErr)
 				return a
 			}
-			if _, createErr := os.Create(dbPath); createErr != nil {
+			f, createErr := os.Create(dbPath)
+			if createErr != nil {
 				a.err = fmt.Errorf("failed to create db file: %w", createErr)
+				return a
+			}
+			if closeErr := f.Close(); closeErr != nil {
+				a.err = fmt.Errorf("failed to close db file: %w", closeErr)
 				return a
 			}
 		}
