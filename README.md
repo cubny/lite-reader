@@ -2,7 +2,9 @@
 
 Read your feeds on your own machine with a simple and lite application.
 
-![ScreenShot](https://raw.github.com/cubny/lite-reader/master/public/images/screenshot.png)
+![Feed list](docs/images/feed-list.png)
+
+![Article reader](docs/images/item-reader.png)
 
 ## Table of Contents
 - [Features](#features)
