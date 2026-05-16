@@ -3,35 +3,36 @@ html, body {
   padding: 0;
   height: 100%;
   overflow: hidden;
+  background: var(--paper);
 }
 
-#app {
-  height: 100%;
-}
+#app { height: 100%; }
 
 /*
- * Override main.css's leftover `#feeds { height: 20px }` (specificity 1,0,0)
- * with a 1,1,0 selector so the sidebar fills the viewport.
+ * Sidebar — 280px wide masthead column, paper-2 background, hard ink rule
+ * on the right edge. Overrides main.css's leftover `#feeds { height: 20px }`.
  */
 #feeds.ui-layout-west {
   position: absolute;
   top: 0;
   left: 0;
   bottom: 0;
-  width: 240px;
+  width: 280px;
   height: auto;
-  overflow: auto;
-  background: #FFF;
-  border-right: 4px solid #eee;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper-2);
+  border-right: 1px solid var(--rule);
 }
 
 #content.ui-layout-center {
   position: absolute;
   top: 0;
-  left: 244px;
+  left: 280px;
   right: 0;
   bottom: 0;
-  background: #FFF;
+  background: var(--paper);
   overflow: hidden;
 }
 
@@ -40,13 +41,13 @@ html, body {
   top: 0;
   left: 0;
   right: 0;
-  height: 80px;
+  height: 96px;
   z-index: 4;
 }
 
 #content > .ui-layout-center {
   position: absolute;
-  top: 80px;
+  top: 96px;
   left: 0;
   right: 0;
   bottom: 0;
@@ -55,24 +56,9 @@ html, body {
 
 #feeds #toolbar {
   position: relative;
-  /* override main.css overflow:hidden + height:30px so the inline error
-     can grow below the +Feed button instead of being clipped. */
   overflow: visible;
   height: auto;
   min-height: 30px;
-}
-
-#toolbar div.add-feed-form-error {
-  clear: both;
-  float: none;
-  background: #f2dede;
-  color: #a94442;
-  border: 1px solid #ebccd1;
-  border-radius: 4px;
-  padding: 6px 8px;
-  font-size: 12px;
-  margin-top: 10px;
-  width: auto;
 }
 
 #feeds > div > ul,
@@ -82,119 +68,92 @@ html, body {
   margin: 0;
 }
 
-/*
- * Action bar visibility — legacy hides Update/Read/Unread/Remove until a feed
- * is selected. Logout is always visible. We mirror that with a class on
- * #feedbar set by FeedBar.js. Specificity 1,2,1 beats main.css's 1,1,0.
- */
-#feedbar #actions .action {
-  display: none;
-}
-
-#feedbar #actions .action.logout {
-  display: block;
-}
-
-#feedbar.has-feed #actions .action {
-  display: block;
-}
-
-#feedbar.has-feed #actions .move-to-folder {
-  display: flex;
-}
-
+/* Action visibility — show/hide based on scope (preserve legacy behavior) */
+#feedbar #actions .action { display: none; }
+#feedbar #actions .action.logout { display: inline-flex; }
+#feedbar.has-feed #actions .action { display: inline-flex; }
+#feedbar.has-feed #actions .move-to-folder { display: inline-flex; }
 #feedbar.has-folder #actions .action.markread,
 #feedbar.has-folder #actions .action.rename-folder,
 #feedbar.has-folder #actions .action.remove,
-#feedbar.has-folder #actions .action.logout {
-  display: block;
-}
+#feedbar.has-folder #actions .action.logout { display: inline-flex; }
 
-/*
- * Item row inline expansion. Legacy starts .desc and .dir hidden, plus
- * .item-link hidden until the row is .selected.
- */
+/* Item row inline expansion — desc/dir hidden until row is selected */
 #items li .desc,
-#items li .dir {
-  display: none;
-}
-
+#items li .dir { display: none; }
 #items li.selected .desc,
-#items li.selected .dir {
-  display: block;
-}
+#items li.selected .dir { display: block; }
 
-/* selected-only display + chip styling lives in main.css (.item-link, .item-load-full) */
-
-/*
- * Star and read toggles must be clickable always (legacy behaviour).
- * main.css already sets them to display:inline; this is a safety net in case
- * a parent .item-action display:none rule wins on specificity.
- */
+/* Star / read toggles always visible */
 #items li .title a.item-action.item-star,
 #items li .title a.item-action.item-read {
-  display: inline;
+  display: inline-flex;
   cursor: pointer;
 }
 
-/*
- * ConfirmDialog modal — overlay + centered dialog. Lives at the top of the
- * stacking context so it isn't constrained by #feedbar's overflow:hidden /
- * font-size:30px.
- */
+/* ===================================================================
+   Confirm dialog — brutal modal
+   =================================================================== */
 .confirm-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.55);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  font-family: Tahoma, sans-serif;
+  font-family: var(--font-sans);
   font-size: 14px;
 }
 
 .confirm-dialog {
-  background: #fff;
-  border-radius: 6px;
-  padding: 24px 28px;
-  min-width: 320px;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  padding: 28px 32px;
+  min-width: 340px;
   max-width: 80%;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-  color: #333;
+  box-shadow: 6px 6px 0 0 var(--ink);
+  color: var(--ink);
 }
 
 .confirm-dialog [data-testid="confirm-message"] {
-  font-size: 16px;
-  margin-bottom: 20px;
+  font-family: var(--font-serif);
+  font-size: 18px;
   line-height: 1.4;
+  margin-bottom: 22px;
 }
 
 .confirm-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 8px;
+  gap: 0;
 }
 
 .confirm-actions button {
   padding: 8px 16px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  background: #f6f6f6;
+  border-radius: 0;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
   cursor: pointer;
-  font-size: 14px;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-left: -1px;
 }
 
+.confirm-actions button:hover { background: var(--ink); color: var(--paper); }
+
 .confirm-actions button[data-testid="confirm-yes"] {
-  background-color: #ab1111;
-  color: #fff;
-  border-color: #ab1111;
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
 }
 
 .confirm-actions button[data-testid="confirm-yes"]:hover {
-  background-color: #c41414;
-}
-
-.confirm-actions button[data-testid="confirm-no"]:hover {
-  background-color: #e9e9e9;
+  background: var(--paper);
+  color: var(--ink);
 }

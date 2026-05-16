@@ -116,7 +116,7 @@ export function SetupPage() {
             onChange=${(e) => setAllowSignup(e.target.checked)}
             style="width: auto;"
           />
-          <label for="allow-signup" style="font-size: 14px; color: #2a2a28;">
+          <label for="allow-signup" style="font-size: 14px; color: #000000;">
             Allow other people to create accounts
           </label>
         </div>

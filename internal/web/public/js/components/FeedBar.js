@@ -71,6 +71,24 @@ export function FeedBar() {
   const currentFeed = isFeedScope ? (feeds.value || []).find((x) => x.id === sel.id) : null;
   const currentFolderId = currentFeed ? (currentFeed.folder_id == null ? '' : String(currentFeed.folder_id)) : '';
 
+  function hostFromUrl(u) {
+    try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return ''; }
+  }
+
+  let subtitle = '';
+  if (isFeedScope && currentFeed) {
+    const host = hostFromUrl(currentFeed.url);
+    const count = currentFeed.unread_count || 0;
+    subtitle = `${host}${host && count ? ' · ' : ''}${count ? `${count} unread` : ''}`;
+  } else if (isFolderScope) {
+    const childFeeds = (feeds.value || []).filter((f) => f.folder_id === sel.id);
+    const unread = childFeeds.reduce((acc, f) => acc + (f.unread_count || 0), 0);
+    subtitle = `${childFeeds.length} feed${childFeeds.length === 1 ? '' : 's'}${unread ? ` · ${unread} unread` : ''}`;
+  } else if (sel.kind === 'unread' || sel.kind === 'starred') {
+    const count = (items.value || []).length;
+    subtitle = `${count} item${count === 1 ? '' : 's'}`;
+  }
+
   async function refresh() {
     if (!isFeedScope || pending) return;
     setPending(true);
@@ -193,19 +211,22 @@ export function FeedBar() {
 
   return html`
     <div id="feedbar" class=${barClass}>
-      <div id="title" data-testid="toolbar-title">
-        ${isFolderScope && renamingFolder
-          ? html`<input
-              type="text"
-              class="folder-rename"
-              data-testid="toolbar-folder-rename-input"
-              value=${pendingFolderName}
-              autofocus
-              onInput=${(e) => setPendingFolderName(e.target.value)}
-              onBlur=${commitFolderRename}
-              onKeyDown=${(e) => { if (e.key === 'Enter') commitFolderRename(e); else if (e.key === 'Escape') cancelFolderRename(); }}
-            />`
-          : title}
+      <div id="title-block">
+        <div id="title" data-testid="toolbar-title">
+          ${isFolderScope && renamingFolder
+            ? html`<input
+                type="text"
+                class="folder-rename"
+                data-testid="toolbar-folder-rename-input"
+                value=${pendingFolderName}
+                autofocus
+                onInput=${(e) => setPendingFolderName(e.target.value)}
+                onBlur=${commitFolderRename}
+                onKeyDown=${(e) => { if (e.key === 'Enter') commitFolderRename(e); else if (e.key === 'Escape') cancelFolderRename(); }}
+              />`
+            : title}
+        </div>
+        ${subtitle && html`<div id="subtitle" data-testid="toolbar-subtitle">${subtitle}</div>`}
       </div>
       <div id="actions">
         ${isFeedScope && html`
@@ -226,10 +247,10 @@ export function FeedBar() {
           <i class="icon-repeat"></i> Update
         </div>
         <div id="mark-read-all" class="action markread" data-testid="toolbar-mark-read" onClick=${readAll}>
-          <i class="icon-circle-blank"></i> Read All
+          <i class="icon-circle-blank"></i> Mark all read
         </div>
         <div id="mark-unread-all" class="action markunread" data-testid="toolbar-mark-unread" onClick=${unreadAll}>
-          <i class="icon-circle"></i> Unread All
+          <i class="icon-circle"></i> Mark unread
         </div>
         ${isFolderScope && html`
           <div class="action rename-folder" data-testid="toolbar-folder-rename" onClick=${() => { setPendingFolderName(title); setRenamingFolder(true); }}>

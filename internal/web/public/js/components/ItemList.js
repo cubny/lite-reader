@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useMemo, useState } from 'preact/hooks';
 import { html } from '../util/html.js';
-import { selection, items, currentItem } from '../state.js';
+import { selection, items, currentItem, feeds } from '../state.js';
 import { unread as unreadItems, starred as starredItems } from '../api/items.js';
 import { items as feedItems } from '../api/feeds.js';
 import { items as folderItems } from '../api/folders.js';
@@ -18,6 +18,11 @@ async function loadFor(sel) {
 export function ItemList() {
   const sel = selection.value;
   const [expanded, setExpanded] = useState(null);
+  const feedById = useMemo(() => {
+    const map = new Map();
+    for (const f of feeds.value || []) map.set(f.id, f.title || f.url);
+    return map;
+  }, [feeds.value]);
 
   useEffect(() => {
     let cancelled = false;
@@ -78,7 +83,16 @@ export function ItemList() {
   }, [expanded]);
 
   if (!items.value || items.value.length === 0) {
-    return html`<ul id="items" data-testid="item-list"></ul>`;
+    return html`
+      <ul id="items" data-testid="item-list"></ul>
+      <div class="lr-empty-callout" data-testid="item-list-empty">
+        <div class="lr-callout-eyebrow">— Quiet inbox</div>
+        <h2 class="lr-callout-title">No items yet</h2>
+        <p class="lr-callout-sub">
+          Add a feed in the sidebar to start collecting briefs. New items will appear here, numbered, in reverse chronological order.
+        </p>
+      </div>
+    `;
   }
 
   return html`
@@ -90,6 +104,7 @@ export function ItemList() {
           isSelected=${expanded === it.id}
           onToggle=${() => toggleExpand(it.id)}
           onChanged=${patch}
+          feedTitle=${feedById.get(it.feed_id) || ''}
         />
       `)}
     </ul>

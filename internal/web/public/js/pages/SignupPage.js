@@ -111,7 +111,7 @@ export function SignupPage() {
         <div class="error-message" data-testid="signup-error" role="alert">${error}</div>
       </form>
       <div style="text-align: center; margin-top: 20px;">
-        <a href="/login.html" style="color: #6C8A46;">Already have an account? Log in</a>
+        <a href="/login.html" style="color: #000000; text-decoration: underline; text-underline-offset: 3px;">Already have an account? Log in</a>
       </div>
     </div>
   `;
