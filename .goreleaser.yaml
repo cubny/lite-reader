@@ -31,7 +31,6 @@ archives:
     files:
       - LICENSE
       - README.md
-      - public
 checksum:
   name_template: "checksums.txt"
 snapshot:
