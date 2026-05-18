@@ -112,7 +112,11 @@ func (a *App) initDBFile() *App {
 func (a *App) initSQLClient() *App {
 	return a.ifNoError(func() *App {
 		var sqlClient *sql.DB
-		if sqlClient, a.err = sql.Open("sqlite", a.cfg.DB.Path); a.err != nil {
+		// WAL + a generous busy_timeout are required when the DB lives on
+		// slower storage (e.g. Fly.io volumes); without them, concurrent
+		// requests hit SQLITE_BUSY and surface to callers as generic errors.
+		dsn := a.cfg.DB.Path + "?_pragma=journal_mode(WAL)&_pragma=busy_timeout(5000)&_pragma=synchronous(NORMAL)&_pragma=foreign_keys(ON)"
+		if sqlClient, a.err = sql.Open("sqlite", dsn); a.err != nil {
 			a.err = fmt.Errorf("failed to open db: %w", a.err)
 			return a
 		}
