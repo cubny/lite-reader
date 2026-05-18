@@ -82,6 +82,19 @@ jobs:
       - name: Run tests
         run: make test
 
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          tags: lite-reader:ci
+
   tests-on-unix:
     needs: golangci-lint # run after golangci-lint action to not produce duplicated errors
     runs-on: ubuntu-latest
