@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -76,7 +77,25 @@ func AuthMiddleware(authService AuthService) HandleFunc {
 			}
 
 			session, err := authService.GetSession(token)
-			if err != nil || session == nil {
+			if err != nil {
+				// Only treat "row not found" as an auth failure; transient
+				// DB errors (e.g. SQLITE_BUSY on slow volumes) must not
+				// log the user out.
+				if errors.Is(err, sql.ErrNoRows) {
+					writeUnauthorizedResponse(w, "Unauthorized - Invalid token")
+					return
+				}
+				log.WithError(err).Error("auth: session lookup failed")
+				w.WriteHeader(http.StatusInternalServerError)
+				_ = json.NewEncoder(w).Encode(map[string]any{
+					"error": map[string]any{
+						"code":    http.StatusInternalServerError,
+						"details": "session lookup failed",
+					},
+				})
+				return
+			}
+			if session == nil {
 				writeUnauthorizedResponse(w, "Unauthorized - Invalid token")
 				return
 			}
