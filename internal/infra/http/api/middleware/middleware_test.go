@@ -22,6 +22,8 @@ func (f *fakeAuthService) GetSession(string) (*auth.Session, error) {
 	return f.session, f.err
 }
 
+const bearerToken = "Bearer tok"
+
 func TestAuthMiddleware(t *testing.T) {
 	tests := []struct {
 		name       string
@@ -38,25 +40,25 @@ func TestAuthMiddleware(t *testing.T) {
 		},
 		{
 			name:       "session not found returns 401",
-			authHeader: "Bearer tok",
+			authHeader: bearerToken,
 			svc:        &fakeAuthService{err: sql.ErrNoRows},
 			wantStatus: http.StatusUnauthorized,
 		},
 		{
 			name:       "nil session returns 401",
-			authHeader: "Bearer tok",
+			authHeader: bearerToken,
 			svc:        &fakeAuthService{},
 			wantStatus: http.StatusUnauthorized,
 		},
 		{
 			name:       "transient DB error returns 500, not 401",
-			authHeader: "Bearer tok",
+			authHeader: bearerToken,
 			svc:        &fakeAuthService{err: errors.New("database is locked (SQLITE_BUSY)")},
 			wantStatus: http.StatusInternalServerError,
 		},
 		{
 			name:       "valid session calls next",
-			authHeader: "Bearer tok",
+			authHeader: bearerToken,
 			svc:        &fakeAuthService{session: &auth.Session{UserID: 42}},
 			wantStatus: http.StatusOK,
 			wantNext:   true,
@@ -76,7 +78,7 @@ func TestAuthMiddleware(t *testing.T) {
 
 			handler := AuthMiddleware(tt.svc)(next)
 
-			req := httptest.NewRequest(http.MethodGet, "/feeds", nil)
+			req := httptest.NewRequest(http.MethodGet, "/feeds", http.NoBody)
 			if tt.authHeader != "" {
 				req.Header.Set("Authorization", tt.authHeader)
 			}
@@ -105,7 +107,7 @@ func TestAuthMiddlewareSkipsPublicPaths(t *testing.T) {
 			// the auth check entirely.
 			handler := AuthMiddleware(&fakeAuthService{err: sql.ErrNoRows})(next)
 
-			req := httptest.NewRequest(http.MethodPost, path, nil)
+			req := httptest.NewRequest(http.MethodPost, path, http.NoBody)
 			rec := httptest.NewRecorder()
 			handler(rec, req, nil)
 
