@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"net/http"
@@ -78,7 +79,7 @@ func TestAuthMiddleware(t *testing.T) {
 
 			handler := AuthMiddleware(tt.svc)(next)
 
-			req := httptest.NewRequest(http.MethodGet, "/feeds", http.NoBody)
+			req := httptest.NewRequestWithContext(context.Background(), http.MethodGet, "/feeds", http.NoBody)
 			if tt.authHeader != "" {
 				req.Header.Set("Authorization", tt.authHeader)
 			}
@@ -107,7 +108,7 @@ func TestAuthMiddlewareSkipsPublicPaths(t *testing.T) {
 			// the auth check entirely.
 			handler := AuthMiddleware(&fakeAuthService{err: sql.ErrNoRows})(next)
 
-			req := httptest.NewRequest(http.MethodPost, path, http.NoBody)
+			req := httptest.NewRequestWithContext(context.Background(), http.MethodPost, path, http.NoBody)
 			rec := httptest.NewRecorder()
 			handler(rec, req, nil)
 
