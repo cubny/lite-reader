@@ -61,6 +61,23 @@ func TestScheduler_RunsAllJobs(t *testing.T) {
 	}, 2*time.Second, tick/2, "every registered job should run on each tick")
 }
 
+// The worker reads the job list without a lock, so the scheduler must not
+// alias a slice the caller can still write to.
+func TestScheduler_DoesNotAliasCallerSlice(t *testing.T) {
+	registered, swapped := &countingJob{}, &countingJob{}
+	jobs := []job.Job{registered}
+
+	s := job.NewScheduler(time.Hour, jobs...)
+	jobs[0] = swapped // caller mutates its slice after construction
+	s.Start()
+	defer s.Stop()
+
+	assert.Eventually(t, func() bool {
+		return registered.runs.Load() == 1
+	}, time.Second, 5*time.Millisecond, "scheduler should run the job it was constructed with")
+	assert.Equal(t, int32(0), swapped.runs.Load(), "scheduler must not observe the caller's later write")
+}
+
 // Regression test for the shutdown hang: once a tick had fired, the worker
 // parked on a channel it never drained and stopped observing quit, so Stop
 // blocked forever and fly.io had to SIGKILL the machine on every deploy.

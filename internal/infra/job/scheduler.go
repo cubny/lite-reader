@@ -1,6 +1,9 @@
 package job
 
-import "time"
+import (
+	"slices"
+	"time"
+)
 
 type Job interface {
 	Execute()
@@ -13,9 +16,11 @@ type Scheduler struct {
 	done     chan struct{}
 }
 
+// NewScheduler copies jobs so that a caller spreading its own slice cannot
+// mutate the job list afterwards. The worker reads it without a lock.
 func NewScheduler(interval time.Duration, jobs ...Job) *Scheduler {
 	return &Scheduler{
-		jobs:     jobs,
+		jobs:     slices.Clone(jobs),
 		interval: interval,
 		quit:     make(chan struct{}),
 		done:     make(chan struct{}),
