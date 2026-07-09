@@ -191,11 +191,9 @@ func (a *App) initServices() *App {
 
 func (a *App) initScheduler() *App {
 	return a.ifNoError(func() *App {
-		a.scheduler = job.NewScheduler(1 * time.Hour)
-		a.scheduler.Start()
-
 		j := job.NewItemsJob(a.jobFeedService, a.jobItemService, a.authService)
-		a.scheduler.Queue <- j
+		a.scheduler = job.NewScheduler(1*time.Hour, j)
+		a.scheduler.Start()
 		return a
 	})
 }
