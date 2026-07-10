@@ -1,46 +1,56 @@
 package job
 
-import "time"
+import (
+	"slices"
+	"time"
+)
 
 type Job interface {
 	Execute()
 }
 
 type Scheduler struct {
-	Queue    chan Job
-	Interval time.Duration
+	jobs     []Job
+	interval time.Duration
 	quit     chan struct{}
 	done     chan struct{}
 }
 
-func NewScheduler(interval time.Duration) *Scheduler {
+// NewScheduler copies jobs so that a caller spreading its own slice cannot
+// mutate the job list afterwards. The worker reads it without a lock.
+func NewScheduler(interval time.Duration, jobs ...Job) *Scheduler {
 	return &Scheduler{
-		Queue:    make(chan Job),
-		Interval: interval,
+		jobs:     slices.Clone(jobs),
+		interval: interval,
 		quit:     make(chan struct{}),
 		done:     make(chan struct{}),
 	}
 }
 
+// Start runs every job once, then again on each tick, until Stop is called.
 func (s *Scheduler) Start() {
 	go func() {
 		defer close(s.done)
-		ticker := time.NewTicker(s.Interval)
+		ticker := time.NewTicker(s.interval)
 		defer ticker.Stop()
+
+		s.runAll()
 
 		for {
 			select {
 			case <-s.quit:
 				return
-			case job := <-s.Queue:
-				job.Execute()
 			case <-ticker.C:
-				for job := range s.Queue {
-					job.Execute()
-				}
+				s.runAll()
 			}
 		}
 	}()
+}
+
+func (s *Scheduler) runAll() {
+	for _, j := range s.jobs {
+		j.Execute()
+	}
 }
 
 // Stop signals the worker to exit and waits for any in-flight job to finish.
@@ -48,10 +58,4 @@ func (s *Scheduler) Start() {
 func (s *Scheduler) Stop() {
 	close(s.quit)
 	<-s.done
-}
-func (s *Scheduler) ScheduleOnce(duration time.Duration, job Job) {
-	go func() {
-		time.Sleep(duration)
-		s.Queue <- job
-	}()
 }

@@ -60,12 +60,25 @@ func TestItemsJob_Execute(t *testing.T) {
 		j.Execute()
 	})
 
+	// A user whose feeds cannot be listed must not starve the users after them.
 	t.Run("FailListFeeds", func(_ *testing.T) {
 		userService.EXPECT().GetAllUsers().Return([]*auth.User{
 			{ID: 1},
+			{ID: 2},
 		}, nil)
 		feedService.EXPECT().ListFeeds(1).Return(nil, assert.AnError)
-		itemService.EXPECT().UpsertItems(gomock.Any()).Times(0)
+		feedService.EXPECT().ListFeeds(2).Return([]*feed.Feed{
+			{ID: 9},
+		}, nil)
+		feedService.EXPECT().FetchItems(9).Return([]*item.Item{
+			{ID: 7},
+		}, nil)
+		itemService.EXPECT().UpsertItems(&item.UpsertItemsCommand{
+			FeedID: 9,
+			Items: []*item.Item{
+				{ID: 7},
+			},
+		}).Return(nil)
 		j.Execute()
 	})
 

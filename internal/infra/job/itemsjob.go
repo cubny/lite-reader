@@ -27,7 +27,8 @@ func (j *ItemsJob) Execute() {
 		log.Printf("Processing user %d", u.ID)
 		feeds, err := j.feedService.ListFeeds(u.ID)
 		if err != nil {
-			return
+			log.Errorf("Failed to list feeds for user %d: %v", u.ID, err)
+			continue
 		}
 		log.Infof("Found %d feeds", len(feeds))
 		for _, f := range feeds {
