@@ -1,0 +1,24 @@
+name: Deploy to Fly.io
+on:
+  release:
+    types: [created]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Never let two deploys race; a newer release supersedes an in-flight one.
+concurrency:
+  group: fly-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Deploy
+        run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
